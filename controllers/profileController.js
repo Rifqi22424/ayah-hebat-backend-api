@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 const addProfile = async (req, res) => {
     try {
-      const { nama, namaIstri, namaAnak, tahunMasukKuttab, bio } = req.body;
+      const { nama, namaIstri, namaAnak, namaKuttab, tahunMasukKuttab, bio } = req.body;
       const userId = req.userId;
 
       const tahunMasukKuttabInt = parseInt(tahunMasukKuttab);
@@ -24,6 +24,7 @@ const addProfile = async (req, res) => {
           nama,
           namaIstri,
           namaAnak,
+          namaKuttab,
           tahunMasukKuttab: tahunMasukKuttabInt,
           bio,
           photo: photoFilename,
@@ -66,6 +67,7 @@ const addProfile = async (req, res) => {
           nama,
           namaIstri,
           namaAnak,
+          namaKuttab,
           tahunMasukKuttab: tahunMasukKuttabInt,
           photo: photoFilename,
           bio,
@@ -92,6 +94,7 @@ const addProfile = async (req, res) => {
           photo: true,
           namaIstri: true,
           namaAnak: true,
+          namaKuttab: true,
           tahunMasukKuttab: true,
         },
       });
