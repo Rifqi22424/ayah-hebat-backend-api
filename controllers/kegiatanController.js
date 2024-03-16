@@ -79,12 +79,10 @@ const updateTotalScore = async (userId) => {
 
     const currentDate = new Date();
 
-    console.log('All user kegiatan:', user.kegiatan);
 
     const allKegiatan = user.kegiatan;
 
     const filteredKegiatan = allKegiatan.filter(kegiatan => kegiatan.score !== null);
-    console.log('Filtered kegiatan:', filteredKegiatan);
 
     const totalScoreYear = filteredKegiatan.reduce((acc, curr) => acc + (curr.score || 0), 0);
     const totalScoreMonth = filteredKegiatan
@@ -100,7 +98,6 @@ const updateTotalScore = async (userId) => {
       totalScoreDay,
     };
 
-    console.log('Update data:', updateData);
 
     await prisma.user.update({
       where: { id: userId },
@@ -182,7 +179,6 @@ const getTopUsers = async (req, res) => {
 const getKegiatanByScore = async (req, res) => {
   try {
     const { time } = req.params;
-    console.log(time);
     const userId = req.userId;
 
     let dateFilter = {};

@@ -41,7 +41,7 @@ const addProfile = async (req, res) => {
 
   const editProfile = async (req, res) => {
     try {
-      const { nama, namaIstri, namaAnak, tahunMasukKuttab, bio } = req.body;
+      const { nama, namaIstri, namaAnak, namaKuttab,tahunMasukKuttab, bio } = req.body;
       const userId = req.userId;
   
       const tahunMasukKuttabInt = parseInt(tahunMasukKuttab);

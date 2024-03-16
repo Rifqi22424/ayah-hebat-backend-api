@@ -156,8 +156,8 @@ const sendVerificationEmail = async (email, verificationCode) => {
     port: 465,
     secure: true,
     auth: {
-      user: "rifqimuzakki4545@gmail.com",
-      pass: "bfeb vwjz awps wgef",
+      user: "ayahhebatmangcoding@gmail.com",
+      pass: "citl rjsa irmx tpcx",
     },
   });
   
@@ -175,7 +175,7 @@ const sendVerificationEmail = async (email, verificationCode) => {
 });
 
   const mailOptions = {
-    from: 'rifqimuzakki4545@gmail.com',
+    from: 'ayahhebatmangcoding@gmail.com',
     to: email,
     subject: 'Verifikasi Akun',
     text: `Kode verifikasi Anda: ${verificationCode}`,
@@ -184,10 +184,8 @@ const sendVerificationEmail = async (email, verificationCode) => {
   await new Promise((resolve, reject) => {
     transporter.sendMail(mailOptions, (err, info) => {
         if (err) {
-            console.error(err);
             reject(err);
         } else {
-            console.log(info);
             resolve(info);
         }
     });

@@ -15,7 +15,6 @@ const authenticateToken = (req, res, next) => {
   if (authHeader) {
       const token = authHeader.split(' ')[1]; 
       try {
-          console.log('Decoded Token:', verifyToken(token));
           const decoded = verifyToken(token);
           req.userId = decoded.userId;
           next();
