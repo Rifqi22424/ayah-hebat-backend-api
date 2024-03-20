@@ -130,6 +130,10 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
+    if (!user.isVerified) {
+      return res.status(401).json({ error: 'User is not verified' });
+    }
+
     const token = generateToken(user.id);
 
     res.json({ token, user: { id: user.id, username: user.username, email: user.email, profile: user.profile } });

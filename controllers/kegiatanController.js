@@ -99,7 +99,6 @@ const updateTotalScore = async (userId) => {
 
     const currentDate = new Date();
 
-
     const allKegiatan = user.kegiatan;
 
     const filteredKegiatan = allKegiatan.filter(kegiatan => kegiatan.score !== null);
