@@ -18,7 +18,21 @@ const registerUser = async (req, res) => {
     });
 
     if (existingUser) {
-      return res.status(400).json({ error: 'Email is already registered' });
+      if (!existingUser.isVerified) { 
+        const verificationCode = generateVerificationCode();
+        await prisma.user.updateMany({
+          where: { email, isVerified: false }, 
+          data: { 
+            username,
+            password: await bcrypt.hash(password, saltRounds),
+            verificationCode 
+          }
+        });
+        sendVerificationEmail(email, verificationCode);
+        return res.json({ message: 'Email verification resent. Please check your email.' });
+      } else {
+        return res.status(400).json({ error: 'Email is already registered and verified' });
+      }
     }
 
     const verificationCode = generateVerificationCode(); 
