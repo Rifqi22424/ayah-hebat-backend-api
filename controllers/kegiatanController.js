@@ -38,10 +38,27 @@ const createKegiatan = async (req, res) => {
       return res.status(400).json({ error: 'Title and userId are required' });
     }
 
-
     if (isNaN(userId)) {
       return res.status(400).json({ error: 'Invalid userId format' });
     }
+
+    const currentDate = new Date();
+    const currentDateString = currentDate.toISOString().split('T')[0]; 
+
+    const kegiatanCount = await prisma.kegiatan.count({
+      where: {
+        userId,
+        createdAt: {
+          gte: new Date(currentDateString), 
+        },
+      },
+    });
+
+    if (kegiatanCount >= 3) {
+      return res.status(400).json({ error: 'Batas maksimum pembuatan kegiatan telah tercapai untuk hari ini (3 kegiatan)' });
+    }
+    
+    const defaultScore = 10;
 
     const newKegiatan = await prisma.kegiatan.create({
       data: {
@@ -50,8 +67,11 @@ const createKegiatan = async (req, res) => {
         file1: file1 ? file1[0].filename : null,
         file2: file2 ? file2[0].filename : null,
         file3: file3 ? file3[0].filename : null,
+        score: defaultScore,
       },
     });
+
+    await updateTotalScore(userId);
 
     res.json(newKegiatan);
   } catch (error) {
