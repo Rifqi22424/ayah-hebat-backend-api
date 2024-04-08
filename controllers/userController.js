@@ -165,7 +165,6 @@ const generateVerificationCode = () => {
   return randomCode.toString();
 };
 
-
 const sendVerificationEmail = async (email, verificationCode) => {
   const nodemailer = require('nodemailer');
 
@@ -179,7 +178,6 @@ const sendVerificationEmail = async (email, verificationCode) => {
     },
   });
   
-
   await new Promise((resolve, reject) => {
     transporter.verify(function (error, success) {
         if (error) {

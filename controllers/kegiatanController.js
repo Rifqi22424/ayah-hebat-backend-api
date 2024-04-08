@@ -127,6 +127,32 @@ const updateTotalScore = async (userId) => {
   }
 };
 
+const updateAllUsersTotalScore = async () => {
+  try {
+    const allUsers = await prisma.user.findMany();
+
+    for (const user of allUsers) {
+      await updateTotalScore(user.id);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const updateAllUsersTotalScoreManual = async (req, res) => {
+  try {
+    const allUsers = await prisma.user.findMany();
+
+    for (const user of allUsers) {
+      await updateTotalScore(user.id);
+    }
+    res.status(200).json({ message: 'All users total score updated successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 const evaluateKegiatan = async (req, res) => {
   try {
     const { kegiatanId, score } = req.body;
@@ -242,4 +268,4 @@ const getKegiatanByScore = async (req, res) => {
 };
 
 
-module.exports = { getKegiatan, createKegiatan, evaluateKegiatan, getKegiatanByScore, getTopUsers, getAllKegiatan };
+module.exports = { getKegiatan, createKegiatan, evaluateKegiatan, getKegiatanByScore, getTopUsers, getAllKegiatan, updateAllUsersTotalScore, updateAllUsersTotalScoreManual };

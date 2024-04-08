@@ -5,6 +5,8 @@ const profileRoutes = require('./routes/profileRoutes');
 const kegiatanRoutes = require('./routes/kegiatanRoutes');
 const { PrismaClient } = require('@prisma/client');
 const { authenticateToken } = require('./middlewares/jwtMiddleware'); 
+const cron = require('node-cron');
+const { updateAllUsersTotalScore } = require('./controllers/kegiatanController')
 
 const app = express();
 const prisma = new PrismaClient();
@@ -18,6 +20,12 @@ app.use(authenticateToken);
 
 app.use('/profile', profileRoutes);
 app.use('/kegiatan', kegiatanRoutes);
+
+cron.schedule('0 0 * * *', async () => {
+  console.log('Running daily score update...');
+  await updateAllUsersTotalScore();
+  console.log('Daily score update completed.');
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
