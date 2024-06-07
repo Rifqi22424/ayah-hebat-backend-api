@@ -1,0 +1,14 @@
+[
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "com.mangcoding.ayahhebatapp",
+            "sha256_cert_fingerprints": [
+                "C9:C2:1E:58:70:CF:E8:BE:7B:6E:A5:A7:42:18:12:47:41:C3:EC:4C:E5:EB:58:86:F6:75:DE:0B:D0:8E:99:EC"
+            ]
+        }
+    }
+]

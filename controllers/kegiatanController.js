@@ -2,13 +2,17 @@ const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
-const getKegiatan = async (req, res) => {
+const getKegiatanById = async (req, res) => {
   try {
-    const userId = req.userId;
+    const kegiatanId = parseInt(req.params.id);
 
-    const kegiatan = await prisma.kegiatan.findMany({
-      where: { userId },
+    const kegiatan = await prisma.kegiatan.findUnique({
+      where: { id: kegiatanId },
     });
+
+    if (!kegiatan) {
+      return res.status(404).json({ error: 'Kegiatan not found' });
+    }
 
     res.json(kegiatan);
   } catch (error) {
@@ -27,6 +31,27 @@ const getAllKegiatan = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+const getKegiatanByUserId = async (req, res) => {
+  try {
+    const userId = req.userId;
+    if (!userId || isNaN(userId)) {
+      return res.status(400).json({error: 'Invalid userId'});
+    }
+
+    const kegiatan = await prisma.kegiatan.findMany({
+      where: {
+        userId,
+      },
+    });
+
+    res.json(kegiatan);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({error: 'Internal Server Error'})
+    
+  }
+}
 
 const createKegiatan = async (req, res) => {
   try {
@@ -54,9 +79,9 @@ const createKegiatan = async (req, res) => {
       },
     });
 
-    if (kegiatanCount >= 3) {
-      return res.status(400).json({ error: 'Batas maksimum pembuatan kegiatan telah tercapai untuk hari ini (3 kegiatan)' });
-    }
+    // if (kegiatanCount >= 3) {
+    //   return res.status(400).json({ error: 'Batas maksimum pembuatan kegiatan telah tercapai untuk hari ini (3 kegiatan)' });
+    // }
     
     const defaultScore = 10;
 
@@ -268,4 +293,4 @@ const getKegiatanByScore = async (req, res) => {
 };
 
 
-module.exports = { getKegiatan, createKegiatan, evaluateKegiatan, getKegiatanByScore, getTopUsers, getAllKegiatan, updateAllUsersTotalScore, updateAllUsersTotalScoreManual };
+module.exports = { getKegiatanById, createKegiatan, evaluateKegiatan, getKegiatanByScore, getTopUsers, getAllKegiatan, updateAllUsersTotalScore, updateAllUsersTotalScoreManual, getKegiatanByUserId };
