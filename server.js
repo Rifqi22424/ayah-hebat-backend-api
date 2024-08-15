@@ -42,14 +42,32 @@ app.use('/uploads', express.static('uploads'));
 app.use('/auth', authRoutes);
 
 // app.use('/.well-known', express.static(path.join(__dirname, '.well-known')));
-// app.use(authenticateToken);
+app.use(authenticateToken);
 
-app.use('/user', authenticateToken, userRoutes);
-app.use('/profile', authenticateToken, profileRoutes);
-app.use('/kegiatan', authenticateToken, kegiatanRoutes);
-app.use('/question', authenticateToken, questionRoutes);
-app.use('/notification', authenticateToken, notificationRoutes);
-app.use('/news', authenticateToken, newsRoutes);
+app.use('/user', userRoutes);
+app.use('/profile', profileRoutes);
+app.use('/kegiatan', kegiatanRoutes);
+app.use('/question', questionRoutes);
+app.use('/notification', notificationRoutes);
+app.use('/news', newsRoutes);
+
+async function logError(error) {
+  try {
+    await prisma.errorLog.create({
+      data: {
+        errorMessage: error.message,
+        stackTrace: error.stack,
+      },
+    });
+  } catch (err) {
+    console.error('Failed to log error:', err);
+  }
+}
+
+app.use((err, req, res, next) => {
+  logError(err).catch(console.error);
+  res.status(500).send('An error occurred');
+});
 
 cron.schedule('26 1 * * *', async () => {
   console.log('Running daily score update...');

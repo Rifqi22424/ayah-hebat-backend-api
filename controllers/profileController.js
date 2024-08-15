@@ -47,7 +47,7 @@ const addProfile = async (req, res) => {
       const tahunMasukKuttabInt = parseInt(tahunMasukKuttab);
   
       const existingProfile = await prisma.profile.findUnique({
-        where: { id: userId },
+        where: { userId },
         include: { user: true }, 
       });
   
@@ -62,7 +62,7 @@ const addProfile = async (req, res) => {
       const photoFilename = req.file ? req.file.filename : null;
 
       const updatedProfile = await prisma.profile.update({
-        where: { id: userId },
+        where: { userId },
         data: {
           nama,
           namaIstri,

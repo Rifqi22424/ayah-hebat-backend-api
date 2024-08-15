@@ -247,4 +247,4 @@ const changePassword = async (req, res) => {
 };
 
 
-module.exports = { registerUser, loginUser, verifyUser, resendVerificationCode, changePassword };
+module.exports = { registerUser, loginUser, verifyUser, resendVerificationCode, changePassword, generateVerificationCode, sendVerificationEmail };

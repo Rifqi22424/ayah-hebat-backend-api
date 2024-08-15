@@ -28,6 +28,9 @@ model User {
   notifications    Notification[]
   isVerified       Boolean  @default(false)
   verificationCode String?
+  deleteAccountVerficationCode String? 
+  deleteReason     String?  @db.Text
+  isActive         Boolean @default(true)
   fcmToken         String?
   totalScoreYear   Int?     @default(0)
   totalScoreMonth  Int?     @default(0)
@@ -41,10 +44,10 @@ model Profile {
   bio               String?
   photo             String?
   namaIstri         String?  
-  namaKuttab         String?
+  namaKuttab        String?
   namaAnak          String?
   tahunMasukKuttab  Int?
-  user   User                @relation(fields: [userId], references: [id])
+  user   User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int                 @unique
 }
 
@@ -58,7 +61,7 @@ model Kegiatan {
   score     Int?     
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Question {
@@ -79,7 +82,7 @@ model Notification {
   imageUrl  String?
   createdAt DateTime @default(now())
   updateAt  DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model News {
@@ -90,5 +93,20 @@ model News {
   imageUrl  String?
   content   String    @db.Text
   createdAt DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  updatedAt DateTime  @updatedAt
+}
+
+model userDeleted {
+  id                       Int      @id @default(autoincrement())
+  email                    String
+  deleteReason             String?  @db.Text
+  deletedAt                DateTime @default(now()) 
+}
+
+
+model ErrorLog {
+  id          Int       @id @default(autoincrement())
+  errorMessage String    @db.Text
+  stackTrace  String?   @db.Text
+  createdAt   DateTime  @default(now())
 }
