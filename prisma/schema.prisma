@@ -26,6 +26,13 @@ model User {
   profile          Profile?
   kegiatan         Kegiatan[]
   notifications    Notification[]
+  posts            Post[]
+  postLikes        PostLike[]
+  postUnlikes      PostDislike[]
+  comments         Comment[]
+  CommentLike      CommentLike[]
+  reply            Reply[]
+  replyLike        ReplyLike[]
   isVerified       Boolean  @default(false)
   verificationCode String?
   deleteAccountVerficationCode String? 
@@ -94,6 +101,83 @@ model News {
   content   String    @db.Text
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+}
+
+model Post {
+  id          Int           @id @default(autoincrement())
+  userId      Int 
+  body        String        @db.Text
+  postLikes   PostLike[]
+  postDislikes PostDislike[]
+  comments    Comment[]
+  createdAt   DateTime       @default(now())
+  updateAt    DateTime       @updatedAt
+  user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PostLike {
+  id          Int         @id @default(autoincrement())
+  userId      Int
+  postId      Int
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post        Post        @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model PostDislike {
+  id          Int         @id @default(autoincrement())
+  userId      Int
+  postId      Int
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post        Post        @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model Comment {
+  id          Int   @id @default(autoincrement())
+  userId      Int
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  body        String      @db.Text
+  postId      Int
+  post        Post        @relation(fields: [postId], references: [id], onDelete: Cascade)
+  commentLikes  CommentLike[]
+  replies      Reply[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model CommentLike {
+  id          Int         @id @default(autoincrement())
+  userId      Int
+  commentId   Int
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comment     Comment     @relation(fields: [commentId], references: [id], onDelete: Cascade)
+}
+
+model Reply {
+  id          Int   @id @default(autoincrement())
+  userId      Int
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  body        String      @db.Text
+  commentId   Int
+  comment     Comment        @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  replyLikes  ReplyLike[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model ReplyLike {
+  id          Int @id @default(autoincrement())
+  userId      Int
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  replyId     Int
+  reply       Reply       @relation(fields: [replyId], references: [id], onDelete: Cascade)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 }
 
 model userDeleted {
