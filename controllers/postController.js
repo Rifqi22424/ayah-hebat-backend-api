@@ -2,6 +2,28 @@ const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
+const formatPost = async (post, userId) => {
+  const isLikedByMe = await prisma.postLike.findFirst({
+    where: {
+      postId: post.id,
+      userId,
+    },
+  });
+
+  const isDislikedByMe = await prisma.postDislike.findFirst({
+    where: {
+      postId: post.id,
+      userId,
+    },
+  });
+
+  return {
+    ...post,
+    isLikedByMe: !!isLikedByMe,
+    isDislikedByMe: !!isDislikedByMe, 
+  };
+};
+
 const createPost = async (req, res) => {
     try {
       const { body } = req.body;
@@ -15,10 +37,29 @@ const createPost = async (req, res) => {
         data: {
             userId,
             body,
-        }
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              email: true,
+              profile: {
+                select: {
+                  nama: true,
+                  photo: true,
+                }
+              }
+            }
+          },
+          _count: {
+              select: { postLikes: true, postDislikes: true, comments: true }
+          },
+      },
       });
+
+      const formattedPost = await formatPost(post, userId);
   
-      res.json({ message: 'Post added successfully.' });
+      res.json({ message: 'Post added successfully.' , data: formattedPost});
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Internal Server Error' });
@@ -47,10 +88,29 @@ const createPost = async (req, res) => {
         where: { id: postId },
         data: {
             body,
-        }
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              email: true,
+              profile: {
+                select: {
+                  nama: true,
+                  photo: true,
+                }
+              }
+            }
+          },
+          _count: {
+              select: { postLikes: true, postDislikes: true, comments: true }
+          },
+      },
       });
+
+      const formattedPost = await formatPost(editPost, userId);
   
-      res.json({ message: 'Post edited successfully.' });
+      res.json({ message: 'Post edited successfully.', data: formattedPost });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Internal Server Error' });
@@ -108,16 +168,6 @@ const createPost = async (req, res) => {
             _count: {
                 select: { postLikes: true, postDislikes: true, comments: true }
             },
-            // postLikes: {
-            //   where: {
-            //     userId,
-            //   },
-            // },
-            // postDislikes: {
-            //   where: {
-            //     userId,
-            //   },
-            // }
         },
         orderBy: {
             postLikes: {

@@ -22,15 +22,54 @@ const createComment = async (req, res) => {
         return res.status(404).json({ error: 'Post not found' });
       }
 
-      const post = await prisma.comment.create({
+      const comment = await prisma.comment.create({
         data: {
             userId,
             postId,
             body,
-        }
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              email: true,
+                profile: {
+                  select: {
+                    nama: true,
+                    photo: true,
+                  }
+                }
+            }
+        },
+        _count: {
+            select: { commentLikes: true, replies: true }
+        },
+        replies: {
+          take: 1,
+          include: {
+            user: {
+              select: {
+                  id: true,
+                  email: true,
+                  profile: {
+                      select: {
+                          nama: true,
+                          photo: true,
+                      }
+                  }
+              }
+            },
+          _count: {
+              select: { replyLikes: true }
+            },
+          }
+        },
+        },
       });
+
+      const formattedComments = await formatSingleComment(comment, userId);
   
-      res.json({ message: 'Comment added successfully.' });
+      res.json({ message: 'Comment added successfully.', data: formattedComments });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Internal Server Error' });
@@ -55,14 +94,53 @@ const createComment = async (req, res) => {
         return res.status(203).json({ error: 'Unauthorized access'})
       }
 
-      const editComment = await prisma.comment.update({
+      const editedComment = await prisma.comment.update({
         where: { id: commentId },
         data: {
             body,
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              email: true,
+                profile: {
+                  select: {
+                    nama: true,
+                    photo: true,
+                  }
+                }
+            }
+        },
+        _count: {
+            select: { commentLikes: true, replies: true }
+        },
+        replies: {
+          take: 1,
+          include: {
+            user: {
+              select: {
+                  id: true,
+                  email: true,
+                  profile: {
+                      select: {
+                          nama: true,
+                          photo: true,
+                      }
+                  }
+              }
+            },
+          _count: {
+              select: { replyLikes: true }
+            },
+          }
+        },
         }
       });
+
+      const formattedComment = await formatSingleComment(editedComment, userId);
   
-      res.json({ message: 'Comment edited successfully.' });
+      res.json({ message: 'Comment edited successfully.', data: formattedComment });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Internal Server Error' });
@@ -140,27 +218,66 @@ const createComment = async (req, res) => {
             _count: {
                 select: { commentLikes: true, replies: true }
             },
+            replies: {
+              take: 1,
+              include: {
+                user: {
+                  select: {
+                      id: true,
+                      email: true,
+                      profile: {
+                          select: {
+                              nama: true,
+                              photo: true,
+                          }
+                      }
+                  }
+              },
+              _count: {
+                  select: { replyLikes: true }
+              },
+              }
+            },
         },
         orderBy,
         skip: offset,
         take: limit,
       });
 
-      const formattedComments = await Promise.all(
-        comments.map(async (comment) => {
-          const isLikedByMe = await prisma.commentLike.findFirst({
-            where: {
-              commentId: comment.id,
-              userId,
-            },
-          });
+      // const formattedComments = await Promise.all(
+      //   comments.map(async (comment) => {
+      //     const isLikedByMe = await prisma.commentLike.findFirst({
+      //       where: {
+      //         commentId: comment.id,
+      //         userId,
+      //       },
+      //     });
+
+      //     const formattedReplies = await Promise.all(
+      //       comment.replies.map(async (reply) => {
+      //         const isReplyLikedByMe = await prisma.replyLike.findFirst({
+      //           where: {
+      //             replyId: reply.id,
+      //             userId,
+      //           },
+      //         });
   
-          return {
-            ...comment,
-            isLikedByMe: !!isLikedByMe, 
-          };
-        })
-      );
+      //         return {
+      //           ...reply,
+      //           isLikedByMe: !!isReplyLikedByMe, // Check if the reply is liked by the user
+      //         };
+      //       })
+      //     );
+  
+      //     return {
+      //       ...comment,
+      //       isLikedByMe: !!isLikedByMe, 
+      //       replies: formattedReplies,
+      //     };
+      //   })
+      // );
+
+      const formattedComments = await formatComments(comments, userId);
   
       res.status(200).json(formattedComments);
     } catch (error) {
@@ -168,6 +285,72 @@ const createComment = async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
+
+  const formatComments = async (comments, userId) => {
+    return await Promise.all(
+      comments.map(async (comment) => {
+        const isLikedByMe = await prisma.commentLike.findFirst({
+          where: {
+            commentId: comment.id,
+            userId,
+          },
+        });
+  
+        const formattedReplies = await Promise.all(
+          comment.replies.map(async (reply) => {
+            const isReplyLikedByMe = await prisma.replyLike.findFirst({
+              where: {
+                replyId: reply.id,
+                userId,
+              },
+            });
+  
+            return {
+              ...reply,
+              isLikedByMe: !!isReplyLikedByMe, 
+            };
+          })
+        );
+  
+        return {
+          ...comment,
+          isLikedByMe: !!isLikedByMe, 
+          replies: formattedReplies, 
+        };
+      })
+    );
+  };
+
+  const formatSingleComment = async (comment, userId) => {
+    const isLikedByMe = await prisma.commentLike.findFirst({
+      where: {
+        commentId: comment.id,
+        userId,
+      },
+    });
+  
+    const formattedReplies = await Promise.all(
+      comment.replies.map(async (reply) => {
+        const isReplyLikedByMe = await prisma.replyLike.findFirst({
+          where: {
+            replyId: reply.id,
+            userId,
+          },
+        });
+  
+        return {
+          ...reply,
+          isLikedByMe: !!isReplyLikedByMe, 
+        };
+      })
+    );
+  
+    return {
+      ...comment,
+      isLikedByMe: !!isLikedByMe, 
+      replies: formattedReplies, 
+    };
+  };  
 
   const likeComment = async (req, res) => {
     try {
