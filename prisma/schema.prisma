@@ -225,7 +225,7 @@ model  Peminjaman {
   bookId Int
   user User @relation(fields: [userId], references: [id])
   userId Int
-  status Status
+  status Status @default(PENDING)
   startDate DateTime
   endDate DateTime
   createdAt DateTime @default(now())
