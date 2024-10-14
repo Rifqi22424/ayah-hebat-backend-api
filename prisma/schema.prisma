@@ -221,6 +221,7 @@ enum Status {
 }
 
 model  Peminjaman {
+  id Int @id @default(autoincrement())
   book Book @relation(fields: [bookId], references: [id])
   bookId Int
   user User @relation(fields: [userId], references: [id])
@@ -229,8 +230,6 @@ model  Peminjaman {
   startDate DateTime
   endDate DateTime
   createdAt DateTime @default(now())
-
-  @@id([bookId, userId])
 }
 
 model Category {
