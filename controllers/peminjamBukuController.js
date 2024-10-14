@@ -23,6 +23,21 @@ const pinjamBuku = async (req, res) => {
             })
         }
 
+        const borrowedBook = await prisma.peminjaman.findMany({
+            where: {
+                userId: userId,
+                status: {
+                    in: ['SUDAH_DIAMBIL']
+                }
+            }
+        })
+
+        if(borrowedBook.length > 0){
+            return res.status(400).json({
+                message: "anda masih memiliki buku yang dipinjam"
+            })
+        }        
+
         if(new Date(startDate) >= new Date(endDate)){
             return res.status(400).json({
                 message: "startDate must ealier than endDate",
