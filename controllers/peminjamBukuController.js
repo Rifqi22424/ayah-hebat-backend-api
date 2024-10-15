@@ -83,6 +83,29 @@ const pinjamBuku = async (req, res) => {
 
 }
 
+const getMyPeminjamanBuku = async (req, res) => {
+    const userId = parseInt(req.userId);
+
+    try{
+        const peminjaman = await prisma.peminjaman.findMany({
+            where: {
+                userId
+            }
+        });
+
+        return res.status(200).json({
+            message: "success get data",
+            data: peminjaman,
+        })
+    } catch (e){
+        return res.status(500).json({
+            message: e.message,
+        })
+    }
+
+
+}
+
 
 // admin
 // TODO: Update status pinjam buku
@@ -112,4 +135,25 @@ const updateStatusBuku = async (req, res) => {
 
 }
 
-module.exports = { pinjamBuku, updateStatusBuku };
+const getPeminjamanBuku = async (req, res) => {
+    const { status } = req.query;
+
+    try {
+        const peminjaman = await prisma.peminjaman.findMany({
+            where: {
+                status
+            }
+        });
+
+        return res.status(200).json({
+            message: "success get data",
+            data: peminjaman
+        })
+    } catch (e) {
+        return res.status(500).json({
+            message: e.message
+        })
+    }
+}
+
+module.exports = { pinjamBuku, updateStatusBuku, getPeminjamanBuku, getMyPeminjamanBuku };
