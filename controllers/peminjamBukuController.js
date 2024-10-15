@@ -86,6 +86,30 @@ const pinjamBuku = async (req, res) => {
 
 // admin
 // TODO: Update status pinjam buku
+const updateStatusBuku = async (req, res) => {
+    try {
+        const idPeminjaman = parseInt(req.params.id);
+        const status = req.body.status;
 
+        const book = await prisma.peminjaman.update({
+            where: {
+                id: idPeminjaman
+            },
+            data: {
+                status: status
+            }
+        });
 
-module.exports = {pinjamBuku};
+        return res.status(200).json({
+            message: "update success",
+            data: book
+        })
+    } catch (e) {
+        return res.status(500).json({
+            message: e.message
+        })
+    }
+
+}
+
+module.exports = { pinjamBuku, updateStatusBuku };
