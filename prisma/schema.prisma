@@ -216,7 +216,7 @@ model CommentBook {
 enum Status {
   SUDAH_DIKEMBALIKAN
   SUDAH_DIAMBIL
-  TIDAK_JADI
+  DITERIMA
   PENDING
 }
 
