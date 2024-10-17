@@ -38,6 +38,51 @@ const getBooks = async (req, res) => {
   }
 };
 
+const getBookById = async (req, res) => {
+  const id = parseInt(req.params.id);
+
+  if(!id){
+    return res.status(400).json({
+      message: "id must provided"
+    });
+  }
+
+  const book = await prisma.book.findUnique({
+    where: {
+      id
+    },
+    select: {
+      name: true,
+      description: true,
+      imageurl: true,
+      comment_book: {
+        select: {
+          description: true,
+          user: {
+            select: {
+              id: true,
+              email: true,
+              profile: {
+                select: {
+                  nama: true,
+                  photo: true,
+                }
+              }
+            }
+          }
+        }
+      },
+    }
+  });
+
+  return res.status(200).json({
+    message: "succses show comment",
+    data: book
+  });
+
+
+}
+
 const createBook = async (req, res) => {
   const { name, description, stock, imageurl, categoryIds } = req.body;
 
@@ -167,4 +212,5 @@ module.exports = {
   createBook,
   updateBook,
   deleteBook,
+  getBookById
 };
