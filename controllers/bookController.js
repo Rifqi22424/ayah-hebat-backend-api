@@ -2,7 +2,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 const getBooks = async (req, res) => {
-  const limit = parseInt(req.query.limit) || 6;
+  const limit = parseInt(req.query.limit) || 10;
   const offset = parseInt(req.query.offset) || 0
   const search = req.query.search || "";
   const category = req.query.category || "";
@@ -12,15 +12,17 @@ const getBooks = async (req, res) => {
         name: {
           contains: search
         },
-        categories: {
-          some: {
-            category: {
-              name: {
-                contains: category
+        ...(category && {
+          categories: {
+            some: {
+              category: {
+                name: {
+                  contains: category
+                }
               }
             }
           }
-        }
+        })
       },
       skip: offset,
       take: limit,
