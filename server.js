@@ -10,6 +10,7 @@ const newsRoutes = require('./routes/newsRoutes.js');
 const postRoutes = require('./routes/postRoutes.js');
 const commentRoutes = require('./routes/commentRoutes.js');
 const replyRoutes = require('./routes/replyRoutes.js');
+const commentBookRoutes = require('./routes/commentBookRoute');
 const { PrismaClient } = require('@prisma/client');
 const { authenticateToken } = require('./middlewares/jwtMiddleware.js'); 
 var cron = require('node-cron');
@@ -60,7 +61,7 @@ app.use('/comment', commentRoutes);
 app.use('/reply', replyRoutes);
 app.use('/books', bookRoutes);
 app.use('/categories', categoryRoutes);
-
+app.use('/comment-book', commentBookRoutes);
 
 async function logError(error) {
   try {
