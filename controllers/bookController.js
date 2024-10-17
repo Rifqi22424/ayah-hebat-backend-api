@@ -76,14 +76,18 @@ const updateBook = async (req, res) => {
 
   try {
 
-    await checkBook(parseInt(id));
-
     const updatedData = {
       name,
       description,
       stock,
       imageurl,
     };
+
+    if(await checkBook(parseInt(id))){
+      return res.status(404).json({
+        message: "book not found"
+      })
+    }
 
     await prisma.$transaction(async (prisma) => {
       if (Array.isArray(categoryIds) && categoryIds.length > 0) {
@@ -102,11 +106,6 @@ const updateBook = async (req, res) => {
       }
     });
 
-    if(await checkBook(parseInt(id))){
-      return res.status(404).json({
-        message: "book not found"
-      })
-    }
 
     const book = await prisma.book.update({
       where: { id: parseInt(id) },
@@ -120,8 +119,7 @@ const updateBook = async (req, res) => {
       message: "success update data",
       data: book
     });
-  } catch (error) {
-    console.error('Error updating book:', error);
+  } catch (error) {console.error('Error updating book:', error);
     res.status(500).json({ error: 'Error updating book' });
   }
 };
