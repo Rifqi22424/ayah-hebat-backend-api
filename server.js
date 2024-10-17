@@ -14,6 +14,8 @@ const { PrismaClient } = require('@prisma/client');
 const { authenticateToken } = require('./middlewares/jwtMiddleware.js'); 
 var cron = require('node-cron');
 const { updateAllUsersTotalScore } = require('./controllers/kegiatanController.js');
+const bookRoutes = require('./routes/bookRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
 // const path = require('path');
 
 require('dotenv').config();
@@ -56,6 +58,9 @@ app.use('/news', newsRoutes);
 app.use('/post', postRoutes);
 app.use('/comment', commentRoutes);
 app.use('/reply', replyRoutes);
+app.use('/books', bookRoutes);
+app.use('/categories', categoryRoutes);
+
 
 async function logError(error) {
   try {
