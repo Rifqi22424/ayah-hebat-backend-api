@@ -21,6 +21,10 @@ const categoryRoutes = require('./routes/categoryRoutes');
 
 require('dotenv').config();
 const setupAdmin = require('./setup/setupAdmin.js');
+const swaggerUI = require('swagger-ui-express');
+const YAML = require('yamljs');
+const {serve} = require("swagger-ui-express");
+const swaggerDoc = YAML.load('./ayah-hebat-api.yaml');
 
 // const { createAgent } = require('@forestadmin/agent');
 // const { createSqlDataSource } = require('@forestadmin/datasource-sql');
@@ -43,6 +47,8 @@ const prisma = new PrismaClient();
 // app.use(passport.session());
 
 app.use(bodyParser.json());
+
+app.use('/api-docs', serve, swaggerUI.setup(swaggerDoc));
 
 app.use('/uploads', express.static('uploads'));
 app.use('/auth', authRoutes);

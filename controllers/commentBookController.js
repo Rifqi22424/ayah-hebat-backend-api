@@ -19,7 +19,9 @@ const createCommentBook = async (req, res) => {
 
         return res.status(200).json({
             message: "succses create comment",
-            data: []
+            data: {
+                description
+            }
         });
 
     } catch (e) {
