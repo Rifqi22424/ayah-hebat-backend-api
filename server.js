@@ -1,23 +1,26 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const authRoutes = require('./routes/authRoutes.js');
-const userRoutes = require('./routes/userRoutes.js');
-const profileRoutes = require('./routes/profileRoutes.js');
-const kegiatanRoutes = require('./routes/kegiatanRoutes.js');
-const questionRoutes = require('./routes/questionRoutes.js');
-const notificationRoutes = require('./routes/notificationRoutes.js');
-const newsRoutes = require('./routes/newsRoutes.js');
-const postRoutes = require('./routes/postRoutes.js');
-const commentRoutes = require('./routes/commentRoutes.js');
-const replyRoutes = require('./routes/replyRoutes.js');
-const { PrismaClient } = require('@prisma/client');
-const { authenticateToken } = require('./middlewares/jwtMiddleware.js'); 
-var cron = require('node-cron');
-const { updateAllUsersTotalScore } = require('./controllers/kegiatanController.js');
+const express = require("express");
+const bodyParser = require("body-parser");
+const authRoutes = require("./routes/authRoutes.js");
+const userRoutes = require("./routes/userRoutes.js");
+const profileRoutes = require("./routes/profileRoutes.js");
+const kegiatanRoutes = require("./routes/kegiatanRoutes.js");
+const questionRoutes = require("./routes/questionRoutes.js");
+const notificationRoutes = require("./routes/notificationRoutes.js");
+const newsRoutes = require("./routes/newsRoutes.js");
+const postRoutes = require("./routes/postRoutes.js");
+const commentRoutes = require("./routes/commentRoutes.js");
+const replyRoutes = require("./routes/replyRoutes.js");
+const { PrismaClient } = require("@prisma/client");
+const { authenticateToken } = require("./middlewares/jwtMiddleware.js");
+var cron = require("node-cron");
+const {
+  updateAllUsersTotalScore,
+} = require("./controllers/kegiatanController.js");
 // const path = require('path');
 
-require('dotenv').config();
-const setupAdmin = require('./setup/setupAdmin.js');
+require("dotenv").config();
+const setupAdmin = require("./setup/setupAdmin.js");
+const { fixDuplicateUsernames } = require("./setup/fixDuplicateUsernames.js");
 
 // const { createAgent } = require('@forestadmin/agent');
 // const { createSqlDataSource } = require('@forestadmin/datasource-sql');
@@ -41,21 +44,21 @@ const prisma = new PrismaClient();
 
 app.use(bodyParser.json());
 
-app.use('/uploads', express.static('uploads'));
-app.use('/auth', authRoutes);
+app.use("/uploads", express.static("uploads"));
+app.use("/auth", authRoutes);
 
 // app.use('/.well-known', express.static(path.join(__dirname, '.well-known')));
 app.use(authenticateToken);
 
-app.use('/user', userRoutes);
-app.use('/profile', profileRoutes);
-app.use('/kegiatan', kegiatanRoutes);
-app.use('/question', questionRoutes);
-app.use('/notification', notificationRoutes);
-app.use('/news', newsRoutes);
-app.use('/post', postRoutes);
-app.use('/comment', commentRoutes);
-app.use('/reply', replyRoutes);
+app.use("/user", userRoutes);
+app.use("/profile", profileRoutes);
+app.use("/kegiatan", kegiatanRoutes);
+app.use("/question", questionRoutes);
+app.use("/notification", notificationRoutes);
+app.use("/news", newsRoutes);
+app.use("/post", postRoutes);
+app.use("/comment", commentRoutes);
+app.use("/reply", replyRoutes);
 
 async function logError(error) {
   try {
@@ -66,29 +69,34 @@ async function logError(error) {
       },
     });
   } catch (err) {
-    console.error('Failed to log error:', err);
+    console.error("Failed to log error:", err);
   }
 }
 
 app.use((err, req, res, next) => {
   logError(err).catch(console.error);
-  res.status(500).send('An error occurred');
+  res.status(500).send("An error occurred");
 });
 
-cron.schedule('26 1 * * *', async () => {
-  console.log('Running daily score update...');
-  await updateAllUsersTotalScore();
-  console.log('Daily score update completed.');
-}, {
-  scheduled: true,
-  timezone: "Asia/Jakarta"
-});
+cron.schedule(
+  "26 1 * * *",
+  async () => {
+    console.log("Running daily score update...");
+    await updateAllUsersTotalScore();
+    console.log("Daily score update completed.");
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Jakarta",
+  }
+);
 
 async function initializeApp() {
   try {
     await setupAdmin();
+    await fixDuplicateUsernames();
   } catch (e) {
-    console.error('Error during initialization:', e);
+    console.error("Error during initialization:", e);
   } finally {
     await prisma.$disconnect();
   }
