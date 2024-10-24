@@ -320,12 +320,17 @@ const formatComments = async (comments, userId) => {
             },
           });
 
+          const isMine = reply.userId === userId;
+
           return {
             ...reply,
             isLikedByMe: !!isReplyLikedByMe,
+            isMine,
           };
         })
       );
+
+      const isMine = comment.userId === userId;
 
       return {
         ...comment,
@@ -336,6 +341,7 @@ const formatComments = async (comments, userId) => {
           replies:
             comment._count.replies - 1 > 0 ? comment._count.replies - 1 : 0,
         },
+        isMine,
       };
     })
   );
@@ -358,17 +364,23 @@ const formatSingleComment = async (comment, userId) => {
         },
       });
 
+      const isMine = reply.userId === userId;
+
       return {
         ...reply,
         isLikedByMe: !!isReplyLikedByMe,
+        isMine,
       };
     })
   );
+
+  const isMine = comment.userId === userId;
 
   return {
     ...comment,
     isLikedByMe: !!isLikedByMe,
     replies: formattedReplies,
+    isMine,
   };
 };
 

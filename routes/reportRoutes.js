@@ -9,9 +9,9 @@ const {
 const { authorizeAdmin } = require("../middlewares/authorizationMiddleware");
 const router = express.Router();
 
-router.post("/post/:postId", reportPost);
-router.post("/comment/:commentId", reportComment);
-router.post("/reply/:replyId", reportReply);
+router.delete("/post/:postId", reportPost);
+router.delete("/comment/:commentId", reportComment);
+router.delete("/reply/:replyId", reportReply);
 router.put("/:reportId", authorizeAdmin, updateReportStatus);
 router.get("/", authorizeAdmin, getAllReports)
 
