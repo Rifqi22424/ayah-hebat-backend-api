@@ -10,6 +10,7 @@ const newsRoutes = require("./routes/newsRoutes.js");
 const postRoutes = require("./routes/postRoutes.js");
 const commentRoutes = require("./routes/commentRoutes.js");
 const replyRoutes = require("./routes/replyRoutes.js");
+const reportRoutes = require("./routes/reportRoutes.js");
 const { PrismaClient } = require("@prisma/client");
 const { authenticateToken } = require("./middlewares/jwtMiddleware.js");
 var cron = require("node-cron");
@@ -59,6 +60,7 @@ app.use("/news", newsRoutes);
 app.use("/post", postRoutes);
 app.use("/comment", commentRoutes);
 app.use("/reply", replyRoutes);
+app.use("/report", reportRoutes);
 
 async function logError(error) {
   try {
