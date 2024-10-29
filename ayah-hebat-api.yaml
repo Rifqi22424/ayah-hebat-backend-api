@@ -328,6 +328,124 @@ paths:
         '500':
           $ref: "#/components/responses/ErrorResponse"
 
+  /pinjam-buku:
+    post:
+      tags:
+        - Pinjam Buku Controller
+      summary: minjam buku
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                userId:
+                  type: integer
+                bookId:
+                  type: string
+                startDate:
+                  type: string
+      responses:
+        '200':
+          description: berhasil pinjam buku
+          content:
+            application/json:
+              schema:
+                properties:
+                  idPeminjaman:
+                    type: integer
+                  bookName:
+                    type: string
+                  startDate:
+                    type: string
+                  from:
+                    type: string
+                  to:
+                    type: string
+        '400':
+          $ref: "#/components/responses/ErrorResponse"
+        '403':
+          $ref: "#/components/responses/ForbiddenResponse"
+        '404':
+          $ref: "#/components/responses/ErrorResponse"
+        '505':
+          $ref: "#/components/responses/ErrorResponse"
+    put:
+      summary: (admin)
+      tags:
+        - Pinjam Buku Controller
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum:
+                    - PENDING
+                    - SUDAH_DIAMBIL
+                    - SUDAH_DIKEMBALIKAN
+                    - TIDAK_JADI
+      responses:
+        '200':
+          $ref: "#/components/responses/SuccessResponse"
+        '400':
+          $ref: "#/components/responses/ErrorResponse"
+        '403':
+          $ref: "#/components/responses/ForbiddenResponse"
+        '500':
+          $ref: "#/components/responses/ErrorResponse"
+
+  /pinjam-buku/{userId}:
+    get:
+      tags:
+        - Pinjam Buku Controller
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 5
+        - name: offset
+          in: query
+          schema: 
+            type: integer
+            default: 0
+        - name: status
+          in: query
+          schema: 
+            type: string
+            nullable: true
+
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  books:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        imageUrl:
+                          type: string
+                        name:
+                          type: string
+                        status:
+                          type: string
+                        tanggal kembali:
+                          type: string
+
 
 
 
@@ -467,6 +585,18 @@ paths:
 
 
 components:
+  schemas:
+    Book:
+      properties:
+        imageUrl:
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+        tanggal kembali:
+          type: string
+
   responses:
     LoginResponse:
       description: success login
@@ -521,6 +651,15 @@ components:
           schema:
             properties:
               error:
+                type: string
+    SuccessResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
                 type: string
 
 
