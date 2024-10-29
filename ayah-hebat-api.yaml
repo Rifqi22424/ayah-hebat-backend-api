@@ -42,15 +42,17 @@ paths:
         - name: limit
           in: query
           description: Number of books to return
-          required: false
+          required: true
           schema:
             type: integer
+            default: 10
         - name: offset
           in: query
           description: Offset for pagination
-          required: false
+          required: true
           schema:
             type: integer
+            default: 0
         - name: search
           in: query
           description: Search term for book name
@@ -268,6 +270,66 @@ paths:
           $ref: "#/components/responses/ErrorResponse"
         '500':
           $ref: "#/components/responses/ErrorResponse"
+    put:
+      summary: Update comment book
+      tags:
+        - Comment Book Controller
+      parameters:
+        - name: id
+          in: path
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+      responses:
+        '200':
+          description: success edit comment
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  description:
+                    type: string
+        '400':
+          $ref: "#/components/responses/ErrorResponse"
+        '403':
+          $ref: "#/components/responses/ForbiddenResponse"
+        '500':
+          $ref: "#/components/responses/ErrorResponse"
+    delete:
+      description: delete comment
+      tags:
+        - Comment Book Controller
+      parameters:
+        - name: id
+          in: path
+          required: true
+      responses:
+        '200':
+          description: success delete comment response
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+        '400':
+          $ref: "#/components/responses/ErrorResponse"
+        '403':
+          $ref: "#/components/responses/ForbiddenResponse"
+        '500':
+          $ref: "#/components/responses/ErrorResponse"
+
+
+
 
   /categories:
     get:
@@ -450,9 +512,16 @@ components:
         application/json:
           schema:
             properties:
-              message:
+              error:
                 type: string
-
+    ForbiddenResponse:
+      description: Forbidden response
+      content:
+        application/json:
+          schema:
+            properties:
+              error:
+                type: string
 
 
   securitySchemes:
