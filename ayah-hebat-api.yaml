@@ -278,6 +278,8 @@ paths:
         - name: id
           in: path
           required: true
+          schema: 
+            type: integer
       requestBody:
         content:
           application/json:
@@ -312,6 +314,8 @@ paths:
         - name: id
           in: path
           required: true
+          schema: 
+            type: integer
       responses:
         '200':
           description: success delete comment response
@@ -395,6 +399,54 @@ paths:
           $ref: "#/components/responses/ForbiddenResponse"
         '500':
           $ref: "#/components/responses/ErrorResponse"
+    get:
+      summary: (admin)
+      tags:
+        - Pinjam Buku Controller
+      description: digunakan untuk admin supaya bisa filter secara advanced
+      parameters:
+        - name: limit
+          in: query
+          required: true
+          schema: 
+            type: integer
+        - name: offset
+          in: query
+          required: true
+          schema: 
+            type: integer
+        - name: search
+          in: query
+          schema: 
+            type: integer
+        - name: endDate
+          in: query
+          schema: 
+            type: string
+      responses:
+        '200':
+          description: success 
+          content: 
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  data: 
+                    type: array
+                    items: 
+                      type: object
+                      properties: 
+                        bookname: 
+                          type: string
+                        username: 
+                          type: string
+                        endDate: 
+                          type: string
+                        startDate: 
+                          type: string
+                                             
 
   /pinjam-buku/{userId}:
     get:
