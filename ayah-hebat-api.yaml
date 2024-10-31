@@ -97,7 +97,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
               type: object
               properties:
@@ -107,8 +107,9 @@ paths:
                   type: string
                 stock:
                   type: integer
-                imageurl:
+                photo:
                   type: string
+                  format: binary
                 categoryIds:
                   type: array
                   items:
@@ -233,13 +234,13 @@ paths:
         '500':
           description: Server error
 
-  /comment-book/{id}:
+  /comment-book/{bookId}:
     post:
       description: create a comment
       tags:
         - Comment Book Controller
       parameters:
-        - name: id
+        - name: bookId
           in: path
           required: true
           schema:
@@ -270,12 +271,18 @@ paths:
           $ref: "#/components/responses/ErrorResponse"
         '500':
           $ref: "#/components/responses/ErrorResponse"
+  /comment-book/{bookId}/comments/{commentId}:
     put:
       summary: Update comment book
       tags:
         - Comment Book Controller
       parameters:
-        - name: id
+        - name: bookId
+          in: path
+          required: true
+          schema: 
+            type: integer
+        - name: commentId
           in: path
           required: true
           schema: 
@@ -311,7 +318,12 @@ paths:
       tags:
         - Comment Book Controller
       parameters:
-        - name: id
+        - name: bookId
+          in: path
+          required: true
+          schema: 
+            type: integer
+        - name: commentId
           in: path
           required: true
           schema: 
