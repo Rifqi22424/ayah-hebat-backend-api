@@ -51,6 +51,7 @@ app.use(bodyParser.json());
 app.use('/api-docs', serve, swaggerUI.setup(swaggerDoc));
 
 app.use('/uploads', express.static('uploads'));
+app.use('/uploads/books', express.static('uploads/books'));
 app.use('/auth', authRoutes);
 
 // app.use('/.well-known', express.static(path.join(__dirname, '.well-known')));

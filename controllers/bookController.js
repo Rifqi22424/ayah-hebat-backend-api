@@ -57,6 +57,7 @@ const getBookById = async (req, res) => {
       imageurl: true,
       comment_book: {
         select: {
+          id: true,
           description: true,
           user: {
             select: {
@@ -84,22 +85,28 @@ const getBookById = async (req, res) => {
 }
 
 const createBook = async (req, res) => {
-  const { name, description, stock, imageurl, categoryIds } = req.body;
-
-  // Validasi categoryIds
-  if (!categoryIds || !Array.isArray(categoryIds)) {
-    return res.status(400).json({ error: 'categoryIds must be an array' });
+  console.log("eaeae  ")
+  const { name, description, stock, categoryIds } = req.body;
+  
+  if(categoryIds == null){
+    return res.status(400).json({
+      message: "categoryIds must at least one"
+    });
   }
+  categoryArray = categoryIds.split(',').map(Number);
+  
+  const imageurl = req.file ? req.file.filename : null;
+
 
   try {
     const book = await prisma.book.create({
       data: {
         name,
         description,
-        stock,
+        stock: parseInt(stock),
         imageurl,
         categories: {
-          create: categoryIds.map(categoryId => ({
+          create: categoryArray.map(categoryId => ({
             category: { connect: { id: categoryId } },
           })),
         },
