@@ -203,6 +203,7 @@ model Book {
 
 
 model CommentBook {
+  id Int @id @default(autoincrement())
   user User @relation(fields: [userId], references: [id])
   userId Int
   book Book @relation(fields: [bookId], references: [id])
@@ -210,8 +211,6 @@ model CommentBook {
   description String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@id([userId, bookId])
 }
 enum Status {
   SUDAH_DIKEMBALIKAN
@@ -221,6 +220,7 @@ enum Status {
 }
 
 model  Peminjaman {
+  id Int @id @default(autoincrement())
   book Book @relation(fields: [bookId], references: [id])
   bookId Int
   user User @relation(fields: [userId], references: [id])
@@ -229,8 +229,6 @@ model  Peminjaman {
   startDate DateTime
   endDate DateTime
   createdAt DateTime @default(now())
-
-  @@id([bookId, userId])
 }
 
 model Category {

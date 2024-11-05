@@ -10,14 +10,21 @@ const newsRoutes = require('./routes/newsRoutes.js');
 const postRoutes = require('./routes/postRoutes.js');
 const commentRoutes = require('./routes/commentRoutes.js');
 const replyRoutes = require('./routes/replyRoutes.js');
+const commentBookRoutes = require('./routes/commentBookRoute');
 const { PrismaClient } = require('@prisma/client');
 const { authenticateToken } = require('./middlewares/jwtMiddleware.js'); 
 var cron = require('node-cron');
 const { updateAllUsersTotalScore } = require('./controllers/kegiatanController.js');
+const bookRoutes = require('./routes/bookRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
 // const path = require('path');
 
 require('dotenv').config();
 const setupAdmin = require('./setup/setupAdmin.js');
+const swaggerUI = require('swagger-ui-express');
+const YAML = require('yamljs');
+const {serve} = require("swagger-ui-express");
+const swaggerDoc = YAML.load('./ayah-hebat-api.yaml');
 
 // const { createAgent } = require('@forestadmin/agent');
 // const { createSqlDataSource } = require('@forestadmin/datasource-sql');
@@ -41,7 +48,10 @@ const prisma = new PrismaClient();
 
 app.use(bodyParser.json());
 
+app.use('/api-docs', serve, swaggerUI.setup(swaggerDoc));
+
 app.use('/uploads', express.static('uploads'));
+app.use('/uploads/books', express.static('uploads/books'));
 app.use('/auth', authRoutes);
 
 // app.use('/.well-known', express.static(path.join(__dirname, '.well-known')));
@@ -56,6 +66,9 @@ app.use('/news', newsRoutes);
 app.use('/post', postRoutes);
 app.use('/comment', commentRoutes);
 app.use('/reply', replyRoutes);
+app.use('/books', bookRoutes);
+app.use('/categories', categoryRoutes);
+app.use('/comment-book', commentBookRoutes);
 
 async function logError(error) {
   try {
