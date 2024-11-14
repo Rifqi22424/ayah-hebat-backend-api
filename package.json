@@ -28,6 +28,7 @@
     "prisma": "^5.10.2",
     "swagger-ui-express": "^5.0.1",
     "uuid": "^9.0.1",
+    "ws": "^8.18.0",
     "yamljs": "^0.3.0"
   },
   "devDependencies": {

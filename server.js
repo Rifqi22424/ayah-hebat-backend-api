@@ -1,4 +1,5 @@
 const express = require('express');
+const http = require('http');
 const bodyParser = require('body-parser');
 const authRoutes = require('./routes/authRoutes.js');
 const userRoutes = require('./routes/userRoutes.js');
@@ -21,6 +22,7 @@ const categoryRoutes = require('./routes/categoryRoutes');
 
 require('dotenv').config();
 const setupAdmin = require('./setup/setupAdmin.js');
+const setupWebSocket = require('./config/websocketConfig.js');
 const swaggerUI = require('swagger-ui-express');
 const YAML = require('yamljs');
 const {serve} = require("swagger-ui-express");
@@ -31,7 +33,7 @@ const swaggerDoc = YAML.load('./ayah-hebat-api.yaml');
 
 const app = express();
 const prisma = new PrismaClient();
-
+const server = http.createServer(app);
 // createAgent({
 //   authSecret: process.env.FOREST_AUTH_SECRET,
 //   envSecret: process.env.FOREST_ENV_SECRET,
@@ -107,7 +109,9 @@ async function initializeApp() {
   }
 
   const PORT = process.env.PORT || 3000;
-  app.listen(PORT, () => {
+  
+  setupWebSocket(server);
+  server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
 }
