@@ -18,10 +18,10 @@ function setupWebSocket(server){
                 }
                 
                 wss.handleUpgrade(request, socket, head, (ws) => {
-                    wsconnection.set(client.id, ws);
+                    wsconnection.set(client.userId, ws);
                     wss.emit('connection', ws, request, client);
                 })
-            }) 
+            })
         })
 
         wss.on('connection', (ws, request, client) => {
@@ -44,7 +44,7 @@ function setupWebSocket(server){
                 }
                 
                 // Send to receipent 
-                receipentWs.send(JSON.stringify({content, senddate, senderId: client.id}));
+                receipentWs.send(JSON.stringify({content, senddate, senderId: client.userId}));
                 
             });
 
