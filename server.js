@@ -67,7 +67,7 @@ app.use('/news', newsRoutes);
 app.use('/post', postRoutes);
 app.use('/comment', commentRoutes);
 app.use('/reply', replyRoutes);
-app.use('/peminjaman', peminjamanBukuRoutes);
+app.use('/pinjam-buku', peminjamanBukuRoutes);
 app.use('/books', bookRoutes);
 app.use('/categories', categoryRoutes);
 app.use('/comment-book', commentBookRoutes);

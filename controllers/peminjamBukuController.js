@@ -38,7 +38,7 @@ const pinjamBuku = async (req, res) => {
 
         if(new Date(endDate) < new Date()){
             return res.status(400).json({
-                message: "end date must be greater than today"
+                error: "end date must be greater than today"
             })
         }
 
@@ -54,7 +54,7 @@ const pinjamBuku = async (req, res) => {
 
         if(!peminjaman){
             return res.status(500).json({
-                message: "failed lend book"
+                error: "failed lend book"
             });
         }
 
@@ -75,8 +75,9 @@ const pinjamBuku = async (req, res) => {
             }
         })
     } catch (e) {
+        console.error(e.message);
         return res.status(500).json({
-            error: e.message
+            error: "internal server error"
         })
     }
 
@@ -84,12 +85,20 @@ const pinjamBuku = async (req, res) => {
 
 const getMyPeminjamanBuku = async (req, res) => {
     const userId = parseInt(req.userId);
+    const limit = parseInt(req.query.limit) || 5;
+    const offset = parseInt(req.query.offset) || 0;
 
     try{
         const peminjaman = await prisma.peminjaman.findMany({
             where: {
                 userId
-            }
+            },
+            orderBy: [
+                {id: 'desc'}
+            ],
+            skip: offset,
+            take: limit,
+            
         });
 
         return res.status(200).json({
@@ -98,7 +107,7 @@ const getMyPeminjamanBuku = async (req, res) => {
         })
     } catch (e){
         return res.status(500).json({
-            message: e.message,
+            error: "internal server error",
         })
     }
 
@@ -112,6 +121,18 @@ const updateStatusBuku = async (req, res) => {
     try {
         const idPeminjaman = parseInt(req.params.id);
         const status = req.body.status;
+
+        const isExist = await prisma.peminjaman.findUnique({
+            where: {
+                id: idPeminjaman
+            }
+        });
+
+        if(!isExist){
+            return res.status(404).json({
+                message: "peminjaman not found"
+            })
+        }
         
         let book = null;
         if(status === "SUDAH_DIAMBIL"){
@@ -173,7 +194,7 @@ const updateStatusBuku = async (req, res) => {
     } catch (e) {
         console.error(e.message);
         return res.status(500).json({
-            error: "failed update status"
+            error: "internal server error"
         })
     }
 
@@ -181,12 +202,16 @@ const updateStatusBuku = async (req, res) => {
 
 const getPeminjamanBuku = async (req, res) => {
     const { status } = req.query;
+    const limit = parseInt(req.query.limit) || 5;
+    const offset = parseInt(req.query.offset) || 0;
 
     try {
         const peminjaman = await prisma.peminjaman.findMany({
             where: {
                 status
-            }
+            },
+            skip: offset,
+            take: limit
         });
 
         return res.status(200).json({
@@ -195,7 +220,7 @@ const getPeminjamanBuku = async (req, res) => {
         })
     } catch (e) {
         return res.status(500).json({
-            message: e.message
+            error: "internal server error"
         })
     }
 }
