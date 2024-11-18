@@ -131,7 +131,7 @@ paths:
         - name: id
           in: path
           required: true
-          description: ID of the book to fetch
+          description: ID of peminjaman
           schema:
             type: integer
       responses:
@@ -349,16 +349,15 @@ paths:
       tags:
         - Pinjam Buku Controller
       summary: minjam buku
+      description: "contoh endDate: '2024-12-22T23:59:59.100Z'"
       requestBody:
         content:
           application/json:
             schema:
               properties:
-                userId:
-                  type: integer
                 bookId:
                   type: string
-                startDate:
+                endDate:
                   type: string
       responses:
         '200':
@@ -371,7 +370,7 @@ paths:
                     type: integer
                   bookName:
                     type: string
-                  startDate:
+                  endDate:
                     type: string
                   from:
                     type: string
@@ -385,32 +384,7 @@ paths:
           $ref: "#/components/responses/ErrorResponse"
         '505':
           $ref: "#/components/responses/ErrorResponse"
-    put:
-      summary: (admin)
-      tags:
-        - Pinjam Buku Controller
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                status:
-                  type: string
-                  enum:
-                    - PENDING
-                    - SUDAH_DIAMBIL
-                    - SUDAH_DIKEMBALIKAN
-                    - TIDAK_JADI
-      responses:
-        '200':
-          $ref: "#/components/responses/SuccessResponse"
-        '400':
-          $ref: "#/components/responses/ErrorResponse"
-        '403':
-          $ref: "#/components/responses/ForbiddenResponse"
-        '500':
-          $ref: "#/components/responses/ErrorResponse"
+    
     get:
       summary: (admin)
       tags:
@@ -459,17 +433,45 @@ paths:
                         startDate: 
                           type: string
                                              
-
-  /pinjam-buku/{userId}:
+  /pinjam-buku/{idPeminjaman}:
+    put:
+      summary: (admin)
+      tags:
+        - Pinjam Buku Controller
+      parameters:
+        - name: idPeminjaman
+          in: path
+          required: true
+          description: ID of the category to update
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum:
+                    - PENDING
+                    - SUDAH_DIAMBIL
+                    - SUDAH_DIKEMBALIKAN
+                    - TIDAK_JADI
+      responses:
+        '200':
+          $ref: "#/components/responses/SuccessResponse"
+        '400':
+          $ref: "#/components/responses/ErrorResponse"
+        '403':
+          $ref: "#/components/responses/ForbiddenResponse"
+        '500':
+          $ref: "#/components/responses/ErrorResponse"
+  /pinjam-buku/me:
     get:
       tags:
         - Pinjam Buku Controller
       parameters:
-        - name: userId
-          in: path
-          required: true
-          schema:
-            type: integer
         - name: limit
           in: query
           schema:
@@ -480,11 +482,6 @@ paths:
           schema: 
             type: integer
             default: 0
-        - name: status
-          in: query
-          schema: 
-            type: string
-            nullable: true
 
       responses:
         '200':
