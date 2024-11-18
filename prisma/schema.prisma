@@ -45,6 +45,8 @@ model User {
   totalScoreMonth  Int?     @default(0)
   totalScoreDay    Int?     @default(0)
   role             Role?    @default(USER)
+  sentMessage Message[] @relation("Sender")
+  receivedMessage Message[] @relation("Receipient")
 }
 
 model Profile {
@@ -246,6 +248,15 @@ model BookCategories {
 }
 
 
+model Message {
+  id Int @id @default(autoincrement())
+  senderUser User @relation("Sender", fields: [senderId], references: [id])
+  senderId Int
+  receipientUser User @relation("Receipient", fields: [receipientId], references: [id])
+  receipientId Int
+  content String
+  createdAt DateTime @default(now())
+}
 model ErrorLog {
   id          Int       @id @default(autoincrement())
   errorMessage String    @db.Text

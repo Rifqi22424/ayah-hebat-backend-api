@@ -2,6 +2,8 @@ const {WebSocketServer} = require('ws');
 const WebSocket = require('ws');
 const http = require('http');
 const { verifyToken } = require('../middlewares/jwtMiddleware');
+const {PrismaClient} = require('@prisma/client');
+const prisma = new PrismaClient();
 
 
 function setupWebSocket(server){
@@ -27,7 +29,7 @@ function setupWebSocket(server){
         wss.on('connection', (ws, request, client) => {
 
             //store websocket connection
-            ws.on('message', (message, isBinary) => {
+            ws.on('message', async (message, isBinary) => {
                 const data = JSON.parse(message);
                 if(isBinary){
                     // TODO: Next Feature
@@ -42,6 +44,26 @@ function setupWebSocket(server){
                     // TODO: Notification to user
                     return;
                 }
+
+                const user = await prisma.user.findUnique({
+                    where: {
+                        id: client.userId
+                    }
+                });
+
+                const receipent = await prisma.user.findUnique({
+                    where: {
+                        id: receipentId
+                    }
+                });
+
+                const a = await prisma.message.create({
+                    data: {
+                        content,
+                        senderId: client.userId,
+                        receipientId: receipentId
+                    }
+                });
                 
                 // Send to receipent 
                 receipentWs.send(JSON.stringify({content, senddate, senderId: client.userId}));
@@ -53,7 +75,7 @@ function setupWebSocket(server){
             })
         })
     } catch (error) {
-        
+        console.error(error);
     }
 }
 
