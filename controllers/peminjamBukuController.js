@@ -5,8 +5,6 @@ const prisma = new PrismaClient();
 // user
 // TODO: buat request pinjam buku
 const pinjamBuku = async (req, res) => {
-
-
     try {
         const { bookId, startDate, endDate } = req.body;
         const userId = req.userId;
@@ -23,20 +21,20 @@ const pinjamBuku = async (req, res) => {
             })
         }
 
-        const borrowedBook = await prisma.peminjaman.findMany({
-            where: {
-                userId: userId,
-                status: {
-                    in: ['SUDAH_DIAMBIL']
-                }
-            }
-        })
+        // const borrowedBook = await prisma.peminjaman.findMany({
+        //     where: {
+        //         userId: userId,
+        //         status: {
+        //             in: ['SUDAH_DIAMBIL']
+        //         }
+        //     }
+        // })
 
-        if(borrowedBook.length > 0){
-            return res.status(400).json({
-                message: "anda masih memiliki buku yang dipinjam"
-            })
-        }        
+        // if(borrowedBook.length > 0){
+        //     return res.status(400).json({
+        //         message: "anda masih memiliki buku yang dipinjam"
+        //     })
+        // }        
 
         if(new Date(startDate) >= new Date(endDate)){
             return res.status(400).json({
@@ -58,18 +56,6 @@ const pinjamBuku = async (req, res) => {
                 message: "failed borrow book"
             });
         }
-
-        // update nilai stock mengurang
-        await prisma.book.update({
-            where: {
-                id: bookId
-            },
-            data: {
-                stock : {
-                    decrement: 1
-                }
-            }
-        })
 
         return res.status(202).json({
             message: "success",
@@ -113,15 +99,46 @@ const updateStatusBuku = async (req, res) => {
     try {
         const idPeminjaman = parseInt(req.params.id);
         const status = req.body.status;
+        
+        const book = null;
+        if(status != "SUDAH_DIAMBIL"){
+            book = await prisma.peminjaman.update({
+                where: {
+                    id: idPeminjaman
+                },
+                data: {
+                    status: status,
+                    stock: {
+                        decrement: 1
+                    }
+                }
+            });
+        }
 
-        const book = await prisma.peminjaman.update({
-            where: {
-                id: idPeminjaman
-            },
-            data: {
-                status: status
-            }
-        });
+        if(status === "DITERIMA"){
+            book = await prisma.peminjaman.update({
+                where: {
+                    id: idPeminjaman
+                },
+                data: {
+                    status: status
+                }
+            });
+        }
+
+        if(status === "SUDAH_DIKEMBALIKAN"){
+            book = await prisma.peminjaman.update({
+                where: {
+                    id: idPeminjaman
+                },
+                data: {
+                    status: status,
+                    stock: {
+                        increment: 1
+                    }
+                }
+            });
+        }
 
         return res.status(200).json({
             message: "update success",
