@@ -101,7 +101,7 @@ const updateStatusBuku = async (req, res) => {
         const status = req.body.status;
         
         const book = null;
-        if(status != "SUDAH_DIAMBIL"){
+        if(status === "SUDAH_DIAMBIL"){
             book = await prisma.peminjaman.update({
                 where: {
                     id: idPeminjaman
@@ -138,6 +138,11 @@ const updateStatusBuku = async (req, res) => {
                     }
                 }
             });
+        }
+        else {
+            return res.status(400).json({
+                message: "status not on the list"
+            })
         }
 
         return res.status(200).json({
