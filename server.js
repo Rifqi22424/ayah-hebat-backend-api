@@ -10,6 +10,7 @@ const newsRoutes = require('./routes/newsRoutes.js');
 const postRoutes = require('./routes/postRoutes.js');
 const commentRoutes = require('./routes/commentRoutes.js');
 const replyRoutes = require('./routes/replyRoutes.js');
+const peminjamanBukuRoutes = require('./routes/peminjamanBukuRoute')
 const commentBookRoutes = require('./routes/commentBookRoute');
 const { PrismaClient } = require('@prisma/client');
 const { authenticateToken } = require('./middlewares/jwtMiddleware.js'); 
@@ -66,6 +67,7 @@ app.use('/news', newsRoutes);
 app.use('/post', postRoutes);
 app.use('/comment', commentRoutes);
 app.use('/reply', replyRoutes);
+app.use('/pinjam-buku', peminjamanBukuRoutes);
 app.use('/books', bookRoutes);
 app.use('/categories', categoryRoutes);
 app.use('/comment-book', commentBookRoutes);
