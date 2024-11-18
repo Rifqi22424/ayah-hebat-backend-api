@@ -1,0 +1,737 @@
+openapi: 3.0.0
+info:
+  title: Ayah Hebat API
+  description: API for backend ayah hebat.
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000
+    description: Local server
+
+paths:
+  /auth/login:
+    post:
+      summary: login for user and admin
+      tags:
+        - Auth Controller
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+
+      responses:
+        '200':
+          $ref: "#/components/responses/LoginResponse"
+        '400':
+          $ref: "#/components/responses/ErrorResponse"
+        '500':
+          $ref: "#/components/responses/ErrorResponse"
+
+  /books:
+    get:
+      summary: Get a list of books
+      tags:
+        - Books Controller
+      parameters:
+        - name: limit
+          in: query
+          description: Number of books to return
+          required: true
+          schema:
+            type: integer
+            default: 10
+        - name: offset
+          in: query
+          description: Offset for pagination
+          required: true
+          schema:
+            type: integer
+            default: 0
+        - name: search
+          in: query
+          description: Search term for book name
+          required: false
+          schema:
+            type: string
+        - name: category
+          in: query
+          description: Search books by category name
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved the list of books
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        description:
+                          type: string
+                        imageurl:
+                          type: string
+        '500':
+          description: Server error
+    post:
+      summary: Create a new book
+      tags:
+        - Books Controller
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                stock:
+                  type: integer
+                photo:
+                  type: string
+                  format: binary
+                categoryIds:
+                  type: array
+                  items:
+                    type: integer
+      responses:
+        '201':
+          description: Book created successfully
+        '400':
+          description: Invalid input
+        '500':
+          description: Server error
+
+  /books/{id}:
+    get:
+      summary: Get a book by ID
+      tags:
+        - Books Controller
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the book to fetch
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successfully fetched the book
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      description:
+                        type: string
+                      imageurl:
+                        type: string
+                      comment_book:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            description:
+                              type: string
+                            user:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                email:
+                                  type: string
+                                profile:
+                                  type: object
+                                  properties:
+                                    nama:
+                                      type: string
+                                    photo:
+                                      type: string
+        '400':
+          description: Invalid ID
+        '404':
+          description: Book not found
+    put:
+      summary: Update a book by ID
+      tags:
+        - Books Controller
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the book to update
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                stock:
+                  type: integer
+                imageurl:
+                  type: string
+                categoryIds:
+                  type: array
+                  items:
+                    type: integer
+      responses:
+        '200':
+          description: Book updated successfully
+        '404':
+          description: Book not found
+        '500':
+          description: Server error
+    delete:
+      summary: Delete a book by ID
+      tags:
+        - Books Controller
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the book to delete
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Book deleted successfully
+        '404':
+          description: Book not found
+        '500':
+          description: Server error
+
+  /comment-book/{bookId}:
+    post:
+      description: create a comment
+      tags:
+        - Comment Book Controller
+      parameters:
+        - name: bookId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                description:
+                  type: string
+
+      responses:
+        '201':
+          description: success create comment
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      description:
+                        type: string
+        '400':
+          $ref: "#/components/responses/ErrorResponse"
+        '500':
+          $ref: "#/components/responses/ErrorResponse"
+  /comment-book/{bookId}/comments/{commentId}:
+    put:
+      summary: Update comment book
+      tags:
+        - Comment Book Controller
+      parameters:
+        - name: bookId
+          in: path
+          required: true
+          schema: 
+            type: integer
+        - name: commentId
+          in: path
+          required: true
+          schema: 
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+      responses:
+        '200':
+          description: success edit comment
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  description:
+                    type: string
+        '400':
+          $ref: "#/components/responses/ErrorResponse"
+        '403':
+          $ref: "#/components/responses/ForbiddenResponse"
+        '500':
+          $ref: "#/components/responses/ErrorResponse"
+    delete:
+      description: delete comment
+      tags:
+        - Comment Book Controller
+      parameters:
+        - name: bookId
+          in: path
+          required: true
+          schema: 
+            type: integer
+        - name: commentId
+          in: path
+          required: true
+          schema: 
+            type: integer
+      responses:
+        '200':
+          description: success delete comment response
+          content:
+            application/json:
+              schema:
+                properties:
+                  message:
+                    type: string
+        '400':
+          $ref: "#/components/responses/ErrorResponse"
+        '403':
+          $ref: "#/components/responses/ForbiddenResponse"
+        '500':
+          $ref: "#/components/responses/ErrorResponse"
+
+  /pinjam-buku:
+    post:
+      tags:
+        - Pinjam Buku Controller
+      summary: minjam buku
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                userId:
+                  type: integer
+                bookId:
+                  type: string
+                startDate:
+                  type: string
+      responses:
+        '200':
+          description: berhasil pinjam buku
+          content:
+            application/json:
+              schema:
+                properties:
+                  idPeminjaman:
+                    type: integer
+                  bookName:
+                    type: string
+                  startDate:
+                    type: string
+                  from:
+                    type: string
+                  to:
+                    type: string
+        '400':
+          $ref: "#/components/responses/ErrorResponse"
+        '403':
+          $ref: "#/components/responses/ForbiddenResponse"
+        '404':
+          $ref: "#/components/responses/ErrorResponse"
+        '505':
+          $ref: "#/components/responses/ErrorResponse"
+    put:
+      summary: (admin)
+      tags:
+        - Pinjam Buku Controller
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum:
+                    - PENDING
+                    - SUDAH_DIAMBIL
+                    - SUDAH_DIKEMBALIKAN
+                    - TIDAK_JADI
+      responses:
+        '200':
+          $ref: "#/components/responses/SuccessResponse"
+        '400':
+          $ref: "#/components/responses/ErrorResponse"
+        '403':
+          $ref: "#/components/responses/ForbiddenResponse"
+        '500':
+          $ref: "#/components/responses/ErrorResponse"
+    get:
+      summary: (admin)
+      tags:
+        - Pinjam Buku Controller
+      description: digunakan untuk admin supaya bisa filter secara advanced
+      parameters:
+        - name: limit
+          in: query
+          required: true
+          schema: 
+            type: integer
+        - name: offset
+          in: query
+          required: true
+          schema: 
+            type: integer
+        - name: search
+          in: query
+          schema: 
+            type: integer
+        - name: endDate
+          in: query
+          schema: 
+            type: string
+      responses:
+        '200':
+          description: success 
+          content: 
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  message: 
+                    type: string
+                  data: 
+                    type: array
+                    items: 
+                      type: object
+                      properties: 
+                        bookname: 
+                          type: string
+                        username: 
+                          type: string
+                        endDate: 
+                          type: string
+                        startDate: 
+                          type: string
+                                             
+
+  /pinjam-buku/{userId}:
+    get:
+      tags:
+        - Pinjam Buku Controller
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 5
+        - name: offset
+          in: query
+          schema: 
+            type: integer
+            default: 0
+        - name: status
+          in: query
+          schema: 
+            type: string
+            nullable: true
+
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  books:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        imageUrl:
+                          type: string
+                        name:
+                          type: string
+                        status:
+                          type: string
+                        tanggal kembali:
+                          type: string
+
+
+
+
+  /categories:
+    get:
+      summary: Get a list of categories
+      tags:
+        - Category Controller
+      description: Retrieve a list of categories, optionally filtered by search query.
+      parameters:
+        - name: limit
+          in: query
+          description: Number of categories to return
+          required: false
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: Offset for pagination
+          required: false
+          schema:
+            type: integer
+        - name: search
+          in: query
+          description: Search term for category name
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved the list of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+        '500':
+          description: Server error
+
+    post:
+      summary: Create a new category
+      tags:
+        - Category Controller
+      description: Create a new category by providing the category name.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the category
+                  example: Fiction
+      responses:
+        '200':
+          description: Successfully created a new category
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+        '500':
+          description: Server error
+
+  /categories/{id}:
+    put:
+      summary: Update a category by ID
+      description: Update a specific category by providing its ID and the updated name.
+      tags:
+        - Category Controller
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the category to update
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Updated name of the category
+                  example: Science Fiction
+      responses:
+        '200':
+          description: Successfully updated the category
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+        '404':
+          description: Category not found
+        '500':
+          description: Server error
+
+    delete:
+      summary: Delete a category by ID
+      tags:
+        - Category Controller
+      description: Delete a category by providing its ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the category to delete
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successfully deleted the category
+        '404':
+          description: Category not found
+        '500':
+          description: Server error
+
+
+components:
+  schemas:
+    Book:
+      properties:
+        imageUrl:
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+        tanggal kembali:
+          type: string
+
+  responses:
+    LoginResponse:
+      description: success login
+      content:
+        application/json:
+          schema:
+            properties:
+              token:
+                type: string
+              user:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  username:
+                    type: string
+                  email:
+                    type: string
+                  profile:
+                    nullable: true
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      bio:
+                        type: string
+                      photo:
+                        type: string
+                      namaIstri:
+                        type: string
+                      namaKuttab:
+                        type: string
+                      namaAnak:
+                        type: string
+                      tahunMasukKuttab:
+                        type: integer
+                      userId:
+                        type: integer
+    ErrorResponse:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            properties:
+              error:
+                type: string
+    ForbiddenResponse:
+      description: Forbidden response
+      content:
+        application/json:
+          schema:
+            properties:
+              error:
+                type: string
+    SuccessResponse:
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+
+
+  securitySchemes:
+    jwt bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - jwt bearer: []
