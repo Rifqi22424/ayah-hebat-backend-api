@@ -3,7 +3,7 @@ const prisma = new PrismaClient();
 
 const createCommentBook = async (req, res) => {
     try {
-        const idBook = parseInt(req.params.bookId);
+        const idBook = parseInt(req.params.id);
         const userId = parseInt(req.userId);
         const { description } = req.body;
 
@@ -31,52 +31,9 @@ const createCommentBook = async (req, res) => {
     }
 }
 
-const showComment = async (req, res) => {
-    try {
-        const bookId = parseInt(req.params.id);
-
-        const book = await prisma.book.findUnique({
-            where: {
-                id: bookId
-            },
-            select: {
-                name: true,
-                description: true,
-                imageurl: true,
-                comment_book: {
-                    select: {
-                        description: true,
-                        user: {
-                            select: {
-                                id: true,
-                                email: true,
-                                profile: {
-                                    select: {
-                                        nama: true,
-                                        photo: true,
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-            }
-        });
-
-        return res.status(200).json({
-            message: "succses show comment",
-            data: book
-        })
-    } catch (e){
-        return res.status(500).json({
-            message: e.message
-        })
-    }
-}
-
 const editComment = async (req, res) => {
     try {
-        const bookId = parseInt(req.params.bookId);
+        const bookId = parseInt(req.params.id);
         const userId = parseInt(req.userId);
         const commentId = parseInt(req.params.commentId);
         const { description } = req.body;
@@ -124,7 +81,7 @@ const editComment = async (req, res) => {
 
 const deleteComment = async (req, res) => {
     try {
-        const bookId = parseInt(req.params.bookId);
+        const bookId = parseInt(req.params.id);
         const userId = parseInt(req.userId);
         const commentId = parseInt(req.params.commentId);
 
@@ -163,4 +120,4 @@ const deleteComment = async (req, res) => {
     }
 }
 
-module.exports = { showComment, createCommentBook, editComment, deleteComment }
+module.exports = { createCommentBook, editComment, deleteComment }
