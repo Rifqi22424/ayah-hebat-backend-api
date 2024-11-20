@@ -21,8 +21,8 @@ const registerUser = async (req, res) => {
       where: { username },
     });
 
-    if (existingUsername) {
-      return res.status(400).json({ error: 'Username is already taken' });
+    if (existingUsername || existingUser) {
+      return res.status(400).json({ error: 'Username or Gmail is already taken' });
     }
 
     if (existingUser && !existingUser.isVerified) {

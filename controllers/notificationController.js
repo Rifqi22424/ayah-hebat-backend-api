@@ -7,8 +7,12 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
+// function photoBaseUrl() {
+//   return "https://backend.ayahhebat.mangcoding.com/uploads/";
+// }
+
 function photoBaseUrl() {
-  return "https://backend.ayahhebat.mangcoding.com/uploads/";
+  return "https://dhrqldvp-3000.asse.devtunnels.ms/uploads/";
 }
 
 // function getBaseUrl() {
