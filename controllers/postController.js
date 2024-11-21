@@ -17,10 +17,13 @@ const formatPost = async (post, userId) => {
     },
   });
 
+  const isMine = post.userId === userId;
+
   return {
     ...post,
     isLikedByMe: !!isLikedByMe,
     isDislikedByMe: !!isDislikedByMe,
+    isMine,
   };
 };
 
@@ -194,10 +197,13 @@ const getAllPosts = async (req, res) => {
           },
         });
 
+        const isMine = post.userId === userId;
+
         return {
           ...post,
           isLikedByMe: !!isLikedByMe,
           isDislikedByMe: !!isDislikedByMe,
+          isMine,
         };
       })
     );
@@ -260,10 +266,13 @@ const searchPosts = async (req, res) => {
           },
         });
 
+        const isMine = post.userId === userId;
+
         return {
           ...post,
           isLikedByMe: !!isLikedByMe,
           isDislikedByMe: !!isDislikedByMe,
+          isMine,
         };
       })
     );

@@ -11,8 +11,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@forestadmin/agent": "^1.40.1",
-    "@forestadmin/datasource-sql": "^1.14.1",
     "@prisma/client": "^5.10.2",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.5",

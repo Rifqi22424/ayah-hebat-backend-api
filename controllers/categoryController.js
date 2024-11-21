@@ -3,8 +3,8 @@ const prisma = new PrismaClient();
 
 const getCategories = async (req, res) => {
 
-  const limit =  parseInt(req.query.limit) || 5;
-  const offset = parseInt(req.query.offset) || 0;
+  // const limit =  parseInt(req.query.limit) || 5;
+  // const offset = parseInt(req.query.offset) || 0;
   const search = req.query.search || "";
 
   try {
@@ -14,10 +14,13 @@ const getCategories = async (req, res) => {
           contains: search
         }
       },
-      skip: offset,
-      take: limit
+      // skip: offset,
+      // take: limit
     });
-    res.json(categories);
+
+    const result = [{ id: 0, name: "Semua" }, ...categories];
+
+    res.json(result);
   } catch (error) {
     res.status(500).json({ error: 'Error fetching categories' });
   }

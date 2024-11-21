@@ -2,8 +2,11 @@ const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
+// function photoBaseUrl() {
+//   return "https://backend.ayahhebat.mangcoding.com/uploads/";
+// }
 function photoBaseUrl() {
-  return "https://backend.ayahhebat.mangcoding.com/uploads/";
+  return "https://dhrqldvp-3000.asse.devtunnels.ms/uploads/";
 }
 
 const createNews = async (req, res) => {
@@ -136,4 +139,38 @@ const createNews = async (req, res) => {
     }
   };
 
-module.exports = {createNews, editNews, getAllNews, getPopularNews, getNewestNews, getNewsById};
+  const deleteNewsById = async (req, res) => {
+    try {
+      const newsId = parseInt(req.params.id);
+  
+      const existingNews = await prisma.news.findUnique({
+        where: { id: newsId },
+      });
+  
+      if (!existingNews) {
+        return res.status(404).json({ error: 'News not found' });
+      }
+  
+      await prisma.news.delete({
+        where: { id: newsId },
+      });
+  
+      res.json({ message: 'News deleted successfully.' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+  
+  const deleteAllNews = async (req, res) => {
+    try {
+      await prisma.news.deleteMany();
+  
+      res.json({ message: 'All news deleted successfully.' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+
+module.exports = {createNews, editNews, getAllNews, getPopularNews, getNewestNews, getNewsById, deleteNewsById, deleteAllNews};

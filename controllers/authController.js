@@ -17,7 +17,15 @@ const registerUser = async (req, res) => {
       where: { email },
     });
 
-    if (existingUser) {
+    const existingUsername = await prisma.user.findUnique({
+      where: { username },
+    });
+
+    if (existingUsername || existingUser) {
+      return res.status(400).json({ error: 'Username or Gmail is already taken' });
+    }
+
+    if (existingUser && !existingUser.isVerified) {
       if (!existingUser.isVerified) { 
         const verificationCode = generateVerificationCode();
         await prisma.user.updateMany({

@@ -26,6 +26,21 @@ const getBooks = async (req, res) => {
       },
       skip: offset,
       take: limit,
+      select: {
+        id: true,
+        name: true,
+        stock: true,
+        imageurl: true,
+        categories: {
+          select: {
+            category: {
+              select: {
+                name: true
+              }
+            }
+          }
+        }
+      }
     });
 
     res.status(200).json({
@@ -55,6 +70,16 @@ const getBookById = async (req, res) => {
       name: true,
       description: true,
       imageurl: true,
+      stock: true,
+      categories: {
+        select: {
+          category: {
+            select: {
+              name: true
+            }
+          }
+        }
+      },
       comment_book: {
         select: {
           id: true,
@@ -85,20 +110,20 @@ const getBookById = async (req, res) => {
 }
 
 const createBook = async (req, res) => {
-  console.log("eaeae  ")
-  const { name, description, stock, categoryIds } = req.body;
-  
-  if(categoryIds == null){
-    return res.status(400).json({
-      message: "categoryIds must at least one"
-    });
-  }
-  categoryArray = categoryIds.split(',').map(Number);
-  
-  const imageurl = req.file ? req.file.filename : null;
-
-
   try {
+  console.log("eaeae  ")
+    const { name, description, stock, categoryIds } = req.body;
+    
+    if(categoryIds == null){
+      return res.status(400).json({
+        message: "categoryIds must at least one"
+      });
+    }
+    categoryArray = categoryIds.split(',').map(Number);
+    
+    const imageurl = req.file ? req.file.filename : null;
+
+
     const book = await prisma.book.create({
       data: {
         name,
