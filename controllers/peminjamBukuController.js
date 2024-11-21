@@ -15,7 +15,7 @@ const pinjamBuku = async (req, res) => {
             }
         })
 
-        if(book.stock == 0){
+        if(book.stock < 1){
             return res.status(404).json({
                 message: "stock kosong"
             })
