@@ -201,6 +201,7 @@ model Book {
   description String @db.Text
   stock Int
   imageurl String
+  location String @db.Text
   categories BookCategories[]
   peminjaman Peminjaman[]
   comment_book CommentBook[]
@@ -209,28 +210,29 @@ model Book {
 
 model CommentBook {
   id Int @id @default(autoincrement())
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int
-  book Book @relation(fields: [bookId], references: [id])
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
   bookId Int
   description String @db.Text
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 enum Status {
-  SUDAH_DIKEMBALIKAN
+  PENGAJUAN
+  DIIZINKAN_DIAMBIL
   SUDAH_DIAMBIL
-  DITERIMA
-  PENDING
+  SUDAH_DIKEMBALIKAN
+  DIBATALKAN
 }
 
 model  Peminjaman {
   id Int @id @default(autoincrement())
-  book Book @relation(fields: [bookId], references: [id])
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
   bookId Int
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int
-  status Status @default(PENDING)
+  status Status @default(PENGAJUAN)
   startDate DateTime
   endDate DateTime
   createdAt DateTime @default(now())
@@ -243,9 +245,9 @@ model Category {
 }
 
 model BookCategories {
-  book Book @relation(fields: [bookId], references: [id])
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
   bookId Int
-  category Category @relation(fields: [categoryId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId Int
   @@id([categoryId, bookId])
 }
@@ -253,7 +255,7 @@ model BookCategories {
 model Report {
   id        Int      @id @default(autoincrement())
   userId    Int
-  postId    Int?     // Optional, if reporting a post
+  postId    Int?     // Optional, if reporting a pos
   commentId Int?     // Optional, if reporting a comment
   replyId   Int?     // Optional, if reporting a reply
   reason    String   @db.Text
