@@ -194,6 +194,12 @@ model userDeleted {
   deletedAt                DateTime @default(now()) 
 }
 
+enum StatusBuku {
+  PENGAJUAN
+  DITERIMA
+  DITOLAK
+  DIBATALKAN
+}
 
 model Book {
   id  Int @id @default(autoincrement())
@@ -201,12 +207,21 @@ model Book {
   description String @db.Text
   stock Int
   imageurl String
-  location String @db.Text
+  location String   @db.Text
+  status StatusBuku @default(PENGAJUAN)
   categories BookCategories[]
   peminjaman Peminjaman[]
   comment_book CommentBook[]
+  activeAt DateTime @default(now())
 }
 
+model OfficeAddress {
+  id  Int @id @default(autoincrement())
+  name String
+  address String @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 
 model CommentBook {
   id Int @id @default(autoincrement())
@@ -218,7 +233,7 @@ model CommentBook {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-enum Status {
+enum StatusPeminjaman {
   PENGAJUAN
   DIIZINKAN_DIAMBIL
   SUDAH_DIAMBIL
@@ -232,7 +247,7 @@ model  Peminjaman {
   bookId Int
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int
-  status Status @default(PENGAJUAN)
+  status StatusPeminjaman @default(PENGAJUAN)
   startDate DateTime
   endDate DateTime
   createdAt DateTime @default(now())

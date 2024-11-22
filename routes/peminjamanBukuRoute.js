@@ -5,7 +5,7 @@ const {authorizeAdmin} = require("../middlewares/authorizationMiddleware");
 const router = express.Router();
 
 router.post("/", pinjamBuku);
-router.get("/me", getMyPeminjamanBuku)
+router.get("/me", getMyPeminjamanBuku);
 
 // admin only
 router.put("/:id", authorizeAdmin, updateStatusBuku);

@@ -21,6 +21,7 @@ const {
 const bookRoutes = require("./routes/bookRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const commentBookRoutes = require("./routes/commentBookRoute");
+const officeAddressRoutes = require("./routes/officeAddressRoutes");
 // const path = require('path');
 
 const { fixDuplicateUsernames } = require("./setup/fixDuplicateUsernames.js");
@@ -59,6 +60,7 @@ app.use("/pinjam-buku", peminjamanBukuRoute);
 app.use("/books", bookRoutes);
 app.use("/categories", categoryRoutes);
 app.use("/comment-book", commentBookRoutes);
+app.use("/address", officeAddressRoutes);
 
 async function logError(error) {
   try {

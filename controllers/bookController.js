@@ -6,12 +6,14 @@ const getBooks = async (req, res) => {
   const offset = parseInt(req.query.offset) || 0
   const search = req.query.search || "";
   const category = req.query.category || "";
+  const status = req.query.status || "DITERIMA";
   try {
     const books = await prisma.book.findMany({
       where: {
         name: {
           contains: search
         },
+        status,
         ...(category && {
           categories: {
             some: {
@@ -131,6 +133,7 @@ const createBook = async (req, res) => {
         description,
         stock: parseInt(stock),
         location,
+        status: "DITERIMA",
         imageurl,
         categories: {
           create: categoryArray.map(categoryId => ({
@@ -149,9 +152,82 @@ const createBook = async (req, res) => {
   }
 };
 
+const createBookRequest = async (req, res) => {
+  try {
+    const { name, description, location, categoryIds, stock, activeAt} = req.body;
+
+    if (!categoryIds) {
+      return res.status(400).json({
+        message: "categoryIds must at least one"
+      });
+    }
+
+    const categoryArray = categoryIds.split(',').map(Number);
+    const imageurl = req.file ? req.file.filename : null;
+
+    const book = await prisma.book.create({
+      data: {
+        name,
+        description,
+        stock: parseInt(stock), 
+        location,
+        imageurl,
+        status: "PENGAJUAN", // Status default untuk pengajuan
+        categories: {
+          create: categoryArray.map(categoryId => ({
+            category: { connect: { id: categoryId } },
+          })),
+        },
+        activeAt: new Date(activeAt),
+      },
+    });
+
+    res.status(201).json({
+      message: "Book request submitted successfully",
+      data: book
+    });
+  } catch (error) {
+    console.error('Error creating book request:', error);
+    res.status(500).json({ error: 'Error creating book request' });
+  }
+};
+
+const updateBookRequestStatus = async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  try {
+    const book = await prisma.book.findUnique({
+      where: { id: parseInt(id) },
+    });
+
+    if (!book) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+
+    const updatedBook = await prisma.book.update({
+      where: { id: parseInt(id) },
+      data: {
+        status: status,
+      },
+    });
+
+
+    res.status(200).json({
+      message: "Book request edited successfully",
+      data: updatedBook
+    });
+  } catch (error) {
+    console.error('Error editing book request:', error);
+    res.status(500).json({ error: 'Error editing book request' });
+  }
+};
+
+
+
 const updateBook = async (req, res) => {
   const { id } = req.params;
-  const { name, description, stock, location , imageurl, categoryIds } = req.body;
+  const { name, description, stock, location , imageurl, categoryIds, status } = req.body;
 
   try {
 
@@ -160,6 +236,7 @@ const updateBook = async (req, res) => {
       description,
       location,
       stock,
+      status,
       imageurl,
     };
 
@@ -245,6 +322,8 @@ async function checkBook(id) {
 module.exports = {
   getBooks,
   createBook,
+  createBookRequest,
+  updateBookRequestStatus,
   updateBook,
   deleteBook,
   getBookById
