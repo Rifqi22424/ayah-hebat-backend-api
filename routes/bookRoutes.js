@@ -1,6 +1,7 @@
 const express = require('express');
 const { getBooks, getBookById, createBook, updateBook, deleteBook, createBookRequest, updateBookRequestStatus } = require('../controllers/bookController');
 const {uploadPhotoMiddleware} = require('../middlewares/uploadMiddleware');
+const {createCommentBook, editComment, deleteComment} = require("./../controllers/commentBookController")
 const router = express.Router();
 
 router.get('/', getBooks);

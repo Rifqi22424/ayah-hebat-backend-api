@@ -121,7 +121,6 @@ paths:
           description: Invalid input
         '500':
           description: Server error
-
   /books/{id}:
     get:
       summary: Get a book by ID
@@ -234,13 +233,13 @@ paths:
         '500':
           description: Server error
 
-  /comment-book/{bookId}:
+  /books/{id}/comments:
     post:
       description: create a comment
       tags:
-        - Comment Book Controller
+        - Books Controller
       parameters:
-        - name: bookId
+        - name: id
           in: path
           required: true
           schema:
@@ -271,13 +270,13 @@ paths:
           $ref: "#/components/responses/ErrorResponse"
         '500':
           $ref: "#/components/responses/ErrorResponse"
-  /comment-book/{bookId}/comments/{commentId}:
+  /books/{id}/comments/{commentId}:
     put:
       summary: Update comment book
       tags:
-        - Comment Book Controller
+        - Books Controller
       parameters:
-        - name: bookId
+        - name: id
           in: path
           required: true
           schema: 
@@ -316,9 +315,9 @@ paths:
     delete:
       description: delete comment
       tags:
-        - Comment Book Controller
+        - Books Controller
       parameters:
-        - name: bookId
+        - name: id
           in: path
           required: true
           schema: 
@@ -431,8 +430,7 @@ paths:
                         endDate: 
                           type: string
                         startDate: 
-                          type: string
-                                             
+                          type: string                                   
   /pinjam-buku/{idPeminjaman}:
     put:
       summary: (admin)
@@ -468,6 +466,7 @@ paths:
         '500':
           $ref: "#/components/responses/ErrorResponse"
   /pinjam-buku/me:
+
     get:
       tags:
         - Pinjam Buku Controller
@@ -506,10 +505,7 @@ paths:
                           type: string
                         tanggal kembali:
                           type: string
-
-
-
-
+  
   /categories:
     get:
       summary: Get a list of categories
@@ -582,7 +578,6 @@ paths:
                     type: string
         '500':
           description: Server error
-
   /categories/{id}:
     put:
       summary: Update a category by ID
