@@ -45,18 +45,34 @@ const getBooks = async (req, res) => {
       }
     });
 
+    const count = await prisma.book.count({
+      where: {
+        name: {
+          contains: search
+        }
+      }
+    });
+
+    const totalpage = Math.ceil(count / limit);
     res.status(200).json({
       message: "success get data",
-      data: books
+      data: books,
+      pagination: {
+        count,
+        totalpages: totalpage,
+      }
     });
 
   } catch (error) {
-    res.status(500).json({ error: error.message});
+    console.error('Error getting books:', error);
+    res.status(500).json("Internal server error");
   }
 };
 
 const getBookById = async (req, res) => {
   const id = parseInt(req.params.id);
+  const limit = parseInt(req.query.limit) || 10;
+  const offset = parseInt(req.query.offset) || 0
 
   if(!id){
     return res.status(400).json({
@@ -84,6 +100,8 @@ const getBookById = async (req, res) => {
         }
       },
       comment_book: {
+        take: limit,
+        skip: offset,
         select: {
           id: true,
           description: true,

@@ -230,6 +230,7 @@ const updateStatusBuku = async (req, res) => {
   }
 };
 
+// dashboard admin
 const getPeminjamanBuku = async (req, res) => {
   const { status } = req.query;
   const limit = parseInt(req.query.limit) || 5;
@@ -244,9 +245,21 @@ const getPeminjamanBuku = async (req, res) => {
       take: limit,
     });
 
+    const count = await prisma.peminjaman.count({
+      where: {
+        status,
+      },
+    });
+
+    const totalpage = Math.ceil(count / limit);
+
     return res.status(200).json({
       message: "success get data",
       data: peminjaman,
+      pagination: {
+        count,
+        totalpages: totalpage,
+      },
     });
   } catch (e) {
     return res.status(500).json({
