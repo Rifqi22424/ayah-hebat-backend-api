@@ -10,6 +10,10 @@ router.post('/', uploadPhotoMiddleware, createBook);
 router.put('/:id', updateBook);
 router.delete('/:id', deleteBook);
 
+router.post('/:id/comments', createCommentBook);
+router.put('/:id/comments/:commentId', editComment)
+router.delete('/:id/comments/:commentId', deleteComment)
+
 router.post('/request', uploadPhotoMiddleware, createBookRequest);
 router.put('/request/:id', updateBookRequestStatus);
 

@@ -130,9 +130,22 @@ paths:
         - name: id
           in: path
           required: true
-          description: ID of peminjaman
           schema:
             type: integer
+        - name: limit
+          in: query
+          description: Number of comment to return
+          required: true
+          schema:
+            type: integer
+            default: 10
+        - name: offset
+          in: query
+          description: Offset for comment to pagination
+          required: true
+          schema:
+            type: integer
+            default: 0
       responses:
         '200':
           description: Successfully fetched the book
