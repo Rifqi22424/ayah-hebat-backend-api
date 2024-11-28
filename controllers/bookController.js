@@ -72,7 +72,6 @@ const getBookById = async (req, res) => {
       name: true,
       description: true,
       imageurl: true,
-      location: true,
       stock: true,
       categories: {
         select: {
@@ -115,7 +114,7 @@ const getBookById = async (req, res) => {
 const createBook = async (req, res) => {
   try {
   console.log("eaeae  ")
-    const { name, description, stock, location, categoryIds } = req.body;
+    const { name, description, stock, categoryIds } = req.body;
     
     if(categoryIds == null){
       return res.status(400).json({
@@ -132,7 +131,6 @@ const createBook = async (req, res) => {
         name,
         description,
         stock: parseInt(stock),
-        location,
         status: "DITERIMA",
         imageurl,
         categories: {
@@ -154,7 +152,7 @@ const createBook = async (req, res) => {
 
 const createBookRequest = async (req, res) => {
   try {
-    const { name, description, location, categoryIds, stock, activeAt} = req.body;
+    const { name, description, categoryIds, stock, activeAt} = req.body;
 
     if (!categoryIds) {
       return res.status(400).json({
@@ -170,7 +168,6 @@ const createBookRequest = async (req, res) => {
         name,
         description,
         stock: parseInt(stock), 
-        location,
         imageurl,
         status: "PENGAJUAN", // Status default untuk pengajuan
         categories: {
@@ -227,14 +224,13 @@ const updateBookRequestStatus = async (req, res) => {
 
 const updateBook = async (req, res) => {
   const { id } = req.params;
-  const { name, description, stock, location , imageurl, categoryIds, status } = req.body;
+  const { name, description, stock, imageurl, categoryIds, status } = req.body;
 
   try {
 
     const updatedData = {
       name,
       description,
-      location,
       stock,
       status,
       imageurl,

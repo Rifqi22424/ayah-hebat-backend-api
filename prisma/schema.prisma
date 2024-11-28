@@ -207,7 +207,6 @@ model Book {
   description String @db.Text
   stock Int
   imageurl String
-  location String   @db.Text
   status StatusBuku @default(PENGAJUAN)
   categories BookCategories[]
   peminjaman Peminjaman[]
