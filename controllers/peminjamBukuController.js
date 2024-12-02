@@ -86,7 +86,7 @@ const pinjamBuku = async (req, res) => {
 
 const getMyPeminjamanBuku = async (req, res) => {
   const userId = parseInt(req.userId);
-  const limit = parseInt(req.query.limit) || 5;
+  const limit = parseInt(req.query.limit) || 10;
   const offset = parseInt(req.query.offset) || 0;
 
   try {
