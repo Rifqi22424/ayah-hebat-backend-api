@@ -36,6 +36,7 @@ model User {
   Report           Report[]
   peminjaman       Peminjaman[]
   commentBook      CommentBook[]
+  books            Book[]
   isVerified       Boolean  @default(false)
   verificationCode String?
   deleteAccountVerficationCode String? 
@@ -207,11 +208,15 @@ model Book {
   description String @db.Text
   stock Int
   imageurl String
-  status StatusBuku @default(PENGAJUAN)
+  userId Int
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status BookStatus @default(PENDING)
   categories BookCategories[]
   peminjaman Peminjaman[]
   comment_book CommentBook[]
-  activeAt DateTime @default(now())
+  sentAt DateTime @default(now()) // dikirim oleh user ke admin pada waktu
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model OfficeAddress {
