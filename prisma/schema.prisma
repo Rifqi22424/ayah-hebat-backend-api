@@ -195,11 +195,11 @@ model userDeleted {
   deletedAt                DateTime @default(now()) 
 }
 
-enum StatusBuku {
-  PENGAJUAN
-  DITERIMA
-  DITOLAK
-  DIBATALKAN
+enum BookStatus {
+  PENDING      // Pengajuan
+  ACCEPTED     // Diterima
+  REJECTED     // Ditolak oleh admin
+  CANCELLED    // Dibatalkan oleh user yang mengajukan buku tersebut
 }
 
 model Book {
@@ -237,12 +237,13 @@ model CommentBook {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-enum StatusPeminjaman {
-  PENGAJUAN
-  DIIZINKAN_DIAMBIL
-  SUDAH_DIAMBIL
-  SUDAH_DIKEMBALIKAN
-  DIBATALKAN
+
+enum BorrowStatus {
+  PENDING      // Pengajuan
+  ALLOWED      // Diizinkan Diambil
+  TAKEN        // Sudah Diambil
+  RETURNED     // Sudah Dikembalikan
+  CANCELLED    // Dibatalkan
 }
 
 model  Peminjaman {
@@ -251,7 +252,7 @@ model  Peminjaman {
   bookId Int
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int
-  status StatusPeminjaman @default(PENGAJUAN)
+  status BorrowStatus @default(PENDING)
   startDate DateTime
   endDate DateTime
   createdAt DateTime @default(now())
