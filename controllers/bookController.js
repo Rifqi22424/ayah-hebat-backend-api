@@ -94,47 +94,79 @@ const getBookById = async (req, res) => {
                 select: {
                   nama: true,
                   photo: true,
-                }
-              }
-            }
-          }
-        }
+                },
+              },
+            },
+          },
+        },
       },
-    }
+    },
   });
 
   return res.status(200).json({
     message: "succses show comment",
-    data: book
+    data: book,
   });
-
-
-}
+};
 
 const createBook = async (req, res) => {
   try {
-  console.log("eaeae  ")
     const { name, description, stock, categoryIds } = req.body;
-    
-    if(categoryIds == null){
+    const userId = req.userId;
+
+    // Validasi body agar tidak kosong
+    if (!name || typeof name !== "string" || name.trim() === "") {
+      return res
+        .status(400)
+        .json({ message: "Name is required and must be a non-empty string" });
+    }
+
+    if (
+      !description ||
+      typeof description !== "string" ||
+      description.trim() === ""
+    ) {
       return res.status(400).json({
-        message: "categoryIds must at least one"
+        message: "Description is required and must be a non-empty string",
       });
     }
-    categoryArray = categoryIds.split(',').map(Number);
-    
-    const imageurl = req.file ? req.file.filename : null;
 
+    if (!stock || isNaN(parseInt(stock)) || parseInt(stock) <= 0) {
+      return res
+        .status(400)
+        .json({ message: "Stock is required and must be a positive number" });
+    }
+
+    if (
+      !categoryIds ||
+      typeof categoryIds !== "string" ||
+      categoryIds.trim() === ""
+    ) {
+      return res.status(400).json({
+        message:
+          "CategoryIds must be a comma-separated string and cannot be empty",
+      });
+    }
+
+    if (categoryIds == null) {
+      return res.status(400).json({
+        message: "categoryIds must at least one",
+      });
+    }
+    categoryArray = categoryIds.split(",").map(Number);
+
+    const imageurl = req.file ? req.file.filename : null;
 
     const book = await prisma.book.create({
       data: {
         name,
         description,
         stock: parseInt(stock),
-        status: "DITERIMA",
+        userId,
+        status: "ACCEPTED",
         imageurl,
         categories: {
-          create: categoryArray.map(categoryId => ({
+          create: categoryArray.map((categoryId) => ({
             category: { connect: { id: categoryId } },
           })),
         },
@@ -142,50 +174,141 @@ const createBook = async (req, res) => {
     });
     res.status(201).json({
       message: "create success",
-      data: book
+      data: book,
     });
   } catch (error) {
-    console.error('Error creating book:', error);
+    console.error("Error creating book:", error);
     res.status(500).json({ error: error.message });
+  }
+};
+
+const getMyBookRequests = async (req, res) => {
+  const limit = parseInt(req.query.limit) || 10;
+  const offset = parseInt(req.query.offset) || 0;
+  const userId = parseInt(req.userId);
+  try {
+    const books = await prisma.book.findMany({
+      where: {
+        userId,
+      },
+      skip: offset,
+      take: limit,
+      select: {
+        id: true,
+        name: true,
+        stock: true,
+        status: true,
+        sentAt: true,
+        imageurl: true,
+        categories: {
+          select: {
+            category: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+        peminjaman: {
+          where: {
+            status: "TAKEN",
+          },
+        },
+      },
+    });
+
+    const booksWithBorrowedCount = books.map((book) => ({
+      ...book,
+      borrowedCount: book.peminjaman.length,
+    }));
+
+    res.status(200).json({
+      message: "success get data",
+      data: booksWithBorrowedCount,
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Error getting your book requests" });
   }
 };
 
 const createBookRequest = async (req, res) => {
   try {
-    const { name, description, categoryIds, stock, activeAt} = req.body;
+    const { name, description, categoryIds, stock, sentAt } = req.body;
+    const userId = req.userId;
 
-    if (!categoryIds) {
+    // Validasi body agar tidak kosong
+    if (!name || typeof name !== "string" || name.trim() === "") {
+      return res
+        .status(400)
+        .json({ message: "Name is required and must be a non-empty string" });
+    }
+
+    if (
+      !description ||
+      typeof description !== "string" ||
+      description.trim() === ""
+    ) {
       return res.status(400).json({
-        message: "categoryIds must at least one"
+        message: "Description is required and must be a non-empty string",
       });
     }
 
-    const categoryArray = categoryIds.split(',').map(Number);
+    if (!stock || isNaN(parseInt(stock)) || parseInt(stock) <= 0) {
+      return res
+        .status(400)
+        .json({ message: "Stock is required and must be a positive number" });
+    }
+
+    if (
+      !categoryIds ||
+      typeof categoryIds !== "string" ||
+      categoryIds.trim() === ""
+    ) {
+      return res.status(400).json({
+        message:
+          "CategoryIds must be a comma-separated string and cannot be empty",
+      });
+    }
+
+    if (!sentAt || isNaN(Date.parse(sentAt))) {
+      return res
+        .status(400)
+        .json({ message: "sentAt is required and must be a valid date" });
+    }
+
+    if (!categoryIds) {
+      return res.status(400).json({
+        message: "categoryIds must at least one",
+      });
+    }
+
+    const categoryArray = categoryIds.split(",").map(Number);
     const imageurl = req.file ? req.file.filename : null;
 
     const book = await prisma.book.create({
       data: {
         name,
         description,
-        stock: parseInt(stock), 
+        stock: parseInt(stock),
         imageurl,
-        status: "PENGAJUAN", // Status default untuk pengajuan
+        userId,
+        status: "PENDING", // Status default untuk pengajuan
         categories: {
-          create: categoryArray.map(categoryId => ({
+          create: categoryArray.map((categoryId) => ({
             category: { connect: { id: categoryId } },
           })),
         },
-        activeAt: new Date(activeAt),
+        sentAt: new Date(sentAt),
       },
     });
 
     res.status(201).json({
       message: "Book request submitted successfully",
-      data: book
+      data: book,
     });
   } catch (error) {
-    console.error('Error creating book request:', error);
-    res.status(500).json({ error: 'Error creating book request' });
+    console.error("Error creating book request:", error);
+    res.status(500).json({ error: "Error creating book request" });
   }
 };
 
@@ -194,6 +317,11 @@ const updateBookRequestStatus = async (req, res) => {
   const { status } = req.body;
 
   try {
+    const validStatuses = ["PENDING", "ACCEPTED", "REJECTED", "CANCELED"];
+
+    if (!validStatuses.includes(status)) {
+      return res.status(404).json({ error: "Invalid Status" });
+    }
     const book = await prisma.book.findUnique({
       where: { id: parseInt(id) },
     });
