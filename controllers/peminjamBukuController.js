@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 // TODO: buat request pinjam buku
 const pinjamBuku = async (req, res) => {
   try {
-    let { bookId, endDate } = req.body;
+    let { bookId, startDate, endDate } = req.body;
     const userId = req.userId;
 
     bookId = parseInt(bookId);
@@ -49,7 +49,7 @@ const pinjamBuku = async (req, res) => {
         bookId: bookId,
         userId: userId,
         status: "PENGAJUAN",
-        startDate: new Date(),
+        startDate: new Date(startDate),
         endDate: new Date(endDate),
       },
     });
