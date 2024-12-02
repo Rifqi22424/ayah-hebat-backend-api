@@ -1,17 +1,17 @@
-const { PrismaClient } = require('@prisma/client');
+const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 const getBooks = async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
-  const offset = parseInt(req.query.offset) || 0
+  const offset = parseInt(req.query.offset) || 0;
   const search = req.query.search || "";
   const category = req.query.category || "";
-  const status = req.query.status || "DITERIMA";
+  const status = req.query.status || "ACCEPTED";
   try {
     const books = await prisma.book.findMany({
       where: {
         name: {
-          contains: search
+          contains: search,
         },
         status,
         ...(category && {
@@ -19,12 +19,12 @@ const getBooks = async (req, res) => {
             some: {
               category: {
                 name: {
-                  contains: category
-                }
-              }
-            }
-          }
-        })
+                  contains: category,
+                },
+              },
+            },
+          },
+        }),
       },
       skip: offset,
       take: limit,
@@ -37,36 +37,35 @@ const getBooks = async (req, res) => {
           select: {
             category: {
               select: {
-                name: true
-              }
-            }
-          }
-        }
-      }
+                name: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     res.status(200).json({
       message: "success get data",
-      data: books
+      data: books,
     });
-
   } catch (error) {
-    res.status(500).json({ error: error.message});
+    res.status(500).json({ error: error.message });
   }
 };
 
 const getBookById = async (req, res) => {
   const id = parseInt(req.params.id);
 
-  if(!id){
+  if (!id) {
     return res.status(400).json({
-      message: "id must provided"
+      message: "id must provided",
     });
   }
 
   const book = await prisma.book.findUnique({
     where: {
-      id
+      id,
     },
     select: {
       name: true,
@@ -77,10 +76,10 @@ const getBookById = async (req, res) => {
         select: {
           category: {
             select: {
-              name: true
-            }
-          }
-        }
+              name: true,
+            },
+          },
+        },
       },
       comment_book: {
         select: {
@@ -337,37 +336,49 @@ const updateBookRequestStatus = async (req, res) => {
       },
     });
 
-
     res.status(200).json({
       message: "Book request edited successfully",
-      data: updatedBook
+      data: updatedBook,
     });
   } catch (error) {
-    console.error('Error editing book request:', error);
-    res.status(500).json({ error: 'Error editing book request' });
+    console.error("Error editing book request:", error);
+    res.status(500).json({ error: "Error editing book request" });
   }
 };
 
-
-
 const updateBook = async (req, res) => {
   const { id } = req.params;
-  const { name, description, stock, imageurl, categoryIds, status } = req.body;
+  const { name, description, stock, imageurl, categoryIds, status, email } =
+    req.body;
 
   try {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: email,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        message: "user not found",
+      });
+    }
+
+    const userId = user.id;
 
     const updatedData = {
       name,
       description,
       stock,
+      userId,
       status,
       imageurl,
     };
 
-    if(await checkBook(parseInt(id))){
+    if (await checkBook(parseInt(id))) {
       return res.status(404).json({
-        message: "book not found"
-      })
+        message: "book not found",
+      });
     }
 
     await prisma.$transaction(async (prisma) => {
@@ -379,7 +390,7 @@ const updateBook = async (req, res) => {
 
         // Add new categories
         await prisma.bookCategories.createMany({
-          data: categoryIds.map(categoryId => ({
+          data: categoryIds.map((categoryId) => ({
             bookId: parseInt(id),
             categoryId: categoryId,
           })),
@@ -387,34 +398,32 @@ const updateBook = async (req, res) => {
       }
     });
 
-
     const book = await prisma.book.update({
       where: { id: parseInt(id) },
       data: updatedData,
       include: {
-        categories: true
-      }
+        categories: true,
+      },
     });
 
     return res.status(200).json({
       message: "success update data",
-      data: book
+      data: book,
     });
-  } catch (error) {console.error('Error updating book:', error);
-    res.status(500).json({ error: 'Error updating book' });
+  } catch (error) {
+    console.error("Error updating book:", error);
+    res.status(500).json({ error: "Error updating book" });
   }
 };
-
 
 const deleteBook = async (req, res) => {
   const { id } = req.params;
 
   try {
-
-    if(await checkBook(parseInt(id))){
+    if (await checkBook(parseInt(id))) {
       return res.status(404).json({
-        message: "book not found"
-      })
+        message: "book not found",
+      });
     }
 
     // Hapus relasi terkait terlebih dahulu (BookCategories, Peminjaman, CommentBook)
@@ -427,28 +436,28 @@ const deleteBook = async (req, res) => {
       where: { id: parseInt(id) },
     });
 
-    return res.status(200).json({ message: 'Book deleted successfully' });
+    return res.status(200).json({ message: "Book deleted successfully" });
   } catch (error) {
-    console.error('Error deleting book:', error);
-    res.status(500).json({ error: 'Error deleting book' });
+    console.error("Error deleting book:", error);
+    res.status(500).json({ error: "Error deleting book" });
   }
 };
 
 async function checkBook(id) {
-  return !await prisma.book.findUnique({
+  return !(await prisma.book.findUnique({
     where: {
-      id
-    }
-  });
+      id,
+    },
+  }));
 }
-
 
 module.exports = {
   getBooks,
   createBook,
+  getMyBookRequests,
   createBookRequest,
   updateBookRequestStatus,
   updateBook,
   deleteBook,
-  getBookById
+  getBookById,
 };
