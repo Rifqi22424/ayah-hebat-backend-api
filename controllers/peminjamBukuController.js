@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 // TODO: buat request pinjam buku
 const pinjamBuku = async (req, res) => {
   try {
-    let { bookId, startDate, endDate } = req.body;
+    let { bookId, plannedPickUpDate, deadlineDate } = req.body;
     const userId = req.userId;
 
     bookId = parseInt(bookId);
@@ -19,38 +19,40 @@ const pinjamBuku = async (req, res) => {
 
     if (book.stock < 1) {
       return res.status(404).json({
-        message: "stock kosong",
+        message: "Stock buku tersebut kosong",
       });
     }
 
-    // const borrowedBook = await prisma.peminjaman.findMany({
-    //     where: {
-    //         userId: userId,
-    //         status: {
-    //             in: ['SUDAH_DIAMBIL']
-    //         }
-    //     }
-    // })
-
-    // if(borrowedBook.length > 0){
-    //     return res.status(400).json({
-    //         message: "anda masih memiliki buku yang dipinjam"
-    //     })
-    // }
-
-    if (new Date(endDate) < new Date()) {
+    if (new Date(deadlineDate) <= new Date()) {
       return res.status(400).json({
-        error: "end date must be greater than today",
+        error: "deadline date must be greater than today",
       });
     }
 
     const peminjaman = await prisma.peminjaman.create({
       data: {
-        bookId: bookId,
-        userId: userId,
-        status: "PENGAJUAN",
-        startDate: new Date(startDate),
-        endDate: new Date(endDate),
+        bookId,
+        userId,
+        status: "PENDING",
+        plannedPickUpDate: new Date(plannedPickUpDate),
+        deadlineDate: new Date(deadlineDate),
+      },
+      include: {
+        book: {
+          select: {
+            name: true,
+            imageurl: true,
+            categories: {
+              select: {
+                category: {
+                  select: {
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
 
@@ -69,11 +71,27 @@ const pinjamBuku = async (req, res) => {
     return res.status(202).json({
       message: "success",
       data: {
-        idPeminjaman: peminjaman.id,
-        bookName: book.name,
-        endDate: peminjaman.endDate,
-        from: "KUTAB ALFATIH",
-        to: user.username,
+        // idPeminjaman: peminjaman.id,
+        // bookName: book.name,
+        // imageUrl: book.imageurl,
+        // submissionDate: peminjaman.submissionDate,
+        // deadlineDate: peminjaman.deadlineDate,
+        // from: "KUTAB ALFATIH",
+        // to: user.username,
+        id: peminjaman.id,
+        status: peminjaman.status,
+        submissionDate: peminjaman.submissionDate,
+        deadlineDate: peminjaman.deadlineDate,
+        plannedPickUpDate: peminjaman.plannedPickUpDate,
+        actualPickUpDate: peminjaman.actualPickUpDate,
+        returnDate: peminjaman.returnDate,
+        cancelDate: peminjaman.cancelDate,
+        book: peminjaman.book,
+        // name: peminjaman.book.name,
+        // imageurl: peminjaman.book.imageurl,
+        // categories: peminjaman.book.categories.map((cat) => ({
+        //   name: cat.category.name,
+        // })),
       },
     });
   } catch (e) {
@@ -87,7 +105,9 @@ const pinjamBuku = async (req, res) => {
 const getMyPeminjamanBuku = async (req, res) => {
   const userId = parseInt(req.userId);
   const limit = parseInt(req.query.limit) || 10;
-  const offset = parseInt(req.query.offset) || 0;
+  const page = parseInt(req.query.page) || 1;
+
+  const offset = (page - 1) * limit;
 
   try {
     const peminjaman = await prisma.peminjaman.findMany({
@@ -97,20 +117,51 @@ const getMyPeminjamanBuku = async (req, res) => {
       select: {
         id: true,
         status: true,
-        startDate: true,
-        endDate: true,
+        submissionDate: true,
+        deadlineDate: true,
+        plannedPickUpDate: true,
+        actualPickUpDate: true,
+        returnDate: true,
+        deadlineDate: true,
+        cancelDate: true,
         book: {
-            include: true,
-        }
+          select: {
+            name: true,
+            imageurl: true,
+            categories: {
+              select: {
+                category: {
+                  select: {
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
       orderBy: [{ id: "desc" }],
       skip: offset,
       take: limit,
     });
 
+    const totalCount = await prisma.peminjaman.count({
+      where: {
+        userId,
+      },
+    });
+
+    const totalPage = Math.ceil(totalCount / limit);
+
     return res.status(200).json({
       message: "success get data",
       data: peminjaman,
+      pagination: {
+        currentPage: page,
+        totalPage,
+        totalItems: totalCount,
+        itemsPerPage: limit,
+      },
     });
   } catch (e) {
     return res.status(500).json({
@@ -124,109 +175,85 @@ const getMyPeminjamanBuku = async (req, res) => {
 const updateStatusBuku = async (req, res) => {
   try {
     const idPeminjaman = parseInt(req.params.id);
-    const status = req.body.status;
+    const { status } = req.body;
 
-    const isExist = await prisma.peminjaman.findUnique({
-      where: {
-        id: idPeminjaman,
-      },
-      include: {
-        book: true,
-      },
+    const peminjaman = await prisma.peminjaman.findUnique({
+      where: { id: idPeminjaman },
+      include: { book: true },
     });
 
-    if (!isExist) {
-      return res.status(404).json({
-        error: "peminjaman not found",
-      });
+    if (!peminjaman) {
+      return res.status(404).json({ error: "Peminjaman tidak ditemukan" });
     }
 
-    if (isExist.status === status) {
+    if (peminjaman.status === status) {
       return res.status(400).json({
         error: "Status peminjaman sudah sama",
       });
     }
 
-    if (status === "DIIZINKAN_DIAMBIL" && isExist.book.stock < 1) {
-      return res.status(400).json({
-        error: "Stok buku tidak cukup untuk dipinjam",
-      });
-    }
+    let updatedPeminjaman;
 
-    let book = null;
-    if (status === "DIIZINKAN_DIAMBIL") {
-      book = await prisma.peminjaman.update({
-        where: {
-          id: idPeminjaman,
-        },
+    if (status === "ALLOWED") {
+      if (peminjaman.book.stock < 1) {
+        return res.status(400).json({ error: "Stok buku tidak cukup" });
+      }
+
+      updatedPeminjaman = await prisma.peminjaman.update({
+        where: { id: idPeminjaman },
         data: {
-          status: "DIIZINKAN_DIAMBIL",
-          book: {
-            update: {
-              stock: {
-                decrement: 1,
-              },
-            },
-          },
+          status: "ALLOWED",
+          book: { update: { stock: { decrement: 1 } } },
         },
       });
-    } else if (status === "SUDAH_DIAMBIL") {
-      book = await prisma.peminjaman.update({
-        where: {
-          id: idPeminjaman,
-        },
+    } else if (status === "TAKEN") {
+      updatedPeminjaman = await prisma.peminjaman.update({
+        where: { id: idPeminjaman },
         data: {
-          status: "SUDAH_DIAMBIL",
+          status: "TAKEN",
+          actualPickUpDate: new Date(),
         },
       });
-    } else if (status === "SUDAH_DIKEMBALIKAN") {
-      book = await prisma.peminjaman.update({
-        where: {
-          id: idPeminjaman,
-        },
+    } else if (status === "RETURNED") {
+      const isLate = new Date() > peminjaman.deadlineDate;
+      updatedPeminjaman = await prisma.peminjaman.update({
+        where: { id: idPeminjaman },
         data: {
-          status: "SUDAH_DIKEMBALIKAN",
-          book: {
-            update: {
-              stock: {
-                increment: 1,
-              },
-            },
-          },
+          status: "RETURNED",
+          returnDate: new Date(),
+          book: { update: { stock: { increment: 1 } } },
         },
       });
-    } else if (status === "DIBATALKAN") {
-      book = await prisma.peminjaman.update({
-        where: {
-          id: idPeminjaman,
-        },
+      return res.status(200).json({
+        message: "Buku dikembalikan",
+        data: updatedPeminjaman,
+        isLate,
+      });
+    } else if (status === "CANCELLED") {
+      updatedPeminjaman = await prisma.peminjaman.update({
+        where: { id: idPeminjaman },
         data: {
-          status: "DIBATALKAN",
+          status: "CANCELLED",
+          cancelDate: new Date(),
           book: {
-            update: {
-              stock:
-                isExist.status === "DIIZINKAN_DIAMBIL"
-                  ? { increment: 1 }
-                  : undefined,
-            },
+            update:
+              peminjaman.status === "ALLOWED"
+                ? { stock: { increment: 1 } }
+                : undefined,
           },
         },
       });
     } else {
-      return res.status(400).json({
-        error: "status not on the list",
-      });
+      return res.status(400).json({ error: "Status tidak valid" });
     }
 
     return res.status(200).json({
-      message: "update success",
-      data: book,
+      message: "Status peminjaman berhasil diperbarui",
+      data: updatedPeminjaman,
     });
   } catch (e) {
     console.error(e.message);
-    return res.status(500).json({
-      error: "internal server error",
-    });
+    return res.status(500).json({ error: "Terjadi kesalahan pada server" });
   }
 };
 

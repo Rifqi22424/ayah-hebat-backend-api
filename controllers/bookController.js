@@ -5,9 +5,13 @@ const getBooks = async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
   const offset = parseInt(req.query.offset) || 0;
   const search = req.query.search || "";
-  const category = req.query.category || "";
+  let category = req.query.category || "";
   const status = req.query.status || "ACCEPTED";
   try {
+    if (category.toLowerCase().trim() === "semua") {
+      category = "";
+    }
+
     const books = await prisma.book.findMany({
       where: {
         name: {
@@ -68,6 +72,7 @@ const getBookById = async (req, res) => {
       id,
     },
     select: {
+      id: true,
       name: true,
       description: true,
       imageurl: true,
@@ -110,8 +115,8 @@ const getBookById = async (req, res) => {
 
 const createBook = async (req, res) => {
   try {
-    const { name, description, stock, categoryIds } = req.body;
-    const userId = req.userId;
+    let { name, description, stock, categoryIds } = req.body;
+    const userId = parseInt(req.userId);
 
     // Validasi body agar tidak kosong
     if (!name || typeof name !== "string" || name.trim() === "") {
@@ -156,12 +161,15 @@ const createBook = async (req, res) => {
 
     const imageurl = req.file ? req.file.filename : null;
 
+    name = name.trim();
+    description = description.trim();
+
     const book = await prisma.book.create({
       data: {
         name,
         description,
         stock: parseInt(stock),
-        userId,
+        user: { connect: { id: userId } },
         status: "ACCEPTED",
         imageurl,
         categories: {
@@ -181,10 +189,13 @@ const createBook = async (req, res) => {
   }
 };
 
-const getMyBookRequests = async (req, res) => {
+const getMyBookDonations = async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
-  const offset = parseInt(req.query.offset) || 0;
   const userId = parseInt(req.userId);
+  const page = parseInt(req.query.page) || 1;
+
+  const offset = (page - 1) * limit;
+
   try {
     const books = await prisma.book.findMany({
       where: {
@@ -197,7 +208,10 @@ const getMyBookRequests = async (req, res) => {
         name: true,
         stock: true,
         status: true,
-        sentAt: true,
+        planSentAt: true,
+        acceptedAt: true,
+        rejectedAt: true,
+        canceledAt: true,
         imageurl: true,
         categories: {
           select: {
@@ -208,31 +222,61 @@ const getMyBookRequests = async (req, res) => {
             },
           },
         },
-        peminjaman: {
-          where: {
-            status: "TAKEN",
+        _count: {
+          select: {
+            peminjaman: {
+              where: {
+                status: "TAKEN",
+              },
+            },
           },
         },
       },
     });
 
-    const booksWithBorrowedCount = books.map((book) => ({
-      ...book,
-      borrowedCount: book.peminjaman.length,
-    }));
+    // const booksWithBorrowedCount = books.map((book) => ({
+    //   ...book,
+    //   borrowedCount: book._count.peminjaman,
+    // }));
+
+    // const totalPage = Math.ceil(totalCount / limit);
+
+    // return res.status(200).json({
+    //   message: "success get data",
+    //   data: peminjaman,
+    //   pagination: {
+    //     currentPage: page,
+    //     totalPage,
+    //     totalItems: totalCount,
+    //     itemsPerPage: limit,
+    //   }
+
+    const totalCount = await prisma.book.count({
+      where: {
+        userId,
+      },
+    });
+
+    const totalPage = Math.ceil(totalCount / limit );
 
     res.status(200).json({
       message: "success get data",
-      data: booksWithBorrowedCount,
+      data: books,
+      pagination: {
+        currentPage: page,
+        totalPage,
+        totalItems: totalCount,
+        itemsPerPage: limit,
+      },
     });
   } catch (error) {
     res.status(500).json({ error: "Error getting your book requests" });
   }
 };
 
-const createBookRequest = async (req, res) => {
+const createBookDonation = async (req, res) => {
   try {
-    const { name, description, categoryIds, stock, sentAt } = req.body;
+    const { name, description, categoryIds, stock, planSentAt } = req.body;
     const userId = req.userId;
 
     // Validasi body agar tidak kosong
@@ -269,10 +313,10 @@ const createBookRequest = async (req, res) => {
       });
     }
 
-    if (!sentAt || isNaN(Date.parse(sentAt))) {
+    if (!planSentAt || isNaN(Date.parse(planSentAt))) {
       return res
         .status(400)
-        .json({ message: "sentAt is required and must be a valid date" });
+        .json({ message: "planSentAt is required and must be a valid date" });
     }
 
     if (!categoryIds) {
@@ -290,14 +334,14 @@ const createBookRequest = async (req, res) => {
         description,
         stock: parseInt(stock),
         imageurl,
-        userId,
+        user: { connect: { id: userId } },
         status: "PENDING", // Status default untuk pengajuan
         categories: {
           create: categoryArray.map((categoryId) => ({
             category: { connect: { id: categoryId } },
           })),
         },
-        sentAt: new Date(sentAt),
+        planSentAt: new Date(planSentAt),
       },
     });
 
@@ -311,12 +355,12 @@ const createBookRequest = async (req, res) => {
   }
 };
 
-const updateBookRequestStatus = async (req, res) => {
+const updateBookDonationStatus = async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
 
   try {
-    const validStatuses = ["PENDING", "ACCEPTED", "REJECTED", "CANCELED"];
+    const validStatuses = ["PENDING", "ACCEPTED", "REJECTED", "CANCELLED"];
 
     if (!validStatuses.includes(status)) {
       return res.status(404).json({ error: "Invalid Status" });
@@ -329,11 +373,26 @@ const updateBookRequestStatus = async (req, res) => {
       return res.status(404).json({ message: "Book not found" });
     }
 
+    const updateDate = { status };
+
+    switch (status) {
+      case "ACCEPTED":
+        updateDate.acceptedAt = new Date();
+        break;
+      case "REJECTED":
+        updateDate.rejectedAt = new Date();
+        break;
+      case "CANCELLED":
+        updateDate.canceledAt = new Date();
+        break;
+      case "PENDING":
+        // Tidak ada timestamp yang perlu diperbarui
+        break;
+    }
+
     const updatedBook = await prisma.book.update({
       where: { id: parseInt(id) },
-      data: {
-        status: status,
-      },
+      data: updateDate,
     });
 
     res.status(200).json({
@@ -348,8 +407,8 @@ const updateBookRequestStatus = async (req, res) => {
 
 const updateBook = async (req, res) => {
   const { id } = req.params;
-  const { name, description, stock, imageurl, categoryIds, status, email } =
-    req.body;
+  const { name, description, stock, categoryIds, status, email } = req.body;
+  const imageurl = req.file ? req.file.filename : null;
 
   try {
     const user = await prisma.user.findUnique({
@@ -366,11 +425,17 @@ const updateBook = async (req, res) => {
 
     const userId = user.id;
 
+    const parseStock = parseInt(stock);
+
     const updatedData = {
       name,
       description,
-      stock,
-      userId,
+      stock: parseStock,
+      user: {
+        connect: {
+          id: userId,
+        },
+      },
       status,
       imageurl,
     };
@@ -454,9 +519,9 @@ async function checkBook(id) {
 module.exports = {
   getBooks,
   createBook,
-  getMyBookRequests,
-  createBookRequest,
-  updateBookRequestStatus,
+  getMyBookDonations,
+  createBookDonation,
+  updateBookDonationStatus,
   updateBook,
   deleteBook,
   getBookById,
