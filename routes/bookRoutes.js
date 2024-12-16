@@ -1,8 +1,9 @@
 const express = require('express');
-const { getBooks, getBookById, createBook, updateBook, deleteBook, createBookDonation, updateBookDonationStatus, getMyBookDonations } = require('../controllers/bookController');
+const { getBooks, getBookById, createBook, updateBook, deleteBook, createBookDonation, updateBookDonationStatus, getMyBookDonations, getMyBookDonationById } = require('../controllers/bookController');
 const {uploadPhotoMiddleware} = require('../middlewares/uploadMiddleware');
 const router = express.Router();
 
+router.get('/donation/:id', getMyBookDonationById);
 router.get('/donation', getMyBookDonations);
 router.post('/donation', uploadPhotoMiddleware, createBookDonation);
 router.put('/donation/:id', updateBookDonationStatus);

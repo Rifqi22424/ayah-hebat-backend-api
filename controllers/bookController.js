@@ -189,6 +189,83 @@ const createBook = async (req, res) => {
   }
 };
 
+const getMyBookDonationById = async (req, res) => {
+  const id = parseInt(req.params.id);
+  const userId = req.userId;
+
+  if (!id) {
+    return res.status(400).json({
+      message: "id must provided",
+    });
+  }
+
+  const book = await prisma.book.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      id: true,
+      userId: true,
+      name: true,
+      stock: true,
+      status: true,
+      description: true,
+      planSentAt: true,
+      acceptedAt: true,
+      rejectedAt: true,
+      canceledAt: true,
+      imageurl: true,
+      categories: {
+        select: {
+          category: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+      _count: {
+        select: {
+          peminjaman: {
+            where: {
+              status: "TAKEN",
+            },
+          },
+        },
+      },
+      // comment_book: {
+      //   select: {
+      //     id: true,
+      //     description: true,
+      //     user: {
+      //       select: {
+      //         id: true,
+      //         email: true,
+      //         profile: {
+      //           select: {
+      //             nama: true,
+      //             photo: true,
+      //           },
+      //         },
+      //       },
+      //     },
+      //   },
+      // },
+    },
+  });
+
+  if (userId !== book.userId) {
+    return res.status(403).json({
+      message: "Forbidden",
+    });
+  }
+
+  return res.status(200).json({
+    message: "succses show comment",
+    data: book,
+  });
+};
+
 const getMyBookDonations = async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
   const userId = parseInt(req.userId);
@@ -208,6 +285,7 @@ const getMyBookDonations = async (req, res) => {
         name: true,
         stock: true,
         status: true,
+        description: true,
         planSentAt: true,
         acceptedAt: true,
         rejectedAt: true,
@@ -257,7 +335,7 @@ const getMyBookDonations = async (req, res) => {
       },
     });
 
-    const totalPage = Math.ceil(totalCount / limit );
+    const totalPage = Math.ceil(totalCount / limit);
 
     res.status(200).json({
       message: "success get data",
@@ -270,7 +348,7 @@ const getMyBookDonations = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ error: "Error getting your book requests" });
+    res.status(500).json({ error: "Error getting your donation books" });
   }
 };
 
@@ -520,6 +598,7 @@ module.exports = {
   getBooks,
   createBook,
   getMyBookDonations,
+  getMyBookDonationById,
   createBookDonation,
   updateBookDonationStatus,
   updateBook,

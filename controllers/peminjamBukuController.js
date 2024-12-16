@@ -102,6 +102,78 @@ const pinjamBuku = async (req, res) => {
   }
 };
 
+const getPinjamBukuById = async (req, res) => {
+  const id = parseInt(req.params.id);
+  // const userId = parseInt(req.userId);
+
+  // const peminjaman = await prisma.peminjaman.findUnique({
+  //   where: {
+  //     id,
+  //   },
+  // });
+
+  // if (!peminjaman) {
+  //   return res.status(404).json({
+  //     error: "Peminjaman tidak ditemukan",
+  //   });
+  // }
+
+  // if (peminjaman.userId !== userId) {
+  //   return res.status(403).json({
+  //     error: "Forbidden",
+  //   });
+  // }
+
+  try {
+    const peminjaman = await prisma.peminjaman.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        status: true,
+        submissionDate: true,
+        deadlineDate: true,
+        plannedPickUpDate: true,
+        actualPickUpDate: true,
+        returnDate: true,
+        deadlineDate: true,
+        cancelDate: true,
+        book: {
+          select: {
+            name: true,
+            imageurl: true,
+            categories: {
+              select: {
+                category: {
+                  select: {
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!peminjaman) {
+      return res.status(404).json({
+        error: "Peminjaman tidak ditemukan",
+      });
+    }
+
+    return res.status(200).json({
+      message: "success get data",
+      data: peminjaman,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      error: "internal server error",
+    });
+  }
+};
+
 const getMyPeminjamanBuku = async (req, res) => {
   const userId = parseInt(req.userId);
   const limit = parseInt(req.query.limit) || 10;
@@ -284,6 +356,7 @@ const getPeminjamanBuku = async (req, res) => {
 
 module.exports = {
   pinjamBuku,
+  getPinjamBukuById,
   updateStatusBuku,
   getPeminjamanBuku,
   getMyPeminjamanBuku,
