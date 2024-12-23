@@ -57,7 +57,7 @@ const createBook = async (req, res) => {
     
     const imageurl = req.file ? req.file.filename : null;
 
-    const createdBook = BookService.create(name, description, stock, location, imageurl, categoryArray);
+    const createdBook = BookService.create(name, description, stock, location, imageurl, categoryArray, activeAt, "DITERIMA");
     
     res.status(201).json({
       message: "create success",
@@ -82,22 +82,8 @@ const createBookRequest = async (req, res) => {
     const categoryArray = categoryIds.split(',').map(Number);
     const imageurl = req.file ? req.file.filename : null;
 
-    const book = await prisma.book.create({
-      data: {
-        name,
-        description,
-        stock: parseInt(stock), 
-        location,
-        imageurl,
-        status: "PENGAJUAN", // Status default untuk pengajuan
-        categories: {
-          create: categoryArray.map(categoryId => ({
-            category: { connect: { id: categoryId } },
-          })),
-        },
-        activeAt: new Date(activeAt),
-      },
-    });
+    const book = BookService.create(name, description, stock, location, imageurl, categoryArray, activeAt, "PENGAJUAN");
+
 
     res.status(201).json({
       message: "Book request submitted successfully",

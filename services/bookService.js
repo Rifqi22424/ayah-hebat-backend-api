@@ -83,23 +83,26 @@ class BookService {
         });
     }
 
-    create(name, description, stock, location, imageurl, categoryArray){
-        const book = prisma.book.create({
+    create(name, description, stock, location, imageurl, categoryArray, activeAt, status){
+        return prisma.book.create({
             data: {
               name,
               description,
               stock: parseInt(stock),
               location,
-              status: "DITERIMA",
+              status,
               imageurl,
               categories: {
                 create: categoryArray.map(categoryId => ({
                   category: { connect: { id: categoryId } },
                 })),
               },
+              activeAt: new Date(activeAt),
             },
           });
     }
+
+
 }
 
 module.exports = new BookService();
