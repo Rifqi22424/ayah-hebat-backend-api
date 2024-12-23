@@ -1,49 +1,18 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-const getBooks = async (req, res) => {
+const BookService = require('../services/bookService');
+
+const getAllBooks = async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
   const offset = parseInt(req.query.offset) || 0
   const search = req.query.search || "";
   const category = req.query.category || "";
   const status = req.query.status || "DITERIMA";
   try {
-    const books = await prisma.book.findMany({
-      where: {
-        name: {
-          contains: search
-        },
-        status,
-        ...(category && {
-          categories: {
-            some: {
-              category: {
-                name: {
-                  contains: category
-                }
-              }
-            }
-          }
-        })
-      },
-      skip: offset,
-      take: limit,
-      select: {
-        id: true,
-        name: true,
-        stock: true,
-        imageurl: true,
-        categories: {
-          select: {
-            category: {
-              select: {
-                name: true
-              }
-            }
-          }
-        }
-      }
-    });
+    console.log(limit, offset, search, category, status);
+    
+    const books = await BookService.getAll(limit, offset, search, category, status);
 
     res.status(200).json({
       message: "success get data",
@@ -64,45 +33,7 @@ const getBookById = async (req, res) => {
     });
   }
 
-  const book = await prisma.book.findUnique({
-    where: {
-      id
-    },
-    select: {
-      name: true,
-      description: true,
-      imageurl: true,
-      location: true,
-      stock: true,
-      categories: {
-        select: {
-          category: {
-            select: {
-              name: true
-            }
-          }
-        }
-      },
-      comment_book: {
-        select: {
-          id: true,
-          description: true,
-          user: {
-            select: {
-              id: true,
-              email: true,
-              profile: {
-                select: {
-                  nama: true,
-                  photo: true,
-                }
-              }
-            }
-          }
-        }
-      },
-    }
-  });
+  const book = await BookService.getById(id);
 
   return res.status(200).json({
     message: "succses show comment",
@@ -126,25 +57,11 @@ const createBook = async (req, res) => {
     
     const imageurl = req.file ? req.file.filename : null;
 
-
-    const book = await prisma.book.create({
-      data: {
-        name,
-        description,
-        stock: parseInt(stock),
-        location,
-        status: "DITERIMA",
-        imageurl,
-        categories: {
-          create: categoryArray.map(categoryId => ({
-            category: { connect: { id: categoryId } },
-          })),
-        },
-      },
-    });
+    const createdBook = BookService.create(name, description, stock, location, imageurl, categoryArray);
+    
     res.status(201).json({
       message: "create success",
-      data: book
+      data: createdBook
     });
   } catch (error) {
     console.error('Error creating book:', error);
@@ -320,7 +237,7 @@ async function checkBook(id) {
 
 
 module.exports = {
-  getBooks,
+  getBooks: getAllBooks,
   createBook,
   createBookRequest,
   updateBookRequestStatus,
