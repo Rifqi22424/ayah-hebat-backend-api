@@ -310,6 +310,7 @@ const getMyBookDonations = async (req, res) => {
           },
         },
       },
+      orderBy: [{ id: "desc" }],
     });
 
     // const booksWithBorrowedCount = books.map((book) => ({
