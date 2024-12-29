@@ -12,7 +12,7 @@ const getAllAddresses = async (req, res) => {
   } catch (error) {
     res
       .status(500)
-      .json({ message: "Error fetching addresses", error: error.message });
+      .json({ error: "Error fetching addresses" });
   }
 };
 
@@ -40,7 +40,7 @@ const createAddress = async (req, res) => {
   } catch (error) {
     res
       .status(500)
-      .json({ message: "Error creating address", error: error.message });
+      .json({ error: "Error creating address" });
   }
 };
 
@@ -72,7 +72,7 @@ const updateAddress = async (req, res) => {
   } catch (error) {
     res
       .status(500)
-      .json({ message: "Error updating address", error: error.message });
+      .json({ error: "Error updating address" });
   }
 };
 

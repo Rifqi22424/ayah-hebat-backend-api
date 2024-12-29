@@ -54,7 +54,7 @@ const getBooks = async (req, res) => {
       data: books,
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Error fetching data" });
   }
 };
 
@@ -185,7 +185,7 @@ const createBook = async (req, res) => {
     });
   } catch (error) {
     console.error("Error creating book:", error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "Error creating book" });
   }
 };
 
@@ -362,7 +362,13 @@ const createBookDonation = async (req, res) => {
     if (!name || typeof name !== "string" || name.trim() === "") {
       return res
         .status(400)
-        .json({ message: "Name is required and must be a non-empty string" });
+        .json({ error: "Name is required and must be a non-empty string" });
+    }
+
+    if (name.length > 190) {
+      return res.status(400).json({
+        error: "Name is too long. Maximum length is 190 characters"
+      })
     }
 
     if (
@@ -371,14 +377,14 @@ const createBookDonation = async (req, res) => {
       description.trim() === ""
     ) {
       return res.status(400).json({
-        message: "Description is required and must be a non-empty string",
+        error: "Description is required and must be a non-empty string",
       });
     }
 
     if (!stock || isNaN(parseInt(stock)) || parseInt(stock) <= 0) {
       return res
         .status(400)
-        .json({ message: "Stock is required and must be a positive number" });
+        .json({ error: "Stock is required and must be a positive number" });
     }
 
     if (
@@ -387,7 +393,7 @@ const createBookDonation = async (req, res) => {
       categoryIds.trim() === ""
     ) {
       return res.status(400).json({
-        message:
+        error:
           "CategoryIds must be a comma-separated string and cannot be empty",
       });
     }
@@ -395,12 +401,12 @@ const createBookDonation = async (req, res) => {
     if (!planSentAt || isNaN(Date.parse(planSentAt))) {
       return res
         .status(400)
-        .json({ message: "planSentAt is required and must be a valid date" });
+        .json({ error: "planSentAt is required and must be a valid date" });
     }
 
     if (!categoryIds) {
       return res.status(400).json({
-        message: "categoryIds must at least one",
+        error: "categoryIds must at least one",
       });
     }
 
