@@ -20,7 +20,7 @@ enum Role {
 
 model User {
   id               Int      @id @default(autoincrement())
-  username         String
+  username         String   @unique
   email            String   @unique
   password         String 
   profile          Profile?
@@ -33,8 +33,10 @@ model User {
   CommentLike      CommentLike[]
   reply            Reply[]
   replyLike        ReplyLike[]
+  Report           Report[]
   peminjaman       Peminjaman[]
   commentBook      CommentBook[]
+  books            Book[]
   isVerified       Boolean  @default(false)
   verificationCode String?
   deleteAccountVerficationCode String? 
@@ -117,6 +119,8 @@ model Post {
   createdAt   DateTime       @default(now())
   updateAt    DateTime       @updatedAt
   user        User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  Report Report[]
 }
 
 model PostLike {
@@ -147,7 +151,8 @@ model Comment {
   postId      Int
   post        Post        @relation(fields: [postId], references: [id], onDelete: Cascade)
   commentLikes  CommentLike[]
-  replies      Reply[]
+  replies       Reply[]
+  Report        Report[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 }
@@ -170,6 +175,7 @@ model Reply {
   commentId   Int
   comment     Comment        @relation(fields: [commentId], references: [id], onDelete: Cascade)
   replyLikes  ReplyLike[]
+  Report      Report[]
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 }
@@ -191,6 +197,12 @@ model userDeleted {
   deletedAt                DateTime @default(now()) 
 }
 
+enum BookStatus {
+  PENDING      // Pengajuan
+  ACCEPTED     // Diterima
+  REJECTED     // Ditolak oleh admin
+  CANCELLED    // Dibatalkan oleh user yang mengajukan buku tersebut
+}
 
 model Book {
   id  Int @id @default(autoincrement())
@@ -198,39 +210,66 @@ model Book {
   description String @db.Text
   stock Int
   imageurl String
+  userId Int
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status BookStatus @default(PENDING)
   categories BookCategories[]
   peminjaman Peminjaman[]
   comment_book CommentBook[]
-}
 
+  planSentAt DateTime @default(now()) // dikirim oleh user ke admin pada waktu
+  acceptedAt DateTime? // diterima oleh admin pada waktu
+  rejectedAt DateTime? // ditolak oleh admin pada waktu
+  canceledAt DateTime? // dibatalkan oleh user pada waktu
 
-model CommentBook {
-  id Int @id @default(autoincrement())
-  user User @relation(fields: [userId], references: [id])
-  userId Int
-  book Book @relation(fields: [bookId], references: [id])
-  bookId Int
-  description String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-enum Status {
-  SUDAH_DIKEMBALIKAN
-  SUDAH_DIAMBIL
-  TIDAK_JADI
-  PENDING
+
+model OfficeAddress {
+  id  Int @id @default(autoincrement())
+  name String
+  address String @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CommentBook {
+  id Int @id @default(autoincrement())
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  bookId Int
+  description String @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum BorrowStatus {
+  PENDING      // Pengajuan
+  ALLOWED      // Diizinkan Diambil
+  TAKEN        // Sudah Diambil
+  RETURNED     // Sudah Dikembalikan
+  CANCELLED    // Dibatalkan
 }
 
 model  Peminjaman {
   id Int @id @default(autoincrement())
-  book Book @relation(fields: [bookId], references: [id])
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
   bookId Int
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int
-  status Status
-  startDate DateTime
-  endDate DateTime
+  status BorrowStatus @default(PENDING)
+
+  submissionDate DateTime @default(now()) // Tanggal pengajuan
+  deadlineDate DateTime                   // Deadline pengembalian buku
+  plannedPickUpDate DateTime             // Tanggal yang direncanakan untuk mengambil buku
+  actualPickUpDate DateTime?              // Tanggal saat buku benar-benar diambil
+  returnDate DateTime?                    // Tanggal saat buku dikembalikan
+  cancelDate DateTime?                    // Tanggal pembatalan peminjaman (jika dibatalkan)
+
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Category {
@@ -240,13 +279,27 @@ model Category {
 }
 
 model BookCategories {
-  book Book @relation(fields: [bookId], references: [id])
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
   bookId Int
-  category Category @relation(fields: [categoryId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId Int
   @@id([categoryId, bookId])
 }
 
+model Report {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  postId    Int?     // Optional, if reporting a pos
+  commentId Int?     // Optional, if reporting a comment
+  replyId   Int?     // Optional, if reporting a reply
+  reason    String   @db.Text
+  status    String   @default("Pending")
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  reply     Reply?   @relation(fields: [replyId], references: [id], onDelete: Cascade)
+}
 
 model Message {
   id Int @id @default(autoincrement())
