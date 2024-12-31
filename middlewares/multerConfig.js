@@ -23,9 +23,14 @@ const fileFilter = (req, file, cb) => {
 
 const storage = multer.diskStorage({  
   destination: function (req, file, cb) {
+    console.log("lksjdflksjdlkfjslkfj");
     if(req.baseUrl === '/books'){
       cb(null, 'uploads/books/');
-    } else{
+    }
+    if(req.baseUrl === '/messages'){
+      cb(null, 'uploads/messages/');
+    }
+    else{
       cb(null, 'uploads/');
     }
   },

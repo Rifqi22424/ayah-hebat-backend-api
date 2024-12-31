@@ -125,8 +125,8 @@ cron.schedule(
 
 async function initializeApp() {
   try {
-    await setupAdmin();
-    await fixDuplicateUsernames();
+    // await setupAdmin();
+    // await fixDuplicateUsernames();
   } catch (e) {
     console.error("Error during initialization:", e);
   } finally {
