@@ -32,7 +32,7 @@ const officeAddressRoutes = require("./routes/officeAddressRoutes");
 
 require('dotenv').config();
 const setupAdmin = require('./setup/setupAdmin.js');
-const setupWebSocket = require('./config/websocketConfig.js');
+const {WsConfig} = require('./config/WsConfig');
 const swaggerUI = require('swagger-ui-express');
 const YAML = require('yamljs');
 const {serve} = require("swagger-ui-express");
@@ -42,7 +42,6 @@ const swaggerDoc = YAML.load('./ayah-hebat-api.yaml');
 // const { createSqlDataSource } = require('@forestadmin/datasource-sql');
 const { fixDuplicateUsernames } = require("./setup/fixDuplicateUsernames.js");
 require("dotenv").config();
-const setupAdmin = require("./setup/setupAdmin.js");
 const { authorizeAdmin } = require("./middlewares/authorizationMiddleware.js");
 
 const app = express();
@@ -134,9 +133,12 @@ async function initializeApp() {
     await prisma.$disconnect();
   }
 
+
   const PORT = process.env.PORT || 3000;
   
-  setupWebSocket(server);
+  const wsConfig = new WsConfig(server);
+  wsConfig.start();
+
   server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });

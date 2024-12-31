@@ -1,6 +1,7 @@
 const {PrismaClient} = require('@prisma/client')
 const prisma = new PrismaClient();
 
+
 // GET /messages?receipentId=1&limit=10&offset=0
 const getMessages = async (req, res) => {
 
@@ -51,5 +52,8 @@ const getMessages = async (req, res) => {
         })
     }
 }
+
+// POST /messages
+
 
 module.exports ={getMessages}

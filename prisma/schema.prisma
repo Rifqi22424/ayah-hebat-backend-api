@@ -48,7 +48,7 @@ model User {
   totalScoreDay    Int?     @default(0)
   role             Role?    @default(USER)
   sentMessage Message[] @relation("Sender")
-  receivedMessage Message[] @relation("Receipient")
+  receivedMessage Message[] @relation("Recipient")
 }
 
 model Profile {
@@ -302,14 +302,28 @@ model Report {
 }
 
 model Message {
-  id Int @id @default(autoincrement())
-  senderUser User @relation("Sender", fields: [senderId], references: [id])
-  senderId Int
-  receipientUser User @relation("Receipient", fields: [receipientId], references: [id])
-  receipientId Int
-  content String
-  createdAt DateTime @default(now())
+  id          Int       @id @default(autoincrement())
+  sender      User      @relation("Sender", fields: [senderId], references: [id])
+  senderId    Int
+  recipient   User      @relation("Recipient", fields: [recipientId], references: [id])
+  recipientId Int
+  text        String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  attachment  Attachment?
+
+  @@index([senderId, recipientId])
 }
+
+model Attachment {
+  id                Int                @id @default(autoincrement())
+  conversation      Message       @relation(fields: [conversationId], references: [id])
+  conversationId    Int @unique
+  url               String
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+}
+
 model ErrorLog {
   id          Int       @id @default(autoincrement())
   errorMessage String    @db.Text
