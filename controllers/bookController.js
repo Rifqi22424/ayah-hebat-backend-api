@@ -17,6 +17,9 @@ const getBooks = async (req, res) => {
         name: {
           contains: search,
         },
+        stock: {
+          gt: 0,
+        },
         status,
         ...(category && {
           categories: {
