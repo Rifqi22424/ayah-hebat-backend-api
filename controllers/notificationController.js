@@ -1,19 +1,20 @@
-const { PrismaClient } = require('@prisma/client');
-const admin = require('firebase-admin');
-const serviceAccount = require('../ayah-hebat-app-firebase-adminsdk-wu50j-4869861ec0.json'); 
+const { PrismaClient } = require("@prisma/client");
+const { photoBaseUrl } = require("../utils/notificationService");
 const prisma = new PrismaClient();
+const firebaseAdmin = require("../setup/initializeFirebaseAdmin");
+// const admin = require('firebase-admin');
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount),
+// });
 
 // function photoBaseUrl() {
 //   return "https://backend.ayahhebat.mangcoding.com/uploads/";
 // }
 
-function photoBaseUrl() {
-  return "https://dhrqldvp-3000.asse.devtunnels.ms/uploads/";
-}
+// function photoBaseUrl() {
+//   return "https://dhrqldvp-3000.asse.devtunnels.ms/uploads/";
+// }
 
 // function getBaseUrl() {
 //   return req.protocol + '://' + req.get('host');
@@ -31,12 +32,14 @@ async function sendToUser(req, res) {
     });
 
     if (!user || !user.fcmToken) {
-      return res.status(404).json({ error: 'User not found or FCM token not available' });
+      return res
+        .status(404)
+        .json({ error: "User not found or FCM token not available" });
     }
 
     const notificationData = data ? JSON.parse(data) : null;
 
-    await admin.messaging().send({
+    await firebaseAdmin.messaging().send({
       token: user.fcmToken,
       notification: {
         title,
@@ -56,10 +59,12 @@ async function sendToUser(req, res) {
       },
     });
 
-    return res.status(200).json({ message: 'Notification sent to user successfully' });
+    return res
+      .status(200)
+      .json({ message: "Notification sent to user successfully" });
   } catch (error) {
-    console.error('Error sending notification to user:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    console.error("Error sending notification to user:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 }
 
@@ -72,24 +77,24 @@ async function sendToAll(req, res) {
     const allUsers = await prisma.user.findMany();
 
     if (!allUsers.length) {
-      return res.status(404).json({ error: 'No users found' });
+      return res.status(404).json({ error: "No users found" });
     }
 
-    const tokens = allUsers.map(user => user.fcmToken);
+    const tokens = allUsers.map((user) => user.fcmToken);
 
     const notificationData = data ? JSON.parse(data) : null;
 
-    await admin.messaging().sendEachForMulticast({
+    await firebaseAdmin.messaging().sendEachForMulticast({
       tokens,
       notification: {
         title,
         body,
-        imageUrl
+        imageUrl,
       },
       data: notificationData,
     });
 
-    const notificationPromises = allUsers.map(user => 
+    const notificationPromises = allUsers.map((user) =>
       prisma.notification.create({
         data: {
           title,
@@ -103,10 +108,12 @@ async function sendToAll(req, res) {
 
     await Promise.all(notificationPromises);
 
-    return res.status(200).json({ message: 'Notification sent to all users successfully' });
+    return res
+      .status(200)
+      .json({ message: "Notification sent to all users successfully" });
   } catch (error) {
-    console.error('Error sending notification to all users:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    console.error("Error sending notification to all users:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 }
 
@@ -116,13 +123,13 @@ async function getUserNotifications(req, res) {
   try {
     const notifications = await prisma.notification.findMany({
       where: { userId },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
     });
 
     return res.status(200).json(notifications);
   } catch (error) {
-    console.error('Error fetching notifications:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    console.error("Error fetching notifications:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 }
 
@@ -136,8 +143,8 @@ async function getUserNotificationById(req, res) {
 
     return res.status(200).json(notification);
   } catch (error) {
-    console.error('Error fetching notification:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    console.error("Error fetching notification:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 }
 

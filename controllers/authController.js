@@ -1,50 +1,150 @@
-const bcrypt = require('bcrypt');
-const { PrismaClient } = require('@prisma/client');
-const { generateToken } = require('../middlewares/jwtMiddleware');
+const bcrypt = require("bcrypt");
+const { PrismaClient } = require("@prisma/client");
+const { generateToken } = require("../middlewares/jwtMiddleware");
 
 const prisma = new PrismaClient();
 const saltRounds = 10;
+
+// const registerUser = async (req, res) => {
+//   try {
+//     const { username, email, password, confirmPassword } = req.body;
+
+//     console.log(req.body);
+
+//     if ((!username, !email, !password, !confirmPassword))
+//       return res.status(400).json({ error: "All fields are required" });
+
+//     if (password !== confirmPassword) {
+//       return res
+//         .status(400)
+//         .json({ error: "Password and confirm password do not match" });
+//     }
+
+//     const existingUser = await prisma.user.findUnique({
+//       where: { email },
+//     });
+
+//     const existingUsername = await prisma.user.findUnique({
+//       where: { username },
+//     });
+
+//     // if (existingUsername || existingUser) {
+//     //   return res.status(400).json({ error: 'Username or Gmail is already taken' });
+//     // }
+
+//     if (
+//       (existingUser && !existingUser.isVerified) ||
+//       (existingUsername && !existingUser.isVerified)
+//     ) {
+//       if (!existingUser.isVerified) {
+//         const verificationCode = generateVerificationCode();
+//         await prisma.user.updateMany({
+//           where: { email, isVerified: false },
+//           data: {
+//             username,
+//             password: await bcrypt.hash(password, saltRounds),
+//             verificationCode,
+//           },
+//         });
+//         sendVerificationEmail(email, verificationCode);
+//         return res.json({
+//           message: "Email verification resent. Please check your email.",
+//         });
+//       } else {
+//         return res
+//           .status(400)
+//           .json({ error: "Email is already registered and verified" });
+//       }
+//     }
+
+//     const verificationCode = generateVerificationCode();
+
+//     const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+//     const newUser = await prisma.user.create({
+//       data: {
+//         username,
+//         email,
+//         password: hashedPassword,
+//         verificationCode,
+//       },
+//     });
+
+//     sendVerificationEmail(email, verificationCode);
+
+//     res.json({
+//       message:
+//         "User registered successfully. Check your email for verification.",
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// };
 
 const registerUser = async (req, res) => {
   try {
     const { username, email, password, confirmPassword } = req.body;
 
+    console.log(req.body);
+
+    // Validasi input
+    if (!username || !email || !password || !confirmPassword) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
     if (password !== confirmPassword) {
-      return res.status(400).json({ error: 'Password and confirm password do not match' });
+      return res
+        .status(400)
+        .json({ error: "Password and confirm password do not match" });
     }
 
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
-    });
+    // Cek apakah username atau email sudah ada
+    const existingUser = await prisma.user.findUnique({ where: { email } });
+    const existingUsername = await prisma.user.findUnique({ where: { username } });
 
-    const existingUsername = await prisma.user.findUnique({
-      where: { username },
-    });
-
-    // if (existingUsername || existingUser) {
-    //   return res.status(400).json({ error: 'Username or Gmail is already taken' });
-    // }
-
-    if (existingUser && !existingUser.isVerified || existingUsername && !existingUser.isVerified ) {
-      if (!existingUser.isVerified) { 
-        const verificationCode = generateVerificationCode();
-        await prisma.user.updateMany({
-          where: { email, isVerified: false }, 
-          data: { 
-            username,
-            password: await bcrypt.hash(password, saltRounds),
-            verificationCode 
-          }
-        });
-        sendVerificationEmail(email, verificationCode);
-        return res.json({ message: 'Email verification resent. Please check your email.' });
-      } else {
-        return res.status(400).json({ error: 'Email is already registered and verified' });
-      }
+    if (existingUser && existingUser.isVerified) {
+      return res.status(400).json({ error: "Email is already registered and verified" });
     }
 
-    const verificationCode = generateVerificationCode(); 
+    if (existingUsername && existingUsername.isVerified) {
+      return res.status(400).json({ error: "Username is already taken" });
+    }
 
+    // Jika email sudah ada tetapi belum diverifikasi
+    if (existingUser && !existingUser.isVerified) {
+      const verificationCode = generateVerificationCode();
+      await prisma.user.update({
+        where: { email },
+        data: {
+          username,
+          email,
+          password: await bcrypt.hash(password, saltRounds),
+          verificationCode,
+        },
+      });
+      sendVerificationEmail(email, verificationCode);
+      return res.json({ message: "Email verification resent. Please check your email." });
+    }
+
+    // Jika username sudah ada tetapi belum diverifikasi
+    if (existingUsername && !existingUsername.isVerified) {
+      const verificationCode = generateVerificationCode();
+      await prisma.user.update({
+        where: { username },
+        data: {
+          username,
+          email,
+          password: await bcrypt.hash(password, saltRounds),
+          verificationCode,
+        },
+      });
+      sendVerificationEmail(email, verificationCode);
+      return res.json({ message: "Email verification resent. Please check your email." });
+    }
+
+    // Jika belum ada di database, buat user baru
+    const verificationCode = generateVerificationCode();
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     const newUser = await prisma.user.create({
@@ -56,12 +156,14 @@ const registerUser = async (req, res) => {
       },
     });
 
-    sendVerificationEmail(email, verificationCode); 
+    sendVerificationEmail(email, verificationCode);
 
-    res.json({ message: 'User registered successfully. Check your email for verification.' });
+    res.json({
+      message: "User registered successfully. Check your email for verification.",
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -74,25 +176,25 @@ const verifyUser = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: "User not found" });
     }
 
     if (user.verificationCode !== verificationCode) {
-      return res.status(401).json({ error: 'Invalid verification code' });
+      return res.status(401).json({ error: "Invalid verification code" });
     }
 
     const updatedUser = await prisma.user.update({
       where: { id: user.id },
       data: {
-        isVerified: true, 
-        verificationCode: null, 
+        isVerified: true,
+        verificationCode: null,
       },
     });
 
-    res.json({ message: 'User verified successfully.' });
+    res.json({ message: "User verified successfully." });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -105,11 +207,11 @@ const resendVerificationCode = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: "User not found" });
     }
 
     if (user.isVerified) {
-      return res.status(400).json({ error: 'User is already verified' });
+      return res.status(400).json({ error: "User is already verified" });
     }
 
     const newVerificationCode = generateVerificationCode();
@@ -123,17 +225,20 @@ const resendVerificationCode = async (req, res) => {
 
     sendVerificationEmail(email, newVerificationCode);
 
-    res.json({ message: 'Verification code resent successfully.' });
+    res.json({ message: "Verification code resent successfully." });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
 
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ error: "Email and password are required" });
+    }
 
     const user = await prisma.user.findUnique({
       where: { email },
@@ -143,25 +248,33 @@ const loginUser = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(401).json({ error: 'Invalid email or password' });
+      return res.status(401).json({ error: "Invalid email or password" });
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {
-      return res.status(401).json({ error: 'Invalid email or password' });
+      return res.status(401).json({ error: "Invalid email or password" });
     }
 
     if (!user.isVerified) {
-      return res.status(401).json({ error: 'User is not verified' });
+      return res.status(401).json({ error: "User is not verified" });
     }
 
     const token = generateToken(user.id);
 
-    res.json({ token, user: { id: user.id, username: user.username, email: user.email, profile: user.profile } });
+    res.json({
+      token,
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        profile: user.profile,
+      },
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -174,10 +287,10 @@ const generateVerificationCode = () => {
 };
 
 const sendVerificationEmail = async (email, verificationCode) => {
-  const nodemailer = require('nodemailer');
+  const nodemailer = require("nodemailer");
 
   const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",  
+    host: "smtp.gmail.com",
     port: 465,
     secure: true,
     auth: {
@@ -185,35 +298,35 @@ const sendVerificationEmail = async (email, verificationCode) => {
       pass: "citl rjsa irmx tpcx",
     },
   });
-  
+
   await new Promise((resolve, reject) => {
     transporter.verify(function (error, success) {
-        if (error) {
-            console.log(error);
-            reject(error);
-        } else {
-            console.log("Server is ready to take our messages");
-            resolve(success);
-        }
+      if (error) {
+        console.log(error);
+        reject(error);
+      } else {
+        console.log("Server is ready to take our messages");
+        resolve(success);
+      }
     });
-});
+  });
 
   const mailOptions = {
-    from: 'ayahhebatmangcoding@gmail.com',
+    from: "ayahhebatmangcoding@gmail.com",
     to: email,
-    subject: 'Verifikasi Akun',
+    subject: "Verifikasi Akun",
     text: `Kode verifikasi Anda: ${verificationCode}`,
   };
 
   await new Promise((resolve, reject) => {
     transporter.sendMail(mailOptions, (err, info) => {
-        if (err) {
-            reject(err);
-        } else {
-            resolve(info);
-        }
+      if (err) {
+        reject(err);
+      } else {
+        resolve(info);
+      }
     });
-});
+  });
 };
 
 const changePassword = async (req, res) => {
@@ -225,17 +338,19 @@ const changePassword = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: "User not found" });
     }
 
     const passwordMatch = await bcrypt.compare(oldPassword, user.password);
 
     if (!passwordMatch) {
-      return res.status(401).json({ error: 'Invalid old password' });
+      return res.status(401).json({ error: "Invalid old password" });
     }
 
     if (newPassword !== confirmNewPassword) {
-      return res.status(400).json({ error: 'New password and confirm new password do not match' });
+      return res
+        .status(400)
+        .json({ error: "New password and confirm new password do not match" });
     }
 
     const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
@@ -247,12 +362,19 @@ const changePassword = async (req, res) => {
       },
     });
 
-    res.json({ message: 'Password changed successfully' });
+    res.json({ message: "Password changed successfully" });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-
-module.exports = { registerUser, loginUser, verifyUser, resendVerificationCode, changePassword, generateVerificationCode, sendVerificationEmail };
+module.exports = {
+  registerUser,
+  loginUser,
+  verifyUser,
+  resendVerificationCode,
+  changePassword,
+  generateVerificationCode,
+  sendVerificationEmail,
+};

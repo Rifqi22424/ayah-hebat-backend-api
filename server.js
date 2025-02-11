@@ -22,7 +22,10 @@ const bookRoutes = require("./routes/bookRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const commentBookRoutes = require("./routes/commentBookRoute");
 const officeAddressRoutes = require("./routes/officeAddressRoutes");
+const infaqRoutes = require("./routes/infaqRoutes");
+const allocationTypeRoutes = require("./routes/allocationTypeRoutes");
 // const path = require('path');
+const { handleWebhook } = require("./controllers/infaqController.js");
 
 const { fixDuplicateUsernames } = require("./setup/fixDuplicateUsernames.js");
 require("dotenv").config();
@@ -31,6 +34,7 @@ const swaggerUI = require("swagger-ui-express");
 const YAML = require("yamljs");
 const { serve } = require("swagger-ui-express");
 const swaggerDoc = YAML.load("./ayah-hebat-api.yaml");
+require("./setup/initializeFirebaseAdmin.js");
 
 const app = express();
 const prisma = new PrismaClient();
@@ -43,6 +47,7 @@ app.use("/uploads", express.static("uploads"));
 app.use("/uploads/books", express.static("uploads/books"));
 app.use("/auth", authRoutes);
 
+app.post("/midtrans", handleWebhook);
 // app.use('/.well-known', express.static(path.join(__dirname, '.well-known')));
 app.use(authenticateToken);
 
@@ -61,6 +66,12 @@ app.use("/books", bookRoutes);
 app.use("/categories", categoryRoutes);
 app.use("/comment-book", commentBookRoutes);
 app.use("/address", officeAddressRoutes);
+app.use("/infaq", infaqRoutes);
+app.use("/allocation", allocationTypeRoutes);
+
+app.use((req, res, next) => {
+  res.status(404).json({ error: "Route not defined" });
+});
 
 async function logError(error) {
   try {
