@@ -236,24 +236,6 @@ const getMyBookDonationById = async (req, res) => {
           },
         },
       },
-      // comment_book: {
-      //   select: {
-      //     id: true,
-      //     description: true,
-      //     user: {
-      //       select: {
-      //         id: true,
-      //         email: true,
-      //         profile: {
-      //           select: {
-      //             nama: true,
-      //             photo: true,
-      //           },
-      //         },
-      //       },
-      //     },
-      //   },
-      // },
     },
   });
 
@@ -315,23 +297,6 @@ const getMyBookDonations = async (req, res) => {
       },
       orderBy: [{ id: "desc" }],
     });
-
-    // const booksWithBorrowedCount = books.map((book) => ({
-    //   ...book,
-    //   borrowedCount: book._count.peminjaman,
-    // }));
-
-    // const totalPage = Math.ceil(totalCount / limit);
-
-    // return res.status(200).json({
-    //   message: "success get data",
-    //   data: peminjaman,
-    //   pagination: {
-    //     currentPage: page,
-    //     totalPage,
-    //     totalItems: totalCount,
-    //     itemsPerPage: limit,
-    //   }
 
     const totalCount = await prisma.book.count({
       where: {

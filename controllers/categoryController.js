@@ -14,8 +14,6 @@ const getCategories = async (req, res) => {
           contains: search
         }
       },
-      // skip: offset,
-      // take: limit
     });
 
     const result = [{ id: 0, name: "Semua" }, ...categories];

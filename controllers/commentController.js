@@ -259,39 +259,6 @@ const getPostCommentsById = async (req, res) => {
       take: limit,
     });
 
-    // const formattedComments = await Promise.all(
-    //   comments.map(async (comment) => {
-    //     const isLikedByMe = await prisma.commentLike.findFirst({
-    //       where: {
-    //         commentId: comment.id,
-    //         userId,
-    //       },
-    //     });
-
-    //     const formattedReplies = await Promise.all(
-    //       comment.replies.map(async (reply) => {
-    //         const isReplyLikedByMe = await prisma.replyLike.findFirst({
-    //           where: {
-    //             replyId: reply.id,
-    //             userId,
-    //           },
-    //         });
-
-    //         return {
-    //           ...reply,
-    //           isLikedByMe: !!isReplyLikedByMe, // Check if the reply is liked by the user
-    //         };
-    //       })
-    //     );
-
-    //     return {
-    //       ...comment,
-    //       isLikedByMe: !!isLikedByMe,
-    //       replies: formattedReplies,
-    //     };
-    //   })
-    // );
-
     const formattedComments = await formatComments(comments, userId);
 
     res.status(200).json(formattedComments);
