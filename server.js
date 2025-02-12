@@ -12,6 +12,10 @@ const commentRoutes = require("./routes/commentRoutes.js");
 const peminjamanBukuRoute = require("./routes/peminjamanBukuRoute.js");
 const replyRoutes = require("./routes/replyRoutes.js");
 const reportRoutes = require("./routes/reportRoutes.js");
+
+// admin routes
+const peminjamanManamagementRoutes = require("./routes/admin/peminjamanManagementRoutes.js");
+
 const { PrismaClient } = require("@prisma/client");
 const { authenticateToken } = require("./middlewares/jwtMiddleware.js");
 var cron = require("node-cron");
@@ -33,6 +37,7 @@ const setupAdmin = require("./setup/setupAdmin.js");
 const swaggerUI = require("swagger-ui-express");
 const YAML = require("yamljs");
 const { serve } = require("swagger-ui-express");
+const { authorizeAdmin } = require("./middlewares/authorizationMiddleware.js");
 const swaggerDoc = YAML.load("./ayah-hebat-api.yaml");
 require("./setup/initializeFirebaseAdmin.js");
 
@@ -72,6 +77,9 @@ app.use("/allocation", allocationTypeRoutes);
 app.use((req, res, next) => {
   res.status(404).json({ error: "Route not defined" });
 });
+
+app.use(authorizeAdmin);
+app.use("/admin/peminjaman-buku", peminjamanManamagementRoutes)
 
 async function logError(error) {
   try {
