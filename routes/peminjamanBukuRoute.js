@@ -7,5 +7,4 @@ router.get("/me", getMyPeminjamanBuku);
 router.get("/:id", getPinjamBukuById);
 router.post("/", pinjamBuku);
 
-
 module.exports = router;
