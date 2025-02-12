@@ -2,23 +2,6 @@ const { PrismaClient } = require("@prisma/client");
 const { photoBaseUrl } = require("../utils/notificationService");
 const prisma = new PrismaClient();
 const firebaseAdmin = require("../setup/initializeFirebaseAdmin");
-// const admin = require('firebase-admin');
-
-// admin.initializeApp({
-//   credential: admin.credential.cert(serviceAccount),
-// });
-
-// function photoBaseUrl() {
-//   return "https://backend.ayahhebat.mangcoding.com/uploads/";
-// }
-
-// function photoBaseUrl() {
-//   return "https://dhrqldvp-3000.asse.devtunnels.ms/uploads/";
-// }
-
-// function getBaseUrl() {
-//   return req.protocol + '://' + req.get('host');
-// }
 
 async function sendToUser(req, res) {
   const userId = parseInt(req.params.id);

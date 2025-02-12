@@ -2,39 +2,6 @@ const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 
-// const createReply = async (req, res) => {
-//   try {
-//     let commentId = parseInt(req.params.commentId);
-//     const { body } = req.body;
-//     const userId = req.userId;
-
-//     if (!body) {
-//       return res.status(400).json({ error: "Body is missing" });
-//     }
-
-//     const checkComment = await prisma.comment.findUnique({
-//       where: { id: commentId },
-//     });
-
-//     if (!checkComment) {
-//       return res.status(404).json({ error: "Comment not found" });
-//     }
-
-//     const post = await prisma.reply.create({
-//       data: {
-//         userId,
-//         commentId,
-//         body,
-//       },
-//     });
-
-//     res.json({ message: "Reply added successfully." });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// };
-
 const createReply = async (req, res) => {
   try {
     let commentId = parseInt(req.params.commentId);

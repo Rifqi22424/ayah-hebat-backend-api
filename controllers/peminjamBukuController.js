@@ -71,13 +71,6 @@ const pinjamBuku = async (req, res) => {
     return res.status(202).json({
       message: "success",
       data: {
-        // idPeminjaman: peminjaman.id,
-        // bookName: book.name,
-        // imageUrl: book.imageurl,
-        // submissionDate: peminjaman.submissionDate,
-        // deadlineDate: peminjaman.deadlineDate,
-        // from: "KUTAB ALFATIH",
-        // to: user.username,
         id: peminjaman.id,
         status: peminjaman.status,
         submissionDate: peminjaman.submissionDate,
@@ -87,11 +80,6 @@ const pinjamBuku = async (req, res) => {
         returnDate: peminjaman.returnDate,
         cancelDate: peminjaman.cancelDate,
         book: peminjaman.book,
-        // name: peminjaman.book.name,
-        // imageurl: peminjaman.book.imageurl,
-        // categories: peminjaman.book.categories.map((cat) => ({
-        //   name: cat.category.name,
-        // })),
       },
     });
   } catch (e) {
@@ -104,25 +92,6 @@ const pinjamBuku = async (req, res) => {
 
 const getPinjamBukuById = async (req, res) => {
   const id = parseInt(req.params.id);
-  // const userId = parseInt(req.userId);
-
-  // const peminjaman = await prisma.peminjaman.findUnique({
-  //   where: {
-  //     id,
-  //   },
-  // });
-
-  // if (!peminjaman) {
-  //   return res.status(404).json({
-  //     error: "Peminjaman tidak ditemukan",
-  //   });
-  // }
-
-  // if (peminjaman.userId !== userId) {
-  //   return res.status(403).json({
-  //     error: "Forbidden",
-  //   });
-  // }
 
   try {
     const peminjaman = await prisma.peminjaman.findUnique({
