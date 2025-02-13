@@ -154,12 +154,20 @@ const handleWebhook = async (req, res) => {
       });
     }
 
+    const allocationType = await prisma.allocationType.findUnique({
+      where: { code: infaqUpdated.allocationTypeCode },
+      select: {
+        name: true,
+      },
+    });
+
     const imageUrl = null;
     const data = {
       ...Object.fromEntries(
         Object.entries(infaqUpdated).map(([key, value]) => [key, String(value)])
       ),
       notificationType: "infaqNotification",
+      allocationType: allocationType.name,
     };
 
     console.log(data);
