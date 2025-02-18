@@ -28,7 +28,7 @@ const commentBookRoutes = require("./routes/commentBookRoute");
 const officeAddressRoutes = require("./routes/officeAddressRoutes");
 const infaqRoutes = require("./routes/infaqRoutes");
 const allocationTypeRoutes = require("./routes/allocationTypeRoutes");
-// const path = require('path');
+const path = require("path");
 const { handleWebhook } = require("./controllers/infaqController.js");
 
 const { fixDuplicateUsernames } = require("./setup/fixDuplicateUsernames.js");
@@ -45,6 +45,13 @@ const app = express();
 const prisma = new PrismaClient();
 
 app.use(bodyParser.json());
+
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
+app.get("/", (req, res) => {
+  res.render("index", { title: "home" });
+});
 
 app.use("/api-docs", serve, swaggerUI.setup(swaggerDoc));
 
@@ -79,7 +86,7 @@ app.use((req, res, next) => {
 });
 
 app.use(authorizeAdmin);
-app.use("/admin/peminjaman-buku", peminjamanManamagementRoutes)
+app.use("/admin/peminjaman-buku", peminjamanManamagementRoutes);
 
 async function logError(error) {
   try {

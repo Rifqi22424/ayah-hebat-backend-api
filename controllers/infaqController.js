@@ -1,6 +1,7 @@
 const prisma = require("../prisma/client");
 const midtransClient = require("midtrans-client");
 const { sendNotificationToUser } = require("../utils/notificationService");
+const { sendHtmlToEmail } = require("../utils/sendHtmlToEmail");
 const serverKey = process.env.SERVER_KEY;
 const clientKey = process.env.CLIENT_KEY;
 
@@ -148,6 +149,8 @@ const handleWebhook = async (req, res) => {
     });
 
     const userFcmToken = user?.fcmToken;
+    const userEmail = user.email;
+
     if (!userFcmToken) {
       return res.status(200).json({
         error: "Webhook successful but user FCM token not found",
@@ -166,13 +169,19 @@ const handleWebhook = async (req, res) => {
       ...Object.fromEntries(
         Object.entries(infaqUpdated).map(([key, value]) => [key, String(value)])
       ),
+      title: title,
+      username: user.username,
+      body: body,
       notificationType: "infaqNotification",
       allocationType: allocationType.name,
     };
 
-    console.log(data);
+    console.log("data ", data);
 
     await sendNotificationToUser(userFcmToken, title, body, imageUrl, data);
+
+    if (status === "success" || status === "failed")
+      await sendHtmlToEmail(userEmail, data);
 
     res.status(200).json({ message: "Webhook success", status, title, body });
   } catch (error) {
