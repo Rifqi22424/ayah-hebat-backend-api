@@ -1,21 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-  <style>
-    body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 90vh;
-      text-align: center;
-      font-family: Arial, sans-serif;
-      flex-direction: column;
-    }
-  </style>
   <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ayah Hebat</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        text-align: center;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        flex-direction: column;
+        color: #333;
+      }
+      .container {
+        background-color: white;
+        padding: 2.5rem 3rem;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        max-width: 80%;
+        animation: fadeIn 1s ease-in-out;
+      }
+      h1 {
+        font-size: 2.2rem;
+        margin-bottom: 1rem;
+        color: #2c3e50;
+      }
+      p {
+        font-size: 1.2rem;
+        line-height: 1.6;
+        color: #555;
+        margin-bottom: 1.5rem;
+      }
+      .logo {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #3498db;
+        margin-bottom: 1rem;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    </style>
   </head>
   <body>
-    <!-- <h1>Pembayaran anda selesai</h1> -->
-    <h1>Silahkan kembali ke aplikasi</h1>
+    <div class="container">
+      <div class="logo">Ayah Hebat</div>
+      <h1>Silahkan kembali ke aplikasi</h1>
+      <p>Terima kasih telah mengunjungi halaman ini. Anda akan dialihkan kembali ke aplikasi utama untuk melanjutkan pengalaman pengguna yang lebih baik.</p>
+      <p>Jika Anda tidak dialihkan secara otomatis, silakan periksa koneksi internet Anda atau hubungi tim dukungan kami.</p>
+    </div>
   </body>
 </html>
