@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 //   return "https://backend.ayahhebat.mangcoding.com/uploads/";
 // }
 function photoBaseUrl() {
-  return "https://dhrqldvp-3000.asse.devtunnels.ms/uploads/";
+  return "https://backend.ayahhebat.mangcoding.com/uploads/";
 }
 
 const createNews = async (req, res) => {

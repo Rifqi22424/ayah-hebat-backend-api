@@ -1,7 +1,7 @@
 const firebaseAdmin  = require("../setup/initializeFirebaseAdmin");
 
 function photoBaseUrl() {
-  return "https://dhrqldvp-3000.asse.devtunnels.ms/uploads/";
+  return "https://backend.ayahhebat.mangcoding.com/uploads/";
 }
 
 /**
