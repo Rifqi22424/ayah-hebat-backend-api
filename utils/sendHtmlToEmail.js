@@ -1,4 +1,5 @@
 const nodemailer = require("nodemailer");
+const smtpPassword = process.env.SMTP_PASSWORD;
 
 let data = {
   id: "01835885-7ca3-4036-a9f3-01e399a26728",
@@ -19,6 +20,25 @@ let data = {
   allocationType: "Allocation Type 3",
 };
 
+let failed_data = {
+  id: "85f8ed24-4ef0-46d1-8530-992cc9034ff6",
+  userId: "67",
+  amount: "10000",
+  status: "failed",
+  orderId: "AT7-1740108600960",
+  redirectUrl:
+    "https://app.sandbox.midtrans.com/snap/v4/redirection/846c41c3-c67e-4b98-b906-6d98d2a53da9",
+  allocationTypeCode: "AT7",
+  paymentType: "qris",
+  createdAt: "Fri Feb 21 2025 10:30:01 GMT+0700 (Western Indonesia Time)",
+  updatedAt: "Fri Feb 21 2025 10:46:12 GMT+0700 (Western Indonesia Time)",
+  title: "Infaq Gagal",
+  username: "rifqi muzakki new",
+  body: "Maaf, transaksi infaq Anda tidak berhasil. Silakan coba kembali atau hubungi kami jika ada kendala.",
+  notificationType: "infaqNotification",
+  allocationType: "Allocation Type 7",
+};
+
 let email = "rifqimuzakki45@gmail.com";
 
 const sendHtmlToEmail = async (email, data) => {
@@ -28,7 +48,7 @@ const sendHtmlToEmail = async (email, data) => {
     secure: true,
     auth: {
       user: "ayahhebatmangcoding@gmail.com",
-      pass: "citl rjsa irmx tpcx",
+      pass: smtpPassword,
     },
   });
 
@@ -46,6 +66,10 @@ const sendHtmlToEmail = async (email, data) => {
 
   const statusColor = data.status === "failed" ? "red" : "green";
   const statusText = data.status === "failed" ? "Gagal" : "Berhasil";
+  // const greetingText =
+  //   data.status === "failed"
+  //     ? "Mohon maaf iuran wadaah anda tidak diterima. Silahkan untuk mencoba lagi, detail pesanan:"
+  //     : "Terima kasih! Iuran wadaah sudah diterima. Silakan lihat detail pesanan Anda di bawah ini:";
   const formattedAmount = Number(data.amount).toLocaleString();
 
   const mailOptions = {
@@ -138,8 +162,7 @@ const sendHtmlToEmail = async (email, data) => {
                     Kepada <b>${data.username}</b>
                   </p>
                   <p style="color: black;">
-                    Terima kasih! Iuran wadaah sudah diterima. Silakan lihat
-                    detail pesanan Anda di bawah ini:
+                    ${data.body}
                   </p>
                   <table role="presentation" width="100%">
                     <tr>
@@ -188,6 +211,6 @@ const sendHtmlToEmail = async (email, data) => {
   });
 };
 
-// sendHtmlToEmail(email, data);
+// sendHtmlToEmail(email, failed_data);
 
 module.exports = { sendHtmlToEmail };

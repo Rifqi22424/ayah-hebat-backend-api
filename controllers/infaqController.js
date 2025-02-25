@@ -2,12 +2,14 @@ const prisma = require("../prisma/client");
 const midtransClient = require("midtrans-client");
 const { sendNotificationToUser } = require("../utils/notificationService");
 const { sendHtmlToEmail } = require("../utils/sendHtmlToEmail");
+// const serverKey = process.env.SERVER_KEY_SANDBOX;
+// const clientKey = process.env.CLIENT_KEY_SANDBOX;
 const serverKey = process.env.SERVER_KEY;
 const clientKey = process.env.CLIENT_KEY;
 
 // Midtrans configuration
 const snap = new midtransClient.Snap({
-  isProduction: false,
+  isProduction: true,
   serverKey: serverKey,
   clientKey: clientKey,
 });

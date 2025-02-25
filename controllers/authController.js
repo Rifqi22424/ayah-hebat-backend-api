@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const { PrismaClient } = require("@prisma/client");
 const { generateToken } = require("../middlewares/jwtMiddleware");
+const smtpPassword = process.env.SMTP_PASSWORD;
 
 const prisma = new PrismaClient();
 const saltRounds = 10;
@@ -218,7 +219,7 @@ const sendVerificationEmail = async (email, verificationCode) => {
     secure: true,
     auth: {
       user: "ayahhebatmangcoding@gmail.com",
-      pass: "citl rjsa irmx tpcx",
+      pass: smtpPassword,
     },
   });
 
