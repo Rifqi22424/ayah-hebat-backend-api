@@ -1,5 +1,9 @@
 const nodemailer = require("nodemailer");
-const smtpPassword = process.env.SMTP_PASSWORD;
+// const smtpPassword = process.env.SMTP_PASSWORD;
+const userNodemailer = process.env.USERNAME_NODEMAILER;
+const passNodemailer = process.env.PASSWORD_NODEMAILER;
+const portNodemailer = process.env.PORT_NODEMAILER;
+const hostNodemailer = process.env.HOST_NODEMAILER;
 
 let data = {
   id: "01835885-7ca3-4036-a9f3-01e399a26728",
@@ -7,8 +11,7 @@ let data = {
   amount: "10000",
   status: "success",
   orderId: "AT3-1739855157553",
-  redirectUrl:
-    "https://app.sandbox.midtrans.com/snap/v4/redirection/2194de44-c9f4-4570-bb14-0f53367687ae",
+  redirectUrl: "https://app.sandbox.midtrans.com/snap/v4/redirection/2194de44-c9f4-4570-bb14-0f53367687ae",
   allocationTypeCode: "AT3",
   paymentType: "shopeepay",
   createdAt: "Tue Feb 18 2025 12:05:58 GMT+0700 (Western Indonesia Time)",
@@ -26,8 +29,7 @@ let failed_data = {
   amount: "10000",
   status: "failed",
   orderId: "AT7-1740108600960",
-  redirectUrl:
-    "https://app.sandbox.midtrans.com/snap/v4/redirection/846c41c3-c67e-4b98-b906-6d98d2a53da9",
+  redirectUrl: "https://app.sandbox.midtrans.com/snap/v4/redirection/846c41c3-c67e-4b98-b906-6d98d2a53da9",
   allocationTypeCode: "AT7",
   paymentType: "qris",
   createdAt: "Fri Feb 21 2025 10:30:01 GMT+0700 (Western Indonesia Time)",
@@ -42,13 +44,21 @@ let failed_data = {
 let email = "rifqimuzakki45@gmail.com";
 
 const sendHtmlToEmail = async (email, data) => {
+  // const transporter = nodemailer.createTransport({
+  //   host: "smtp.gmail.com",
+  //   port: 465,
+  //   secure: true,
+  //   auth: {
+  //     user: "ayahhebatmangcoding@gmail.com",
+  //     pass: smtpPassword,
+  //   },
+  // });
   const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
+    host: hostNodemailer,
+    port: portNodemailer,
     auth: {
-      user: "ayahhebatmangcoding@gmail.com",
-      pass: smtpPassword,
+      user: userNodemailer,
+      pass: passNodemailer,
     },
   });
 

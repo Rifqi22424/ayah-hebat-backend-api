@@ -1,7 +1,12 @@
 const bcrypt = require("bcrypt");
 const { PrismaClient } = require("@prisma/client");
 const { generateToken } = require("../middlewares/jwtMiddleware");
-const smtpPassword = process.env.SMTP_PASSWORD;
+// const smtpPassword = process.env.SMTP_PASSWORD;
+
+const userNodemailer = process.env.USERNAME_NODEMAILER;
+const passNodemailer = process.env.PASSWORD_NODEMAILER;
+const portNodemailer = process.env.PORT_NODEMAILER;
+const hostNodemailer = process.env.HOST_NODEMAILER;
 
 const prisma = new PrismaClient();
 const saltRounds = 10;
@@ -18,9 +23,7 @@ const registerUser = async (req, res) => {
     }
 
     if (password !== confirmPassword) {
-      return res
-        .status(400)
-        .json({ error: "Password and confirm password do not match" });
+      return res.status(400).json({ error: "Password and confirm password do not match" });
     }
 
     // Cek apakah username atau email sudah ada
@@ -213,13 +216,22 @@ const generateVerificationCode = () => {
 const sendVerificationEmail = async (email, verificationCode) => {
   const nodemailer = require("nodemailer");
 
+  // const transporter = nodemailer.createTransport({
+  //   host: "smtp.gmail.com",
+  //   port: 465,
+  //   secure: true,
+  //   auth: {
+  //     user: "ayahhebatmangcoding@gmail.com",
+  //     pass: smtpPassword,
+  //   },
+  // });
+
   const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
+    host: hostNodemailer,
+    port: portNodemailer,
     auth: {
-      user: "ayahhebatmangcoding@gmail.com",
-      pass: smtpPassword,
+      user: userNodemailer,
+      pass: passNodemailer,
     },
   });
 
@@ -272,9 +284,7 @@ const changePassword = async (req, res) => {
     }
 
     if (newPassword !== confirmNewPassword) {
-      return res
-        .status(400)
-        .json({ error: "New password and confirm new password do not match" });
+      return res.status(400).json({ error: "New password and confirm new password do not match" });
     }
 
     const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
