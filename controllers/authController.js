@@ -8,6 +8,7 @@ const passNodemailer = process.env.PASSWORD_NODEMAILER;
 const portNodemailer = process.env.PORT_NODEMAILER;
 const hostNodemailer = process.env.HOST_NODEMAILER;
 const secureNodemailer = process.env.SECURE_NODEMAILER === "true";
+const mailFrom = process.env.MAIL_FROM;
 
 const prisma = new PrismaClient();
 const saltRounds = 10;
@@ -250,7 +251,7 @@ const sendVerificationEmail = async (email, verificationCode) => {
   });
 
   const mailOptions = {
-    from: "ayahhebatmangcoding@gmail.com",
+    from: mailFrom,
     to: email,
     subject: "Verifikasi Akun",
     text: `Kode verifikasi Anda: ${verificationCode}`,

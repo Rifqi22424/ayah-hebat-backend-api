@@ -5,6 +5,7 @@ const passNodemailer = process.env.PASSWORD_NODEMAILER;
 const portNodemailer = process.env.PORT_NODEMAILER;
 const hostNodemailer = process.env.HOST_NODEMAILER;
 const secureNodemailer = process.env.SECURE_NODEMAILER === "true";
+const mailFrom = process.env.MAIL_FROM;
 
 let data = {
   id: "01835885-7ca3-4036-a9f3-01e399a26728",
@@ -85,7 +86,7 @@ const sendHtmlToEmail = async (email, data) => {
   const formattedAmount = Number(data.amount).toLocaleString();
 
   const mailOptions = {
-    from: "ayahhebatmangcoding@gmail.com",
+    from: mailFrom,
     to: email,
     subject: data.title,
     html: `
