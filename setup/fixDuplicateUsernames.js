@@ -5,7 +5,7 @@ async function fixDuplicateUsernames() {
   try {
     const usersWithDuplicateUsernames = await prisma.$queryRaw`
       SELECT username, COUNT(*) as count
-      FROM user
+      FROM User
       GROUP BY username
       HAVING COUNT(*) > 1;
     `;
