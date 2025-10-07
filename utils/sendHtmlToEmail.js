@@ -4,6 +4,7 @@ const userNodemailer = process.env.USERNAME_NODEMAILER;
 const passNodemailer = process.env.PASSWORD_NODEMAILER;
 const portNodemailer = process.env.PORT_NODEMAILER;
 const hostNodemailer = process.env.HOST_NODEMAILER;
+const secureNodemailer = process.env.SECURE_NODEMAILER === "true";
 
 let data = {
   id: "01835885-7ca3-4036-a9f3-01e399a26728",
@@ -56,6 +57,7 @@ const sendHtmlToEmail = async (email, data) => {
   const transporter = nodemailer.createTransport({
     host: hostNodemailer,
     port: portNodemailer,
+    secure: secureNodemailer,
     auth: {
       user: userNodemailer,
       pass: passNodemailer,

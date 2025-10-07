@@ -7,6 +7,7 @@ const userNodemailer = process.env.USERNAME_NODEMAILER;
 const passNodemailer = process.env.PASSWORD_NODEMAILER;
 const portNodemailer = process.env.PORT_NODEMAILER;
 const hostNodemailer = process.env.HOST_NODEMAILER;
+const secureNodemailer = process.env.SECURE_NODEMAILER === "true";
 
 const prisma = new PrismaClient();
 const saltRounds = 10;
@@ -229,6 +230,7 @@ const sendVerificationEmail = async (email, verificationCode) => {
   const transporter = nodemailer.createTransport({
     host: hostNodemailer,
     port: portNodemailer,
+    secure: secureNodemailer,
     auth: {
       user: userNodemailer,
       pass: passNodemailer,
