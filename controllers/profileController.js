@@ -39,7 +39,7 @@ const addProfile = async (req, res) => {
     if (user.profile) {
       // If profile exists, update it
       await prisma.profile.update({
-        where: { id: userId },
+        where: { userId },
         data: {
           nama,
           namaIstri,
