@@ -49,6 +49,8 @@ model User {
   totalScoreMonth              Int?           @default(0)
   totalScoreDay                Int?           @default(0)
   role                         Role?          @default(USER)
+
+  Content                      Content[]
 }
 
 model Profile {
