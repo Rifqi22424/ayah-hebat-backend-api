@@ -10,6 +10,7 @@ const newsRoutes = require("./routes/newsRoutes.js");
 const postRoutes = require("./routes/postRoutes.js");
 const commentRoutes = require("./routes/commentRoutes.js");
 const peminjamanBukuRoute = require("./routes/peminjamanBukuRoute.js");
+const playlistRoute = require("./routes/playlistRoute.js");
 const replyRoutes = require("./routes/replyRoutes.js");
 const reportRoutes = require("./routes/reportRoutes.js");
 
@@ -19,9 +20,7 @@ const peminjamanManamagementRoutes = require("./routes/admin/peminjamanManagemen
 const { PrismaClient } = require("@prisma/client");
 const { authenticateToken } = require("./middlewares/jwtMiddleware.js");
 var cron = require("node-cron");
-const {
-  updateAllUsersTotalScore,
-} = require("./controllers/kegiatanController.js");
+const { updateAllUsersTotalScore } = require("./controllers/kegiatanController.js");
 const bookRoutes = require("./routes/bookRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const commentBookRoutes = require("./routes/commentBookRoute");
@@ -74,6 +73,7 @@ app.use("/comment", commentRoutes);
 app.use("/reply", replyRoutes);
 app.use("/report", reportRoutes);
 app.use("/pinjam-buku", peminjamanBukuRoute);
+app.use("/playlist", playlistRoute);
 app.use("/books", bookRoutes);
 app.use("/categories", categoryRoutes);
 app.use("/comment-book", commentBookRoutes);
