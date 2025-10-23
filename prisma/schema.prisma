@@ -49,6 +49,7 @@ model User {
   totalScoreDay                Int?           @default(0)
   role                         Role?          @default(USER)
 
+  // uploadedContents         Content[]
   Content                      Content[]
 }
 
@@ -304,7 +305,7 @@ model Report {
 }
 
 model Infaq {
-  id                 String   @id @default(uuid())
+  id                 Int   @id @default(autoincrement())
   userId             Int
   amount             Float
   status             String   @default("pending")
