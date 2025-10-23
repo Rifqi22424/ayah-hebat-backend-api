@@ -38,6 +38,7 @@ model User {
   commentBook                  CommentBook[]
   books                        Book[]
   Infaq                        Infaq[]
+  uploadedContents         Content[]
   isVerified                   Boolean        @default(false)
   verificationCode             String?
   deleteAccountVerficationCode String?
@@ -302,7 +303,7 @@ model Report {
 }
 
 model Infaq {
-  id                 String   @id @default(uuid())
+  id                 Int   @id @default(autoincrement())
   userId             Int
   amount             Float
   status             String   @default("pending")
@@ -329,4 +330,38 @@ model ErrorLog {
   errorMessage String   @db.Text
   stackTrace   String?  @db.Text
   createdAt    DateTime @default(now())
+}
+
+model Content {
+  id          Int  @id @default(autoincrement())
+  title       String                     
+  description String?                    
+  thumbnailUrl String                  
+  videoUrl     String                  
+  duration     Int                     
+  views        Int      @default(0)    
+  publishedAt  DateTime @default(now()) 
+  uploaderId   Int
+  uploader     User @relation(fields: [uploaderId], references: [id])
+  
+  PlaylistContent PlaylistContent[]
+}
+
+model Playlist {
+  id          Int   @id @default(autoincrement())
+  title       String   
+  description String?  
+  
+  PlaylistContent PlaylistContent[]
+}
+
+model PlaylistContent {
+  contentId   Int
+  playlistId  Int
+  order       Int 
+  content     Content  @relation(fields: [contentId], references: [id])
+  playlist    Playlist @relation(fields: [playlistId], references: [id])
+  
+  @@id([contentId, playlistId])
+  @@unique([playlistId, order]) 
 }

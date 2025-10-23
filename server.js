@@ -12,6 +12,7 @@ const commentRoutes = require("./routes/commentRoutes.js");
 const peminjamanBukuRoute = require("./routes/peminjamanBukuRoute.js");
 const replyRoutes = require("./routes/replyRoutes.js");
 const reportRoutes = require("./routes/reportRoutes.js");
+const watchRoutes = require('./routes/contentRoutes.js');
 
 // admin routes
 const peminjamanManamagementRoutes = require("./routes/admin/peminjamanManagementRoutes.js");
@@ -53,6 +54,7 @@ app.get("/", (req, res) => {
   res.render("index", { title: "home" });
 });
 
+
 app.use("/api-docs", serve, swaggerUI.setup(swaggerDoc));
 
 app.use("/uploads", express.static("uploads"));
@@ -80,6 +82,7 @@ app.use("/comment-book", commentBookRoutes);
 app.use("/address", officeAddressRoutes);
 app.use("/infaq", infaqRoutes);
 app.use("/allocation", allocationTypeRoutes);
+app.use('/watch', watchRoutes);
 
 app.use((req, res, next) => {
   res.status(404).json({ error: "Route not defined" });
