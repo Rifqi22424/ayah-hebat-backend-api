@@ -38,7 +38,6 @@ model User {
   commentBook                  CommentBook[]
   books                        Book[]
   Infaq                        Infaq[]
-  uploadedContents         Content[]
   isVerified                   Boolean        @default(false)
   verificationCode             String?
   deleteAccountVerficationCode String?
@@ -340,7 +339,7 @@ model Content {
   description String?                    
   thumbnailUrl String                  
   videoUrl     String                  
-  duration     Int                     
+  duration     Int?                     
   views        Int      @default(0)    
   publishedAt  DateTime @default(now()) 
   uploaderId   Int

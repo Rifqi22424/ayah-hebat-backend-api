@@ -1,5 +1,5 @@
 const express = require("express");
-const { createPlaylist, getAllPlaylists, getPlaylistById, updatePlaylist, deletePlaylist, addContentToPlaylist, removeContentFromPlaylist } = require("./../controllers/playlistController"); // Sesuaikan path ini
+const { createPlaylist, getAllPlaylists, getPlaylistById, updatePlaylist, deletePlaylist, addContentToPlaylist, removeContentFromPlaylist, updateContentOrderInPlaylist } = require("./../controllers/playlistController"); // Sesuaikan path ini
 
 const router = express.Router();
 
@@ -14,10 +14,12 @@ router.route("/:id").get(getPlaylistById).patch(updatePlaylist).delete(deletePla
 
 // Menambahkan konten ke playlist
 // POST /api/playlists/1/contents  (Body: { "contentId": 5 })
-router.post("/:id/contents", addContentToPlaylist);
+router.post("/:playlistId/contents", addContentToPlaylist);
+
+router.patch("/:playlistId/contents/:contentId", updateContentOrderInPlaylist);
 
 // Menghapus konten dari playlist
 // DELETE /api/playlists/1/contents/5
-router.delete("/:id/contents/:id", removeContentFromPlaylist);
+router.delete("/:playlistId/contents/:contentId", removeContentFromPlaylist);
 
 module.exports = router;
