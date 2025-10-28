@@ -1,11 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-/**
- * @desc    Membuat Playlist baru
- * @route   POST /api/playlists
- * @access  Public
- */
 const createPlaylist = async (req, res) => {
   try {
     const { title, description } = req.body;
@@ -26,11 +21,6 @@ const createPlaylist = async (req, res) => {
   }
 };
 
-/**
- * @desc    Mendapatkan semua playlist
- * @route   GET /api/playlists
- * @access  Public
- */
 const getAllPlaylists = async (req, res) => {
   try {
     const playlists = await prisma.playlist.findMany();
@@ -40,11 +30,6 @@ const getAllPlaylists = async (req, res) => {
   }
 };
 
-/**
- * @desc    Mendapatkan satu playlist berdasarkan ID (termasuk kontennya)
- * @route   GET /api/playlists/:id
- * @access  Public
- */
 const getPlaylistById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -79,11 +64,6 @@ const getPlaylistById = async (req, res) => {
   }
 };
 
-/**
- * @desc    Memperbarui detail playlist (title, description)
- * @route   PATCH /api/playlists/:id
- * @access  Public
- */
 const updatePlaylist = async (req, res) => {
   try {
     const { id } = req.params;
@@ -98,7 +78,6 @@ const updatePlaylist = async (req, res) => {
     });
     res.status(200).json(updatedPlaylist);
   } catch (error) {
-    // Tangani jika playlist tidak ditemukan
     if (error.code === "P2025") {
       return res.status(404).json({ error: "Playlist not found" });
     }
@@ -106,22 +85,15 @@ const updatePlaylist = async (req, res) => {
   }
 };
 
-/**
- * @desc    Menghapus playlist
- * @route   DELETE /api/playlists/:id
- * @access  Public
- */
 const deletePlaylist = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Saat menghapus playlist, Prisma akan otomatis menghapus
-    // record 'PlaylistContent' yang terkait (cascading delete)
     await prisma.playlist.delete({
       where: { id: parseInt(id) },
     });
 
-    res.status(204).send(); // 204 No Content
+    res.status(204).send();
   } catch (error) {
     if (error.code === "P2025") {
       return res.status(404).json({ error: "Playlist not found" });
@@ -130,14 +102,6 @@ const deletePlaylist = async (req, res) => {
   }
 };
 
-// --- Controller untuk Relasi PlaylistContent ---
-
-/**
- * @desc    Menambahkan konten ke dalam playlist
- * @route   POST /api/playlists/:playlistId/contents
- * @access  Public
- * @body    { "contentId": <id> }
- */
 const addContentToPlaylist = async (req, res) => {
   try {
     const { playlistId } = req.params;
@@ -150,18 +114,14 @@ const addContentToPlaylist = async (req, res) => {
     const playlistIdInt = parseInt(playlistId);
     const contentIdInt = parseInt(contentId);
 
-    // Kita perlu 'transaction' untuk mendapatkan urutan (order) terakhir dengan aman
     const newPlaylistItem = await prisma.$transaction(async (tx) => {
-      // 1. Cari item dengan 'order' tertinggi di playlist ini
       const lastItem = await tx.playlistContent.findFirst({
         where: { playlistId: playlistIdInt },
         orderBy: { order: "desc" },
       });
 
-      // 2. Tentukan order berikutnya
       const nextOrder = lastItem ? lastItem.order + 1 : 1;
 
-      // 3. Buat record PlaylistContent yang baru
       return tx.playlistContent.create({
         data: {
           playlistId: playlistIdInt,
@@ -173,11 +133,9 @@ const addContentToPlaylist = async (req, res) => {
 
     res.status(201).json(newPlaylistItem);
   } catch (error) {
-    // Handle jika contentId atau playlistId tidak ada
     if (error.code === "P2003" || error.code === "P2025") {
       return res.status(404).json({ error: "Playlist or Content not found" });
     }
-    // Handle jika konten sudah ada di playlist (unique constraint violation)
     if (error.code === "P2002") {
       return res.status(409).json({ error: "This content is already in the playlist" });
     }
@@ -185,29 +143,18 @@ const addContentToPlaylist = async (req, res) => {
   }
 };
 
-/**
- * @desc    Menghapus konten dari playlist
- * @route   DELETE /api/playlists/:playlistId/contents/:contentId
- * @access  Public
- */
 const removeContentFromPlaylist = async (req, res) => {
   try {
     const { playlistId, contentId } = req.params;
 
     await prisma.playlistContent.delete({
       where: {
-        // Hapus berdasarkan composite primary key
         contentId_playlistId: {
           contentId: parseInt(contentId),
           playlistId: parseInt(playlistId),
         },
       },
     });
-
-    // Catatan: Ini tidak akan mengurutkan ulang item lainnya secara otomatis.
-    // Item akan tetap pada 'order' aslinya, hanya saja ada 'order' yang hilang.
-    // Logika re-ordering lebih kompleks dan biasanya ditangani terpisah.
-
     res.status(204).send();
   } catch (error) {
     if (error.code === "P2025") {
