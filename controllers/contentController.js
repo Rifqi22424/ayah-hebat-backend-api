@@ -1,34 +1,52 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const fs = require("fs");
+const path = require("path");
 
 const parseId = (id) => {
   try {
-    return parseInt(id, 10);
+    // 1. Cek jika input kosong/null/undefined
+    if (id === null || id === undefined || id === "") {
+      throw new Error("ID cannot be null or empty");
+    }
+    const parsed = parseInt(id, 10);
+    // 2. Cek jika hasilnya NaN
+    if (isNaN(parsed)) {
+      throw new Error("ID is not a valid number");
+    }
+    return parsed;
   } catch (e) {
-    throw new Error("Invalid ID format");
+    // 3. Lempar error yang akan ditangkap oleh controller
+    throw new Error(`Invalid ID format: ${e.message}`);
   }
 };
+exports.parseId = parseId;
 
 exports.createWatch = async (req, res) => {
   const uploaderId = req.userId;
-  const { title, description, thumbnailUrl, videoUrl, duration } = req.body;
+  const { title, description, videoUrl, duration } = req.body;
 
-  if (!title || !videoUrl || !thumbnailUrl || !duration) {
+  if (!title || !videoUrl || !req.file) {
     return res.status(400).json({
-      message:
-        "Title, Video URL, Thumbnail URL, and Duration are required fields.",
+      message: "Title, Video URL, and Thumbnail (file) are required fields.",
     });
   }
 
   try {
+    const thumbnailUrl = req.file.path;
+
     const newContent = await prisma.content.create({
       data: {
         title,
         description,
-        thumbnailUrl,
+        thumbnailUrl: thumbnailUrl,
         videoUrl,
-        duration: parseId(duration), // Pastikan duration adalah integer
-        uploaderId: parseId(uploaderId),
+        duration: duration ? parseId(duration) : 0,
+        uploader: {
+          connect: {
+            id: parseId(uploaderId),
+          },
+        },
       },
     });
 
@@ -38,7 +56,6 @@ exports.createWatch = async (req, res) => {
     });
   } catch (error) {
     console.error("Error creating video content:", error);
-    // Tangani error jika ID uploader tidak ditemukan atau format ID salah
     if (error.code === "P2003" || error.message.includes("Invalid ID format")) {
       return res
         .status(400)
@@ -57,7 +74,6 @@ exports.updateWatch = async (req, res) => {
   try {
     const idInt = parseId(videoId);
 
-    // 1. Cek keberadaan (opsional, tetapi memberikan status 404 yang lebih baik)
     const existingContent = await prisma.content.findUnique({
       where: { id: idInt },
     });
@@ -67,10 +83,26 @@ exports.updateWatch = async (req, res) => {
     }
 
     // 2. Update konten
-    const updatedData = { ...req.body };
-    // Pastikan duration di-parse jika ada
-    if (updatedData.duration) {
-      updatedData.duration = parseId(updatedData.duration);
+    const { title, description, videoUrl, duration } = req.body;
+    const updatedData = {};
+
+    if (title !== undefined) updatedData.title = title;
+    if (description !== undefined) updatedData.description = description;
+    if (videoUrl !== undefined) updatedData.videoUrl = videoUrl;
+
+    if (req.file) {
+      updatedData.thumbnailUrl = req.file.path;
+      if (existingContent.thumbnailUrl) {
+        // Menggunakan path.resolve() untuk mendapatkan path absolut
+        const oldPath = path.resolve(existingContent.thumbnailUrl);
+        fs.unlink(oldPath, (err) => {
+          if (err) console.error("Failed to delete old thumbnail:", err);
+        });
+      }
+    }
+
+    if (duration !== undefined) {
+      updatedData.duration = duration ? parseId(duration) : 0;
     }
 
     const updatedContent = await prisma.content.update({
@@ -163,6 +195,18 @@ exports.getAllWatches = async (req, res) => {
             username: true,
           },
         },
+        PlaylistContent: {
+          select: {
+            playlist: {
+              select: {
+                id: true,
+                title: true,
+              },
+            },
+            order: true, // Sertakan urutan dalam playlist
+          },
+          orderBy: { order: "asc" }, // Urutkan berdasarkan urutan dalam playlist
+        },
       },
     });
     const totalPages = Math.ceil(totalCount / limitInt);
@@ -180,6 +224,7 @@ exports.getAllWatches = async (req, res) => {
     });
   } catch (error) {
     console.error("Error retrieving videos:", error);
+
     if (error.message.includes("Invalid ID format")) {
       return res.status(400).json({ message: "Invalid limit or page format" });
     }
@@ -208,6 +253,18 @@ exports.getWatchById = async (req, res) => {
             id: true,
             username: true,
           },
+        },
+        PlaylistContent: {
+          select: {
+            playlist: {
+              select: {
+                id: true,
+                title: true,
+              },
+            },
+            order: true,
+          },
+          orderBy: { order: "asc" },
         },
       },
     });

@@ -1,5 +1,5 @@
 const express = require("express");
-const { createPlaylist, getAllPlaylists, getPlaylistById, updatePlaylist, deletePlaylist, addContentToPlaylist, removeContentFromPlaylist } = require("./../controllers/playlistController"); // Sesuaikan path ini
+const { createPlaylist, getAllPlaylists, getPlaylistById, updatePlaylist, deletePlaylist, addContentToPlaylist, removeContentFromPlaylist, updateContentOrderInPlaylist } = require("./../controllers/playlistController"); // Sesuaikan path ini
 
 const router = express.Router();
 
