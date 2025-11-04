@@ -57,9 +57,7 @@ exports.createWatch = async (req, res) => {
   } catch (error) {
     console.error("Error creating video content:", error);
     if (error.code === "P2003" || error.message.includes("Invalid ID format")) {
-      return res
-        .status(400)
-        .json({ message: "Invalid Admin ID or data format." });
+      return res.status(400).json({ message: "Invalid Admin ID or data format." });
     }
     res.status(500).json({
       message: "Failed to create video content",
@@ -169,10 +167,7 @@ exports.getAllWatches = async (req, res) => {
     const offsetInt = (currentPage - 1) * limitInt;
 
     const whereClause = {
-      OR: [
-        { title: { contains: search || "" } },
-        { description: { contains: search || "" } },
-      ],
+      OR: [{ title: { contains: search || "" } }, { description: { contains: search || "" } }],
     };
 
     // 2. Query untuk mendapatkan total data KESELURUHAN
@@ -242,11 +237,11 @@ exports.getWatchById = async (req, res) => {
     const idInt = parseId(videoId);
 
     // 1. Tambahkan view count secara atomik dan ambil datanya
-    const updatedVideo = await prisma.content.update({
+    const video = await prisma.content.findUnique({
       where: { id: idInt },
-      data: {
-        views: { increment: 1 }, // Menambah 1 ke kolom views
-      },
+      // data: {
+      //   views: { increment: 1 }, // Menambah 1 ke kolom views
+      // },
       include: {
         uploader: {
           select: {
@@ -269,20 +264,46 @@ exports.getWatchById = async (req, res) => {
       },
     });
 
+    if (!video) {
+      return res.status(404).json({ message: "Video content not found" });
+    }
+
     res.status(200).json({
-      message: "Video retrieved successfully (View incremented)",
-      video: updatedVideo,
+      message: "Video retrieved successfully",
+      video: video,
     });
   } catch (error) {
     console.error("Error retrieving video by ID:", error);
     // P2025: Record to update does not exist.
-    if (error.code === "P2025" || error.message.includes("Invalid ID format")) {
-      return res
-        .status(404)
-        .json({ message: "Video content not found or invalid ID" });
+    if (error.message.includes("Invalid ID format")) {
+      return res.status(400).json({ message: "Invalid video ID format" });
     }
     res.status(500).json({
       message: "Failed to retrieve video",
+      error: error.message,
+    });
+  }
+};
+
+exports.incrementWatchView = async (req, res) => {
+  const videoId = req.params.id;
+
+  try {
+    const idInt = parseId(videoId);
+    await prisma.content.update({
+      where: { id: idInt },
+      data: {
+        views: { increment: 1 },
+      },
+    });
+    res.status(200).json({ message: "View incremented successfully" });
+  } catch (error) {
+    console.error("Error incrementing view count:", error);
+    if (error.code === "P2025" || error.message.includes("Invalid ID format")) {
+      return res.status(404).json({ message: "Video content not found or invalid ID" });
+    }
+    res.status(500).json({
+      message: "Failed to increment view",
       error: error.message,
     });
   }
