@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const { PrismaClient } = require("@prisma/client");
 const { generateToken } = require("../middlewares/jwtMiddleware");
 // const smtpPassword = process.env.SMTP_PASSWORD;
+require("dotenv").config();
 
 const userNodemailer = process.env.USERNAME_NODEMAILER;
 const passNodemailer = process.env.PASSWORD_NODEMAILER;
