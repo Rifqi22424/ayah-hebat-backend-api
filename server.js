@@ -45,6 +45,7 @@ const app = express();
 const prisma = new PrismaClient();
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -61,6 +62,9 @@ app.use("/uploads/books", express.static("uploads/books"));
 app.use("/auth", authRoutes);
 
 app.post("/midtrans", handleWebhook);
+app.get('/favicon.ico', (req, res) => {
+  res.status(204).end(); // Kirim 'No Content' (tidak ada ikon)
+});
 // app.use('/.well-known', express.static(path.join(__dirname, '.well-known')));
 app.use(authenticateToken);
 
