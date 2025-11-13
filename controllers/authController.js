@@ -336,7 +336,6 @@ const sendResetEmail = async (email, username, resetURL) => {
     console.log("Email reset terkirim ke:", email);
   } catch (error) {
     console.error("Error di dalam sendResetEmail:", error);
-    // PENTING: Lemparkan error lagi agar 'forgotPassword' bisa menangkapnya
     throw new Error("Gagal mengirim email reset.");
   }
 };
@@ -389,8 +388,7 @@ const forgotPassword = async (req, res) => {
 
     if (!user) {
       return res.status(200).json({
-        message:
-          "If your email is registered, a reset link has been sent.",
+        message: "Email reset password telah dikirim.",
       });
     }
 
@@ -418,7 +416,7 @@ const forgotPassword = async (req, res) => {
     });
 
     // PENTING: Ganti 'http://localhost:3000' dengan URL Frontend Anda
-    const resetURL = `http://localhost:3000/auth/reset-password?code=${resetCode}`;
+    const resetURL = `https://backend.ayahhebat.mangcoding.com/auth/reset-password?code=${resetCode}`;
 
     await sendResetEmail(user.email, user.username, resetURL);
 
@@ -431,7 +429,7 @@ const forgotPassword = async (req, res) => {
 
 const showResetForm = async (req, res) => {
   try {
-    const { code } = req.query; 
+    const { code } = req.query;
 
     const profileWithCode = await prisma.profile.findFirst({
       where: {
@@ -495,7 +493,7 @@ const resetPassword = async (req, res) => {
     await prisma.profile.update({
       where: { id: profileWithCode.id },
       data: {
-        forgotCode: null, 
+        forgotCode: null,
         forgotExpiredAt: null,
         user: {
           update: {
