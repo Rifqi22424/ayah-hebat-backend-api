@@ -129,6 +129,7 @@ const verifyUser = async (req, res) => {
       data: {
         isVerified: true,
         verificationCode: null,
+        hasApproved: "pending",
       },
     });
 
@@ -202,6 +203,20 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ error: "User is not verified" });
     }
 
+    if (user.hasApproved === "pending") {
+      return res
+        .status(403)
+        .json({ error: "Anda belum memiliki izin untuk memasuki aplikasi" });
+    } else if (user.hasApproved === "disapproved") {
+      return res.status(403).json({
+        error: "Anda tidak memiliki izin untuk memasuki aplikasi",
+      });
+    } else if (user.hasApproved !== "approved") {
+      return res.status(403).json({
+        error: "Status akun belum disetujui admin.",
+      });
+    }
+
     const token = generateToken(user.id);
 
     res.json({
@@ -211,6 +226,7 @@ const loginUser = async (req, res) => {
         username: user.username,
         email: user.email,
         profile: user.profile,
+        hasApproved: user.hasApproved,
       },
     });
   } catch (error) {
