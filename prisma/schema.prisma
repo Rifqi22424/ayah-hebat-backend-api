@@ -64,6 +64,9 @@ model Profile {
   tahunMasukKuttab Int?
   user             User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId           Int     @unique
+
+  forgotCode   String?   @unique
+  forgotExpiredAt DateTime?
 }
 
 model Kegiatan {
