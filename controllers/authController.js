@@ -419,7 +419,7 @@ const forgotPassword = async (req, res) => {
     });
 
     // PENTING: Ganti 'http://localhost:3000' dengan URL Frontend Anda
-    const resetURL = `http://localhost:3000/auth/reset-password?code=${resetCode}`;
+    const resetURL = `https://backend.ayahhebat.mangcoding.com/auth/reset-password?code=${resetCode}`;
 
     await sendResetEmail(user.email, user.username, resetURL);
 
