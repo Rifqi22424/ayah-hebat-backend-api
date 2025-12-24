@@ -5,7 +5,7 @@ const createAlms = async (req, res) => {
   try {
     const userId = req.userId;
     const rawAmount = req.body.amount;
-    const {message, allocationTypeCode } = req.body;
+    const { message, allocationTypeCode } = req.body;
     const imageUrl = req.file ? req.file.filename : null;
 
     const amount = parseFloat(rawAmount);
@@ -84,6 +84,7 @@ const getAlmsHistory = async (req, res) => {
       },
     });
   } catch (error) {
+    console.error("Error getting infaq history:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -105,6 +106,7 @@ const getTotalAmountAlmsUser = async (req, res) => {
       data: totalAmount._sum.amount || 0,
     });
   } catch (error) {
+    console.error("Error getting total amount infaq:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -153,6 +155,7 @@ const getAllAlms = async (req, res) => {
       },
     });
   } catch (error) {
+    console.error("Error getting all infaq:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -242,8 +245,7 @@ const getAlmsById = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error);
-
+    console.error("Error getting infaq by id:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
