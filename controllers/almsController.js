@@ -205,7 +205,7 @@ const changeAlmStatus = async (req, res) => {
 const getAlmsById = async (req, res) => {
   try {
     const userId = req.userId;
-    const id = req.params.id;
+    const id = parseInt(req.params.id);
 
     const alms = await prisma.alms.findUnique({
       where: { id },
