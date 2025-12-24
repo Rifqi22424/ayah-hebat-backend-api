@@ -213,6 +213,8 @@ const getAlmsById = async (req, res) => {
         id: true,
         userId: true,
         amount: true,
+        evidenceImageUrl: true,
+        message: true,
         status: true,
         createdAt: true,
         updatedAt: true,
