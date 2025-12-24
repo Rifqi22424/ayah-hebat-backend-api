@@ -24,7 +24,7 @@ const createAlms = async (req, res) => {
       return res.status(400).json({ error: "Invalid allocation type" });
 
     // Save alms data to the database
-    const alms = await prisma.Alms.create({
+    const alms = await prisma.alms.create({
       data: {
         userId,
         amount,
@@ -53,7 +53,7 @@ const getAlmsHistory = async (req, res) => {
     const skip = (page - 1) * limit;
     const take = Number(limit);
 
-    const history = await prisma.Alms.findMany({
+    const history = await prisma.alms.findMany({
       where: { userId },
       skip,
       take,
@@ -67,7 +67,7 @@ const getAlmsHistory = async (req, res) => {
       },
     });
 
-    const totalItems = await prisma.Alms.count({
+    const totalItems = await prisma.alms.count({
       where: { userId },
     });
 
@@ -93,7 +93,7 @@ const getTotalAmountAlmsUser = async (req, res) => {
   try {
     const userId = req.userId;
 
-    const totalAmount = await prisma.Alms.aggregate({
+    const totalAmount = await prisma.alms.aggregate({
       where: {
         userId,
         status: "success",
@@ -121,7 +121,7 @@ const getAllAlms = async (req, res) => {
       ...(allocationTypeCode && { allocationTypeCode }),
     };
 
-    const allAlms = await prisma.Alms.findMany({
+    const allAlms = await prisma.alms.findMany({
       where: whereClause,
       skip,
       take,
@@ -130,7 +130,7 @@ const getAllAlms = async (req, res) => {
       },
     });
 
-    const totalAmount = await prisma.Alms.aggregate({
+    const totalAmount = await prisma.alms.aggregate({
       where: {
         ...whereClause,
         status: "success",
@@ -138,7 +138,7 @@ const getAllAlms = async (req, res) => {
       _sum: { amount: true },
     });
 
-    const totalItems = await prisma.Alms.count({
+    const totalItems = await prisma.alms.count({
       where: whereClause,
     });
 
@@ -179,13 +179,13 @@ const changeAlmStatus = async (req, res) => {
       });
     }
 
-    const alm = await prisma.Alms.findUnique({
+    const alm = await prisma.alms.findUnique({
       where: { id },
     });
 
     if (!alm) return res.status(404).json({ error: "Infaq not found" });
 
-    const newAlm = await prisma.Alms.update({
+    const newAlm = await prisma.alms.update({
       where: { id },
       data: {
         status,
@@ -207,7 +207,7 @@ const getAlmsById = async (req, res) => {
     const userId = req.userId;
     const id = req.params.id;
 
-    const alms = await prisma.Alms.findUnique({
+    const alms = await prisma.alms.findUnique({
       where: { id },
       select: {
         id: true,
