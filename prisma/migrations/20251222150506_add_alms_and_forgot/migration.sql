@@ -1,15 +1,17 @@
 /*
   Warnings:
 
-  - A unique constraint covering the columns `[forgotCode]` on the table `profile` will be added. If there are existing duplicate values, this will fail.
-
+  - A unique constraint covering the columns `[forgotCode]` on the table `Profile` will be added.
+    If there are existing duplicate values, this will fail.
 */
+
 -- AlterTable
-ALTER TABLE `profile` ADD COLUMN `forgotCode` VARCHAR(191) NULL,
-    ADD COLUMN `forgotExpiredAt` DATETIME(3) NULL;
+ALTER TABLE `Profile`
+ADD COLUMN `forgotCode` VARCHAR(191) NULL,
+ADD COLUMN `forgotExpiredAt` DATETIME(3) NULL;
 
 -- CreateTable
-CREATE TABLE `alms` (
+CREATE TABLE `Alms` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `userId` INTEGER NOT NULL,
     `amount` DOUBLE NOT NULL,
@@ -24,7 +26,7 @@ CREATE TABLE `alms` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateIndex
-CREATE UNIQUE INDEX `profile_forgotCode_key` ON `profile`(`forgotCode`);
+CREATE UNIQUE INDEX `Profile_forgotCode_key` ON `Profile`(`forgotCode`);
 
 -- AddForeignKey
-ALTER TABLE `alms` ADD CONSTRAINT `alms_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `Alms`ADD CONSTRAINT `Alms_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
