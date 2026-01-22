@@ -27,9 +27,7 @@ const registerUser = async (req, res) => {
     }
 
     if (password !== confirmPassword) {
-      return res
-        .status(400)
-        .json({ error: "Password and confirm password do not match" });
+      return res.status(400).json({ error: "Password and confirm password do not match" });
     }
 
     // Cek apakah username atau email sudah ada
@@ -39,9 +37,7 @@ const registerUser = async (req, res) => {
     });
 
     if (existingUser && existingUser.isVerified) {
-      return res
-        .status(400)
-        .json({ error: "Email is already registered and verified" });
+      return res.status(400).json({ error: "Email is already registered and verified" });
     }
 
     if (existingUsername && existingUsername.isVerified) {
@@ -100,8 +96,7 @@ const registerUser = async (req, res) => {
     sendVerificationEmail(email, verificationCode);
 
     res.json({
-      message:
-        "User registered successfully. Check your email for verification.",
+      message: "User registered successfully. Check your email for verification.",
     });
   } catch (error) {
     console.error(error);
@@ -205,9 +200,7 @@ const loginUser = async (req, res) => {
     }
 
     if (user.hasApproved === "pending") {
-      return res
-        .status(403)
-        .json({ error: "Anda belum memiliki izin untuk memasuki aplikasi" });
+      return res.status(403).json({ error: "Anda belum memiliki izin untuk memasuki aplikasi" });
     } else if (user.hasApproved === "disapproved") {
       return res.status(403).json({
         error: "Anda tidak memiliki izin untuk memasuki aplikasi",
@@ -228,6 +221,7 @@ const loginUser = async (req, res) => {
         email: user.email,
         profile: user.profile,
         hasApproved: user.hasApproved,
+        role: user.role,
       },
     });
   } catch (error) {
@@ -376,9 +370,7 @@ const changePassword = async (req, res) => {
     }
 
     if (newPassword !== confirmNewPassword) {
-      return res
-        .status(400)
-        .json({ error: "New password and confirm new password do not match" });
+      return res.status(400).json({ error: "New password and confirm new password do not match" });
     }
 
     const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
@@ -481,9 +473,7 @@ const resetPassword = async (req, res) => {
   const { code, newPassword, newConfirmationPassword } = req.body;
 
   if (!code || !newPassword || !newConfirmationPassword) {
-    return res
-      .status(400)
-      .json({ message: "Token dan password baru diperlukan." });
+    return res.status(400).json({ message: "Token dan password baru diperlukan." });
   }
 
   if (newPassword !== newConfirmationPassword) {
@@ -499,9 +489,7 @@ const resetPassword = async (req, res) => {
     });
 
     if (!profileWithCode) {
-      return res
-        .status(400)
-        .json({ message: "Token tidak valid atau sudah kedaluwarsa." });
+      return res.status(400).json({ message: "Token tidak valid atau sudah kedaluwarsa." });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -520,9 +508,7 @@ const resetPassword = async (req, res) => {
       },
     });
 
-    res
-      .status(200)
-      .json({ message: "Password berhasil direset. Silakan login." });
+    res.status(200).json({ message: "Password berhasil direset. Silakan login." });
   } catch (error) {
     console.error("Error di resetPassword:", error);
     res.status(500).json({ message: "Terjadi kesalahan pada server." });

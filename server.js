@@ -13,8 +13,8 @@ const peminjamanBukuRoute = require("./routes/peminjamanBukuRoute.js");
 const playlistRoute = require("./routes/playlistRoute.js");
 const replyRoutes = require("./routes/replyRoutes.js");
 const reportRoutes = require("./routes/reportRoutes.js");
-const watchRoutes = require('./routes/contentRoutes.js');
-const almsRoutes = require('./routes/almsRoutes.js');
+const watchRoutes = require("./routes/contentRoutes.js");
+const almsRoutes = require("./routes/almsRoutes.js");
 
 // admin routes
 const peminjamanManamagementRoutes = require("./routes/admin/peminjamanManagementRoutes.js");
@@ -42,9 +42,11 @@ const { authorizeAdmin } = require("./middlewares/authorizationMiddleware.js");
 const swaggerDoc = YAML.load("./ayah-hebat-api.yaml");
 require("./setup/initializeFirebaseAdmin.js");
 
+const cors = require("cors");
 const app = express();
 const prisma = new PrismaClient();
 
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -55,7 +57,6 @@ app.get("/", (req, res) => {
   res.render("index", { title: "home" });
 });
 
-
 app.use("/api-docs", serve, swaggerUI.setup(swaggerDoc));
 
 app.use("/uploads", express.static("uploads"));
@@ -63,7 +64,7 @@ app.use("/uploads/books", express.static("uploads/books"));
 app.use("/auth", authRoutes);
 
 app.post("/midtrans", handleWebhook);
-app.get('/favicon.ico', (req, res) => {
+app.get("/favicon.ico", (req, res) => {
   res.status(204).end(); // Kirim 'No Content' (tidak ada ikon)
 });
 // app.use('/.well-known', express.static(path.join(__dirname, '.well-known')));
@@ -87,8 +88,8 @@ app.use("/comment-book", commentBookRoutes);
 app.use("/address", officeAddressRoutes);
 app.use("/infaq", infaqRoutes);
 app.use("/allocation", allocationTypeRoutes);
-app.use('/watch', watchRoutes);
-app.use('/alms', almsRoutes)
+app.use("/watch", watchRoutes);
+app.use("/alms", almsRoutes);
 
 app.use((req, res, next) => {
   res.status(404).json({ error: "Route not defined" });
