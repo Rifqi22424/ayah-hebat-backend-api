@@ -27,9 +27,7 @@ const registerUser = async (req, res) => {
     }
 
     if (password !== confirmPassword) {
-      return res
-        .status(400)
-        .json({ error: "Password and confirm password do not match" });
+      return res.status(400).json({ error: "Password and confirm password do not match" });
     }
 
     // Cek apakah username atau email sudah ada
@@ -39,9 +37,7 @@ const registerUser = async (req, res) => {
     });
 
     if (existingUser && existingUser.isVerified) {
-      return res
-        .status(400)
-        .json({ error: "Email is already registered and verified" });
+      return res.status(400).json({ error: "Email is already registered and verified" });
     }
 
     if (existingUsername && existingUsername.isVerified) {
@@ -100,8 +96,7 @@ const registerUser = async (req, res) => {
     sendVerificationEmail(email, verificationCode);
 
     res.json({
-      message:
-        "User registered successfully. Check your email for verification.",
+      message: "User registered successfully. Check your email for verification.",
     });
   } catch (error) {
     console.error(error);
@@ -130,6 +125,7 @@ const verifyUser = async (req, res) => {
       data: {
         isVerified: true,
         verificationCode: null,
+        hasApproved: "pending",
       },
     });
 
@@ -203,6 +199,18 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ error: "User is not verified" });
     }
 
+    if (user.hasApproved === "pending") {
+      return res.status(403).json({ error: "Anda belum memiliki izin untuk memasuki aplikasi" });
+    } else if (user.hasApproved === "disapproved") {
+      return res.status(403).json({
+        error: "Anda tidak memiliki izin untuk memasuki aplikasi",
+      });
+    } else if (user.hasApproved !== "approved") {
+      return res.status(403).json({
+        error: "Status akun belum disetujui admin.",
+      });
+    }
+
     const token = generateToken(user.id);
 
     res.json({
@@ -212,6 +220,8 @@ const loginUser = async (req, res) => {
         username: user.username,
         email: user.email,
         profile: user.profile,
+        hasApproved: user.hasApproved,
+        role: user.role,
       },
     });
   } catch (error) {
@@ -337,7 +347,6 @@ const sendResetEmail = async (email, username, resetURL) => {
     console.log("Email reset terkirim ke:", email);
   } catch (error) {
     console.error("Error di dalam sendResetEmail:", error);
-    // PENTING: Lemparkan error lagi agar 'forgotPassword' bisa menangkapnya
     throw new Error("Gagal mengirim email reset.");
   }
 };
@@ -361,9 +370,7 @@ const changePassword = async (req, res) => {
     }
 
     if (newPassword !== confirmNewPassword) {
-      return res
-        .status(400)
-        .json({ error: "New password and confirm new password do not match" });
+      return res.status(400).json({ error: "New password and confirm new password do not match" });
     }
 
     const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
@@ -390,8 +397,7 @@ const forgotPassword = async (req, res) => {
 
     if (!user) {
       return res.status(200).json({
-        message:
-          "If your email is registered, a reset link has been sent.",
+        message: "Email reset password telah dikirim.",
       });
     }
 
@@ -432,7 +438,7 @@ const forgotPassword = async (req, res) => {
 
 const showResetForm = async (req, res) => {
   try {
-    const { code } = req.query; 
+    const { code } = req.query;
 
     const profileWithCode = await prisma.profile.findFirst({
       where: {
@@ -467,9 +473,7 @@ const resetPassword = async (req, res) => {
   const { code, newPassword, newConfirmationPassword } = req.body;
 
   if (!code || !newPassword || !newConfirmationPassword) {
-    return res
-      .status(400)
-      .json({ message: "Token dan password baru diperlukan." });
+    return res.status(400).json({ message: "Token dan password baru diperlukan." });
   }
 
   if (newPassword !== newConfirmationPassword) {
@@ -485,9 +489,7 @@ const resetPassword = async (req, res) => {
     });
 
     if (!profileWithCode) {
-      return res
-        .status(400)
-        .json({ message: "Token tidak valid atau sudah kedaluwarsa." });
+      return res.status(400).json({ message: "Token tidak valid atau sudah kedaluwarsa." });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -496,7 +498,7 @@ const resetPassword = async (req, res) => {
     await prisma.profile.update({
       where: { id: profileWithCode.id },
       data: {
-        forgotCode: null, 
+        forgotCode: null,
         forgotExpiredAt: null,
         user: {
           update: {
@@ -506,9 +508,7 @@ const resetPassword = async (req, res) => {
       },
     });
 
-    res
-      .status(200)
-      .json({ message: "Password berhasil direset. Silakan login." });
+    res.status(200).json({ message: "Password berhasil direset. Silakan login." });
   } catch (error) {
     console.error("Error di resetPassword:", error);
     res.status(500).json({ message: "Terjadi kesalahan pada server." });
