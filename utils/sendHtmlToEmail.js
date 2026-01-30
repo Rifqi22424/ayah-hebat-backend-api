@@ -1,4 +1,5 @@
 const nodemailer = require("nodemailer");
+require("dotenv").config();
 // const smtpPassword = process.env.SMTP_PASSWORD;
 const userNodemailer = process.env.USERNAME_NODEMAILER;
 const passNodemailer = process.env.PASSWORD_NODEMAILER;
@@ -13,7 +14,8 @@ let data = {
   amount: "10000",
   status: "success",
   orderId: "AT3-1739855157553",
-  redirectUrl: "https://app.sandbox.midtrans.com/snap/v4/redirection/2194de44-c9f4-4570-bb14-0f53367687ae",
+  redirectUrl:
+    "https://app.sandbox.midtrans.com/snap/v4/redirection/2194de44-c9f4-4570-bb14-0f53367687ae",
   allocationTypeCode: "AT3",
   paymentType: "shopeepay",
   createdAt: "Tue Feb 18 2025 12:05:58 GMT+0700 (Western Indonesia Time)",
@@ -31,7 +33,8 @@ let failed_data = {
   amount: "10000",
   status: "failed",
   orderId: "AT7-1740108600960",
-  redirectUrl: "https://app.sandbox.midtrans.com/snap/v4/redirection/846c41c3-c67e-4b98-b906-6d98d2a53da9",
+  redirectUrl:
+    "https://app.sandbox.midtrans.com/snap/v4/redirection/846c41c3-c67e-4b98-b906-6d98d2a53da9",
   allocationTypeCode: "AT7",
   paymentType: "qris",
   createdAt: "Fri Feb 21 2025 10:30:01 GMT+0700 (Western Indonesia Time)",
@@ -224,6 +227,94 @@ const sendHtmlToEmail = async (email, data) => {
   });
 };
 
+const sendResetEmail = async (email, username, resetURL) => {
+  // 1. Buat transporter (sama seperti di fungsi Anda yang lain)
+  const transporter = nodemailer.createTransport({
+    host: hostNodemailer,
+    port: portNodemailer,
+    secure: secureNodemailer,
+    auth: {
+      user: userNodemailer,
+      pass: passNodemailer,
+    },
+  });
+
+  // 2. Verifikasi (Mengikuti gaya kode Anda sebelumnya)
+  await new Promise((resolve, reject) => {
+    transporter.verify(function (error, success) {
+      if (error) {
+        console.log(error);
+        reject(error);
+      } else {
+        console.log("Server is ready to take our messages");
+        resolve(success);
+      }
+    });
+  });
+
+  // 3. Buat template HTML
+  const mailOptions = {
+    from: mailFrom,
+    to: email,
+    subject: "Permintaan Reset Password",
+    html: `
+      <table role="presentation" width="100%" style="background-color: #eef4f8; padding: 20px;" align="center">
+        <tr>
+          <td align="center">
+            <table role="presentation" width="300px" style="background-color: white; padding: 12px; border-radius: 12px;">
+              <tr>
+                <td align="center" style="font-size: 24px; font-weight: bold; color: black;">
+                  Mangcoding (Nama Aplikasi Anda)
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 12px;">
+                  <h2 style="color: black; margin: 0;">Reset Password</h2>
+                  <p style="color: grey; margin: 8px 0;">Anda menerima ini karena ada permintaan reset password.</p>
+                </td>
+              </tr>
+            </table>
+            
+            <table role="presentation" width="300px" style="background-color: white; padding: 12px; margin-top: 12px; border-radius: 12px;">
+              <tr>
+                <td>
+                  <p style="color: black;">Kepada <b>${username}</b></p>
+                  <p style="color: black;">Silakan klik tombol di bawah ini untuk mengatur ulang password Anda. Link ini hanya valid selama 15 menit.</p>
+                  
+                  <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                    <tr>
+                      <td align="center" style="padding: 10px 0;">
+                        <a href="${resetURL}" target="_blank" style="background-color: #007bff; color: white; padding: 12px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                          Reset Password Saya
+                        </a>
+                      </td>
+                    </tr>
+                  </table>
+                  
+                  <p style="color: black; font-size: 12px;">Jika Anda tidak meminta reset password, abaikan email ini.</p>
+                  <hr />
+                  <p style="color: grey; font-size: 10px;">Jika tombol tidak berfungsi, salin URL ini: ${resetURL}</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    `,
+  };
+
+  // 4. Kirim email (Mengikuti gaya kode Anda sebelumnya)
+  await new Promise((resolve, reject) => {
+    transporter.sendMail(mailOptions, (err, info) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(info);
+      }
+    });
+  });
+};
+
 // sendHtmlToEmail(email, failed_data);
 
-module.exports = { sendHtmlToEmail };
+module.exports = { sendHtmlToEmail, sendResetEmail };
