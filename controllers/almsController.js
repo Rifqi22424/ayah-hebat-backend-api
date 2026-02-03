@@ -20,8 +20,7 @@ const createAlms = async (req, res) => {
       where: { code: allocationTypeCode },
     });
 
-    if (!validAllocationTypes)
-      return res.status(400).json({ error: "Invalid allocation type" });
+    if (!validAllocationTypes) return res.status(400).json({ error: "Invalid allocation type" });
 
     // Save alms data to the database
     const alms = await prisma.alms.create({
@@ -121,13 +120,45 @@ const getAllAlms = async (req, res) => {
       ...(allocationTypeCode && { allocationTypeCode }),
     };
 
-    const allAlms = await prisma.alms.findMany({
+    const allAlmsData = await prisma.alms.findMany({
       where: whereClause,
       skip,
       take,
       orderBy: {
         createdAt: "desc",
       },
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+            email: true,
+            role: true,
+            profile: true,
+          },
+        },
+      },
+    });
+
+    const allocationTypes = await prisma.allocationType.findMany({
+      select: {
+        code: true,
+        name: true,
+      },
+    });
+
+    const allocationTypeMap = allocationTypes.reduce((map, { code, name }) => {
+      map[code] = name;
+      return map;
+    }, {});
+
+    const allAlms = allAlmsData.map((alms) => {
+      const { user, ...rest } = alms;
+      return {
+        ...rest,
+        allocationTypeName: allocationTypeMap[alms.allocationTypeCode],
+        userDetail: user,
+      };
     });
 
     const totalAmount = await prisma.alms.aggregate({
@@ -207,6 +238,10 @@ const getAlmsById = async (req, res) => {
     const userId = req.userId;
     const id = parseInt(req.params.id);
 
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
     const alms = await prisma.alms.findUnique({
       where: { id },
       select: {
@@ -219,6 +254,14 @@ const getAlmsById = async (req, res) => {
         createdAt: true,
         updatedAt: true,
         allocationTypeCode: true,
+        user: {
+          select: {
+            id: true,
+            username: true,
+            email: true,
+            profile: true,
+          },
+        },
       },
     });
 
@@ -234,8 +277,7 @@ const getAlmsById = async (req, res) => {
       },
     });
 
-    if (alms.userId !== userId)
-      return res.status(403).json({ error: "Forbidden" });
+    if (user.role !== "ADMIN" && alms.userId !== userId) return res.status(403).json({ error: "Forbidden" });
 
     const { userId: _, allocationTypeCode: __, ...filteredInfaq } = alms;
 

@@ -43,17 +43,8 @@ const { authorizeAdmin } = require("./middlewares/authorizationMiddleware.js");
 const swaggerDoc = YAML.load("./ayah-hebat-api.yaml");
 require("./setup/initializeFirebaseAdmin.js");
 
-const cors = require("cors");
 const app = express();
 const prisma = new PrismaClient();
-
-app.use(cors());
-
-// app.use(cors({
-//   origin: "http://localhost:5174",
-//   methods: ["GET", "POST", "PUT", "DELETE"],
-//   credentials: true
-// }));
 
 app.use(cors());
 

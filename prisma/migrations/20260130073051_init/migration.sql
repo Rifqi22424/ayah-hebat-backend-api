@@ -14,6 +14,7 @@ CREATE TABLE `User` (
     `totalScoreMonth` INTEGER NULL DEFAULT 0,
     `totalScoreDay` INTEGER NULL DEFAULT 0,
     `role` ENUM('ADMIN', 'USER') NULL DEFAULT 'USER',
+    `hasApproved` VARCHAR(191) NULL,
 
     UNIQUE INDEX `User_username_key`(`username`),
     UNIQUE INDEX `User_email_key`(`email`),
@@ -31,8 +32,11 @@ CREATE TABLE `Profile` (
     `namaAnak` VARCHAR(191) NULL,
     `tahunMasukKuttab` INTEGER NULL,
     `userId` INTEGER NOT NULL,
+    `forgotCode` VARCHAR(191) NULL,
+    `forgotExpiredAt` DATETIME(3) NULL,
 
     UNIQUE INDEX `Profile_userId_key`(`userId`),
+    UNIQUE INDEX `Profile_forgotCode_key`(`forgotCode`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -272,7 +276,7 @@ CREATE TABLE `Report` (
 
 -- CreateTable
 CREATE TABLE `Infaq` (
-    `id` VARCHAR(191) NOT NULL,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `userId` INTEGER NOT NULL,
     `amount` DOUBLE NOT NULL,
     `status` VARCHAR(191) NOT NULL DEFAULT 'pending',
@@ -284,6 +288,21 @@ CREATE TABLE `Infaq` (
     `updatedAt` DATETIME(3) NOT NULL,
 
     UNIQUE INDEX `Infaq_orderId_key`(`orderId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Alms` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `userId` INTEGER NOT NULL,
+    `amount` DOUBLE NOT NULL,
+    `status` VARCHAR(191) NOT NULL DEFAULT 'pending',
+    `allocationTypeCode` VARCHAR(191) NOT NULL,
+    `evidenceImageUrl` VARCHAR(191) NULL,
+    `message` VARCHAR(191) NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -309,6 +328,40 @@ CREATE TABLE `ErrorLog` (
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Content` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `title` VARCHAR(191) NOT NULL,
+    `description` VARCHAR(191) NULL,
+    `thumbnailUrl` VARCHAR(191) NOT NULL,
+    `videoUrl` VARCHAR(191) NOT NULL,
+    `duration` INTEGER NULL,
+    `views` INTEGER NOT NULL DEFAULT 0,
+    `publishedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `uploaderId` INTEGER NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Playlist` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `title` VARCHAR(191) NOT NULL,
+    `description` VARCHAR(191) NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `PlaylistContent` (
+    `contentId` INTEGER NOT NULL,
+    `playlistId` INTEGER NOT NULL,
+    `order` INTEGER NOT NULL,
+
+    UNIQUE INDEX `PlaylistContent_playlistId_order_key`(`playlistId`, `order`),
+    PRIMARY KEY (`contentId`, `playlistId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
@@ -394,3 +447,15 @@ ALTER TABLE `Report` ADD CONSTRAINT `Report_replyId_fkey` FOREIGN KEY (`replyId`
 
 -- AddForeignKey
 ALTER TABLE `Infaq` ADD CONSTRAINT `Infaq_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Alms` ADD CONSTRAINT `Alms_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Content` ADD CONSTRAINT `Content_uploaderId_fkey` FOREIGN KEY (`uploaderId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `PlaylistContent` ADD CONSTRAINT `PlaylistContent_contentId_fkey` FOREIGN KEY (`contentId`) REFERENCES `Content`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `PlaylistContent` ADD CONSTRAINT `PlaylistContent_playlistId_fkey` FOREIGN KEY (`playlistId`) REFERENCES `Playlist`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

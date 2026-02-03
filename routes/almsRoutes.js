@@ -1,12 +1,5 @@
 const express = require("express");
-const {
-  createAlms,
-  getAlmsHistory,
-  getAllAlms,
-  getAlmsById,
-  getTotalAmountAlmsUser,
-  changeAlmStatus,
-} = require("../controllers/almsController");
+const { createAlms, getAlmsHistory, getAllAlms, getAlmsById, getTotalAmountAlmsUser, changeAlmStatus } = require("../controllers/almsController");
 const { authorizeAdmin } = require("../middlewares/authorizationMiddleware");
 const { uploadPhotoMiddleware } = require("../middlewares/uploadMiddleware");
 
