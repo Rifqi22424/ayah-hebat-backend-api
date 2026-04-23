@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const authRoutes = require("./routes/authRoutes.js");
@@ -32,7 +33,6 @@ const path = require("path");
 const { handleWebhook } = require("./controllers/infaqController.js");
 
 const { fixDuplicateUsernames } = require("./setup/fixDuplicateUsernames.js");
-require("dotenv").config();
 const setupAdmin = require("./setup/setupAdmin.js");
 const swaggerUI = require("swagger-ui-express");
 const YAML = require("yamljs");
@@ -116,7 +116,7 @@ cron.schedule(
   {
     scheduled: true,
     timezone: "Asia/Jakarta",
-  }
+  },
 );
 
 async function initializeApp() {
