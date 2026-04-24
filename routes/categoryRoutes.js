@@ -3,9 +3,9 @@ const { getCategories, createCategory, updateCategory, deleteCategory} = require
 const {authorizeAdmin} = require('./../middlewares/authorizationMiddleware')
 const router = express.Router();
 
-router.get('/', getCategories);
-router.post('/', authorizeAdmin, createCategory);
-router.put('/:id', authorizeAdmin, updateCategory);
-router.delete('/:id', authorizeAdmin, deleteCategory);
+router.get('/', /* #swagger.tags = ['Categories Controller'] */ getCategories);
+router.post('/', /* #swagger.tags = ['Categories Controller'] */ authorizeAdmin, createCategory);
+router.put('/:id', /* #swagger.tags = ['Categories Controller'] */ authorizeAdmin, updateCategory);
+router.delete('/:id', /* #swagger.tags = ['Categories Controller'] */ authorizeAdmin, deleteCategory);
 
 module.exports = router;

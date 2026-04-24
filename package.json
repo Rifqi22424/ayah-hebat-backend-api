@@ -5,7 +5,10 @@
   "main": "server.js",
   "scripts": {
     "seed": "node setup/seed.js",
+    "swagger": "node swagger.js",
+    "pretest": "npm run swagger",
     "test": "node server.js",
+    "predev": "npm run swagger",
     "dev": "nodemon server.js"
   },
   "keywords": [],
@@ -27,6 +30,7 @@
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "prisma": "^5.10.2",
+    "swagger-autogen": "^2.23.7",
     "swagger-ui-express": "^5.0.1",
     "uuid": "^9.0.1",
     "yamljs": "^0.3.0"

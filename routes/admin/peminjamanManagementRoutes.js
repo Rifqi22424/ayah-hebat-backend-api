@@ -3,7 +3,7 @@ const {getPeminjamanBuku, updateStatusBuku} = require('../../controllers/admin/p
 
 const router = express.Router();
 
-router.get('/', getPeminjamanBuku);
-router.put('/:id', updateStatusBuku);
+router.get('/', /* #swagger.tags = ['Admin Peminjaman Management Controller'] */ getPeminjamanBuku);
+router.put('/:id', /* #swagger.tags = ['Admin Peminjaman Management Controller'] */ updateStatusBuku);
 
 module.exports = router;

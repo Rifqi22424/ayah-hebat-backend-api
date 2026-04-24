@@ -3,15 +3,15 @@ const { getBooks, getBookById, createBook, updateBook, deleteBook, createBookDon
 const {uploadPhotoMiddleware} = require('../middlewares/uploadMiddleware');
 const router = express.Router();
 
-router.get('/donation/:id', getMyBookDonationById);
-router.get('/donation', getMyBookDonations);
-router.post('/donation', uploadPhotoMiddleware, createBookDonation);
-router.put('/donation/:id', updateBookDonationStatus);
+router.get('/donation/:id', /* #swagger.tags = ['Books Controller'] */ getMyBookDonationById);
+router.get('/donation', /* #swagger.tags = ['Books Controller'] */ getMyBookDonations);
+router.post('/donation', /* #swagger.tags = ['Books Controller'] */ uploadPhotoMiddleware, createBookDonation);
+router.put('/donation/:id', /* #swagger.tags = ['Books Controller'] */ updateBookDonationStatus);
 
-router.get('/', getBooks);
-router.get('/:id', getBookById);
-router.post('/', uploadPhotoMiddleware, createBook);
-router.put('/:id', uploadPhotoMiddleware, updateBook);
-router.delete('/:id', deleteBook);
+router.get('/', /* #swagger.tags = ['Books Controller'] */ getBooks);
+router.get('/:id', /* #swagger.tags = ['Books Controller'] */ getBookById);
+router.post('/', /* #swagger.tags = ['Books Controller'] */ uploadPhotoMiddleware, createBook);
+router.put('/:id', /* #swagger.tags = ['Books Controller'] */ uploadPhotoMiddleware, updateBook);
+router.delete('/:id', /* #swagger.tags = ['Books Controller'] */ deleteBook);
 
 module.exports = router;

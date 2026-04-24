@@ -35,10 +35,8 @@ const { handleWebhook } = require("./controllers/infaqController.js");
 const { fixDuplicateUsernames } = require("./setup/fixDuplicateUsernames.js");
 const setupAdmin = require("./setup/setupAdmin.js");
 const swaggerUI = require("swagger-ui-express");
-const YAML = require("yamljs");
-const { serve } = require("swagger-ui-express");
 const { authorizeAdmin } = require("./middlewares/authorizationMiddleware.js");
-const swaggerDoc = YAML.load("./ayah-hebat-api.yaml");
+const swaggerDoc = require("./swagger-output.json");
 require("./setup/initializeFirebaseAdmin.js");
 
 const app = express();
@@ -53,7 +51,7 @@ app.get("/", (req, res) => {
   res.render("index", { title: "home" });
 });
 
-app.use("/api-docs", serve, swaggerUI.setup(swaggerDoc));
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDoc));
 
 app.use("/uploads", express.static("uploads"));
 app.use("/uploads/books", express.static("uploads/books"));
