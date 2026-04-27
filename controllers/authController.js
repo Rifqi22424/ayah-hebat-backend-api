@@ -25,10 +25,14 @@ const registerUser = async (req, res) => {
 
     // Cek apakah username atau email sudah ada
     const existingUser = await prisma.user.findUnique({ where: { email } });
-    const existingUsername = await prisma.user.findUnique({ where: { username } });
+    const existingUsername = await prisma.user.findUnique({
+      where: { username },
+    });
 
     if (existingUser && existingUser.isVerified) {
-      return res.status(400).json({ error: "Email is already registered and verified" });
+      return res
+        .status(400)
+        .json({ error: "Email is already registered and verified" });
     }
 
     if (existingUsername && existingUsername.isVerified) {
@@ -48,7 +52,9 @@ const registerUser = async (req, res) => {
         },
       });
       sendVerificationEmail(email, verificationCode);
-      return res.json({ message: "Email verification resent. Please check your email." });
+      return res.json({
+        message: "Email verification resent. Please check your email.",
+      });
     }
 
     // Jika username sudah ada tetapi belum diverifikasi
@@ -64,7 +70,9 @@ const registerUser = async (req, res) => {
         },
       });
       sendVerificationEmail(email, verificationCode);
-      return res.json({ message: "Email verification resent. Please check your email." });
+      return res.json({
+        message: "Email verification resent. Please check your email.",
+      });
     }
 
     // Jika belum ada di database, buat user baru
@@ -83,7 +91,8 @@ const registerUser = async (req, res) => {
     sendVerificationEmail(email, verificationCode);
 
     res.json({
-      message: "User registered successfully. Check your email for verification.",
+      message:
+        "User registered successfully. Check your email for verification.",
     });
   } catch (error) {
     console.error(error);
@@ -218,7 +227,7 @@ const sendVerificationEmail = async (email, verificationCode) => {
     port: 465,
     secure: true,
     auth: {
-      user: "ayahhebatmangcoding@gmail.com",
+      user: "panjiangkasaputra67@gmail.com",
       pass: smtpPassword,
     },
   });
