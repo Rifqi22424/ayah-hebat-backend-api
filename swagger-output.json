@@ -458,28 +458,34 @@
           }
         },
         "requestBody": {
+          "required": false,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
+                  "photo": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Upload foto profil"
+                  },
                   "nama": {
-                    "example": "any"
+                    "type": "string"
                   },
                   "namaIstri": {
-                    "example": "any"
+                    "type": "string"
                   },
                   "namaAnak": {
-                    "example": "any"
+                    "type": "string"
                   },
                   "namaKuttab": {
-                    "example": "any"
+                    "type": "string"
                   },
                   "tahunMasukKuttab": {
-                    "example": "any"
+                    "type": "integer"
                   },
                   "bio": {
-                    "example": "any"
+                    "type": "string"
                   }
                 }
               }
@@ -513,28 +519,34 @@
           }
         },
         "requestBody": {
+          "required": false,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
+                  "photo": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Upload foto profil"
+                  },
                   "nama": {
-                    "example": "any"
+                    "type": "string"
                   },
                   "namaIstri": {
-                    "example": "any"
+                    "type": "string"
                   },
                   "namaAnak": {
-                    "example": "any"
+                    "type": "string"
                   },
                   "namaKuttab": {
-                    "example": "any"
+                    "type": "string"
                   },
                   "tahunMasukKuttab": {
-                    "example": "any"
+                    "type": "integer"
                   },
                   "bio": {
-                    "example": "any"
+                    "type": "string"
                   }
                 }
               }
@@ -677,15 +689,36 @@
           }
         },
         "requestBody": {
+          "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
                   "title": {
-                    "example": "any"
+                    "type": "string",
+                    "description": "Judul kegiatan"
+                  },
+                  "file1": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "File bukti utama kegiatan"
+                  },
+                  "file2": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "File bukti tambahan (opsional)"
+                  },
+                  "file3": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "File bukti tambahan (opsional)"
                   }
-                }
+                },
+                "required": [
+                  "title",
+                  "file1"
+                ]
               }
             }
           }
@@ -1003,21 +1036,32 @@
           }
         },
         "requestBody": {
+          "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
+                  "photo": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Upload gambar notifikasi (opsional)"
+                  },
                   "title": {
-                    "example": "any"
+                    "type": "string"
                   },
                   "body": {
-                    "example": "any"
+                    "type": "string"
                   },
                   "data": {
-                    "example": "any"
+                    "type": "string",
+                    "description": "JSON string. Contoh: {'key':'value'}"
                   }
-                }
+                },
+                "required": [
+                  "title",
+                  "body"
+                ]
               }
             }
           }
@@ -1049,21 +1093,32 @@
           }
         },
         "requestBody": {
+          "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
+                  "photo": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Upload gambar notifikasi (opsional)"
+                  },
                   "title": {
-                    "example": "any"
+                    "type": "string"
                   },
                   "body": {
-                    "example": "any"
+                    "type": "string"
                   },
                   "data": {
-                    "example": "any"
+                    "type": "string",
+                    "description": "JSON string. Contoh: {'key':'value'}"
                   }
-                }
+                },
+                "required": [
+                  "title",
+                  "body"
+                ]
               }
             }
           }
@@ -1159,24 +1214,36 @@
           }
         },
         "requestBody": {
+          "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
+                  "photo": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Upload gambar berita"
+                  },
                   "title": {
-                    "example": "any"
+                    "type": "string"
                   },
                   "subTitle": {
-                    "example": "any"
+                    "type": "string"
                   },
                   "content": {
-                    "example": "any"
+                    "type": "string"
                   },
                   "author": {
-                    "example": "any"
+                    "type": "string"
                   }
-                }
+                },
+                "required": [
+                  "title",
+                  "subTitle",
+                  "content",
+                  "author"
+                ]
               }
             }
           }
@@ -1320,22 +1387,28 @@
           }
         },
         "requestBody": {
+          "required": false,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
+                  "photo": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Upload gambar berita"
+                  },
                   "title": {
-                    "example": "any"
+                    "type": "string"
                   },
                   "subTitle": {
-                    "example": "any"
+                    "type": "string"
                   },
                   "content": {
-                    "example": "any"
+                    "type": "string"
                   },
                   "author": {
-                    "example": "any"
+                    "type": "string"
                   }
                 }
               }
@@ -2641,27 +2714,44 @@
           }
         },
         "requestBody": {
+          "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
+                  "photo": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Upload gambar buku"
+                  },
                   "name": {
-                    "example": "any"
+                    "type": "string",
+                    "description": "Nama buku"
                   },
                   "description": {
-                    "example": "any"
+                    "type": "string"
                   },
                   "categoryIds": {
-                    "example": "any"
+                    "type": "string",
+                    "description": "Contoh: 1,2,3"
                   },
                   "stock": {
-                    "example": "any"
+                    "type": "integer"
                   },
                   "planSentAt": {
-                    "example": "any"
+                    "type": "string",
+                    "format": "date"
                   }
-                }
+                },
+                "required": [
+                  "photo",
+                  "name",
+                  "description",
+                  "categoryIds",
+                  "stock",
+                  "planSentAt"
+                ]
               }
             }
           }
@@ -2744,24 +2834,37 @@
           }
         },
         "requestBody": {
+          "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
+                  "photo": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Upload gambar buku"
+                  },
                   "name": {
-                    "example": "any"
+                    "type": "string"
                   },
                   "description": {
-                    "example": "any"
-                  },
-                  "stock": {
-                    "example": "any"
+                    "type": "string"
                   },
                   "categoryIds": {
-                    "example": "any"
+                    "type": "string",
+                    "description": "Contoh: 1,2,3"
+                  },
+                  "stock": {
+                    "type": "integer"
                   }
-                }
+                },
+                "required": [
+                  "name",
+                  "description",
+                  "categoryIds",
+                  "stock"
+                ]
               }
             }
           }
@@ -2826,28 +2929,40 @@
           }
         },
         "requestBody": {
+          "required": false,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
+                  "photo": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Upload gambar buku"
+                  },
                   "name": {
-                    "example": "any"
+                    "type": "string"
                   },
                   "description": {
-                    "example": "any"
+                    "type": "string"
                   },
                   "stock": {
-                    "example": "any"
-                  },
-                  "categoryIds": {
-                    "example": "any"
+                    "type": "integer"
                   },
                   "status": {
-                    "example": "any"
+                    "type": "string",
+                    "description": "PENDING | ACCEPTED | REJECTED | CANCELLED"
                   },
                   "email": {
-                    "example": "any"
+                    "type": "string",
+                    "description": "Email user pemilik buku"
+                  },
+                  "categoryIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    },
+                    "description": "Contoh: [1,2,3]"
                   }
                 }
               }
@@ -2882,29 +2997,6 @@
           },
           "500": {
             "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/books/donation/{id{where:{id:parseInt(id)}}": {
-      "delete": {
-        "tags": [
-          "Books Controller"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": null,
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "401": {
-            "description": "Unauthorized"
           }
         }
       }
@@ -3730,9 +3822,6 @@
           },
           "403": {
             "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"
