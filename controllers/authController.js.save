@@ -198,8 +198,7 @@ const loginUser = async (req, res) => {
     if (!user.isVerified) {
       return res.status(401).json({ error: "User is not verified" });
     }
-
-    console.log("hasApproved:", `"${user.hasApproved}"`);
+	console.log("hasApproved:", `"${user.hasApproved}"`);1~sconsole.log("hasApproved:", `"${user.hasApproved}"`);
 
     if (user.hasApproved === "pending") {
       return res.status(403).json({ error: "Anda belum memiliki izin untuk memasuki aplikasi" });

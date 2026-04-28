@@ -6,4 +6,6 @@ node_modules
 *.png
 *.jpeg
 ayah-hebat-app-firebase-adminsdk-wu50j-4869861ec0.json
-.well-known
+.well-known.env.save
+.env.save
+.env*

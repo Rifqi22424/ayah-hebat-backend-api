@@ -1,0 +1,892 @@
+-- MySQL dump 10.19  Distrib 10.3.39-MariaDB, for debian-linux-gnu (x86_64)
+--
+-- Host: localhost    Database: ayah_hebat
+-- ------------------------------------------------------
+-- Server version	10.3.39-MariaDB-0ubuntu0.20.04.2
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `AllocationType`
+--
+
+DROP TABLE IF EXISTS `AllocationType`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `AllocationType` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(191) NOT NULL,
+  `code` varchar(191) NOT NULL,
+  `isActive` tinyint(1) NOT NULL DEFAULT 1,
+  `createdAt` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+  `updatedAt` datetime(3) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `AllocationType_name_key` (`name`),
+  UNIQUE KEY `AllocationType_code_key` (`code`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `AllocationType`
+--
+
+LOCK TABLES `AllocationType` WRITE;
+/*!40000 ALTER TABLE `AllocationType` DISABLE KEYS */;
+INSERT INTO `AllocationType` VALUES (1,'Mudhorobah (kerjasama investasi)','DDBA',1,'2025-02-25 10:23:31.232','2025-02-25 10:23:31.232'),(2,'Murabahah (jual beli)','QF9T',1,'2025-02-25 10:23:42.550','2025-02-25 10:23:42.550'),(3,'Qard Hasan (pinjaman lunak)','ASV8',1,'2025-02-25 10:23:50.870','2025-02-25 10:23:50.870');
+/*!40000 ALTER TABLE `AllocationType` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Alms`
+--
+
+DROP TABLE IF EXISTS `Alms`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Alms` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `amount` double NOT NULL,
+  `status` varchar(191) NOT NULL DEFAULT 'pending',
+  `allocationTypeCode` varchar(191) NOT NULL,
+  `evidenceImageUrl` varchar(191) DEFAULT NULL,
+  `message` varchar(191) DEFAULT NULL,
+  `createdAt` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+  `updatedAt` datetime(3) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `Alms_userId_fkey` (`userId`),
+  CONSTRAINT `Alms_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Alms`
+--
+
+LOCK TABLES `Alms` WRITE;
+/*!40000 ALTER TABLE `Alms` DISABLE KEYS */;
+INSERT INTO `Alms` VALUES (1,65,20000,'pending','QF9T','photo-1766545895884-620577028.png',NULL,'2025-12-24 03:11:35.896','2025-12-24 03:11:35.896'),(2,65,20000,'pending','QF9T','photo-1766546077802-927423345.png',NULL,'2025-12-24 03:14:37.812','2025-12-24 03:14:37.812'),(3,65,20000,'pending','QF9T','photo-1766546083705-451433424.png',NULL,'2025-12-24 03:14:43.711','2025-12-24 03:14:43.711'),(4,65,20000,'pending','QF9T','photo-1766546153891-876809476.png',NULL,'2025-12-24 03:15:53.898','2025-12-24 03:15:53.898'),(5,65,20000,'pending','QF9T','photo-1766546182955-479508217.png',NULL,'2025-12-24 03:16:22.961','2025-12-24 03:16:22.961'),(6,65,20000,'pending','QF9T','photo-1766546192835-900858058.png',NULL,'2025-12-24 03:16:32.843','2025-12-24 03:16:32.843'),(7,65,20000,'pending','QF9T','photo-1766546202963-527055376.png',NULL,'2025-12-24 03:16:42.968','2025-12-24 03:16:42.968'),(8,65,20000,'failed','QF9T','photo-1766546282669-240900465.png',NULL,'2025-12-24 03:18:02.674','2025-12-24 04:11:18.751'),(9,65,20000,'success','ASV8','photo-1766548646867-485561818.png','Semoga berkah','2025-12-24 03:57:26.877','2025-12-24 04:11:02.295'),(10,65,20000,'pending','QF9T','photo-1766551436739-229127513.png',NULL,'2025-12-24 04:43:56.743','2025-12-24 04:43:56.743'),(11,66,15000,'pending','QF9T','photo-1767059610189-593723828.png',NULL,'2025-12-30 01:53:30.195','2025-12-30 01:53:30.195'),(12,64,10000,'pending','QF9T','photo-1767147364741-238627470.png','test','2025-12-31 02:16:04.746','2025-12-31 02:16:04.746'),(13,64,10000,'success','QF9T','photo-1767147679531-53368217.png','jual','2025-12-31 02:21:19.579','2025-12-31 02:23:49.742'),(14,64,10000,'pending','ASV8','photo-1767148156977-679670098.png','pinjaman','2025-12-31 02:29:16.982','2025-12-31 02:29:16.982'),(15,64,10000,'pending','ASV8','photo-1767148559531-835814473.png','pinjaman','2025-12-31 02:35:59.536','2025-12-31 02:35:59.536'),(16,64,10000,'pending','QF9T','photo-1767149305713-753328873.png','jual','2025-12-31 02:48:25.718','2025-12-31 02:48:25.718'),(17,64,10000,'pending','QF9T','photo-1767149457591-522912500.png','h','2025-12-31 02:50:57.596','2025-12-31 02:50:57.596'),(18,64,12000,'success','QF9T','photo-1767150121999-913890349.png',NULL,'2025-12-31 03:02:02.006','2025-12-31 03:03:05.847'),(19,64,15000,'pending','QF9T','photo-1767150404305-230304883.png','jual beli','2025-12-31 03:06:44.308','2025-12-31 03:06:44.308'),(20,64,30000,'pending','DDBA','photo-1767150597778-828045642.png','investasi','2025-12-31 03:09:57.782','2025-12-31 03:09:57.782'),(21,64,20000,'pending','DDBA','photo-1767150807063-103092231.png',NULL,'2025-12-31 03:13:27.068','2025-12-31 03:13:27.068'),(22,64,30000,'pending','DDBA','photo-1767151096777-823017059.png',NULL,'2025-12-31 03:18:16.783','2025-12-31 03:18:16.783'),(23,64,30000,'pending','DDBA','photo-1767151384412-113453516.png',NULL,'2025-12-31 03:23:04.416','2025-12-31 03:23:04.416'),(24,66,12000,'pending','QF9T','photo-1767162220585-20050238.png',NULL,'2025-12-31 06:23:40.599','2025-12-31 06:23:40.599'),(25,64,15000,'pending','ASV8','photo-1767162298531-984584278.png',NULL,'2025-12-31 06:24:58.568','2025-12-31 06:24:58.568'),(26,64,20000,'pending','QF9T','photo-1767162387159-667667223.png',NULL,'2025-12-31 06:26:27.171','2025-12-31 06:26:27.171'),(27,37,15000,'pending','QF9T','photo-1767162805105-424017207.png',NULL,'2025-12-31 06:33:25.110','2025-12-31 06:33:25.110'),(28,37,12000,'pending','ASV8','photo-1767162957459-330822206.png',NULL,'2025-12-31 06:35:57.464','2025-12-31 06:35:57.464'),(29,64,15000,'pending','QF9T','photo-1767169676540-618678852.png',NULL,'2025-12-31 08:27:56.558','2025-12-31 08:27:56.558'),(30,64,12000,'pending','ASV8','photo-1767323766692-19097378.png',NULL,'2026-01-02 03:16:06.711','2026-01-02 03:16:06.711'),(31,64,100000,'pending','QF9T','photo-1767324174582-112552671.png',NULL,'2026-01-02 03:22:54.585','2026-01-02 03:22:54.585'),(32,64,10000,'pending','QF9T','photo-1767324432630-658140296.png',NULL,'2026-01-02 03:27:12.636','2026-01-02 03:27:12.636'),(33,64,30000,'pending','ASV8','photo-1767324488143-40703956.png',NULL,'2026-01-02 03:28:08.147','2026-01-02 03:28:08.147'),(34,64,30000,'pending','QF9T','photo-1767324657017-614128601.png',NULL,'2026-01-02 03:30:57.022','2026-01-02 03:30:57.022'),(35,64,21000,'pending','QF9T','photo-1767324687755-260319210.png',NULL,'2026-01-02 03:31:27.764','2026-01-02 03:31:27.764'),(36,64,30000,'pending','ASV8','photo-1767324981387-108094217.png',NULL,'2026-01-02 03:36:21.403','2026-01-02 03:36:21.403'),(37,64,14000,'pending','ASV8','photo-1767325103076-53947009.png',NULL,'2026-01-02 03:38:23.086','2026-01-02 03:38:23.086'),(38,64,5000,'success','DDBA','photo-1767326342771-534514202.png',NULL,'2026-01-02 03:59:02.805','2026-01-02 04:02:00.459'),(39,64,34000,'pending','ASV8','photo-1767342256449-352568136.png',NULL,'2026-01-02 08:24:16.461','2026-01-02 08:24:16.461'),(40,64,13500,'pending','ASV8','photo-1767342347259-48464414.png',NULL,'2026-01-02 08:25:47.272','2026-01-02 08:25:47.272'),(41,64,239000,'pending','QF9T','photo-1767342499815-17489959.png',NULL,'2026-01-02 08:28:19.868','2026-01-02 08:28:19.868'),(42,64,41000,'pending','ASV8','photo-1767342582673-61374286.png',NULL,'2026-01-02 08:29:42.723','2026-01-02 08:29:42.723'),(43,64,12000,'pending','ASV8','photo-1767345556968-910710683.png',NULL,'2026-01-02 09:19:16.974','2026-01-02 09:19:16.974'),(44,64,14400,'pending','QF9T','photo-1767345575780-435443932.png',NULL,'2026-01-02 09:19:35.786','2026-01-02 09:19:35.786'),(45,64,12300,'pending','ASV8','photo-1767346134666-827471665.png',NULL,'2026-01-02 09:28:54.674','2026-01-02 09:28:54.674'),(46,64,58000,'pending','DDBA','photo-1767346367710-308708728.png',NULL,'2026-01-02 09:32:47.727','2026-01-02 09:32:47.727'),(47,64,12345,'pending','ASV8','photo-1767347546233-213767455.png',NULL,'2026-01-02 09:52:26.247','2026-01-02 09:52:26.247'),(48,64,21212,'pending','ASV8','photo-1767350197602-757682569.png',NULL,'2026-01-02 10:36:37.620','2026-01-02 10:36:37.620'),(49,37,35000,'pending','QF9T','photo-1767579324817-623719162.png',NULL,'2026-01-05 02:15:24.826','2026-01-05 02:15:24.826'),(50,64,15000,'pending','QF9T','photo-1767600502738-448140534.png',NULL,'2026-01-05 08:08:22.761','2026-01-05 08:08:22.761'),(51,15,15000,'pending','DDBA','photo-1767602350934-322457890.png','Periode 1 Tahun 2026','2026-01-05 08:39:10.941','2026-01-05 08:39:10.941'),(52,15,15000,'pending','DDBA','photo-1767604151282-704882128.png','Periode 1 Tahun 2026','2026-01-05 09:09:11.286','2026-01-05 09:09:11.286'),(53,37,20000,'pending','QF9T','photo-1767604203135-995822053.png',NULL,'2026-01-05 09:10:03.182','2026-01-05 09:10:03.182'),(54,53,10000,'pending','DDBA','photo-1767605273457-223942144.png',NULL,'2026-01-05 09:27:53.502','2026-01-05 09:27:53.502'),(55,15,15000,'pending','DDBA','photo-1767613677396-673317792.png','Periode 1 Thn 2026','2026-01-05 11:47:57.400','2026-01-05 11:47:57.400'),(56,68,10000,'pending','ASV8','photo-1770201322036-386926821.png',NULL,'2026-02-04 10:35:22.042','2026-02-04 10:35:22.042');
+/*!40000 ALTER TABLE `Alms` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Book`
+--
+
+DROP TABLE IF EXISTS `Book`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Book` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(191) NOT NULL,
+  `description` text NOT NULL,
+  `stock` int(11) NOT NULL,
+  `imageurl` varchar(191) NOT NULL,
+  `userId` int(11) NOT NULL,
+  `status` enum('PENDING','ACCEPTED','REJECTED','CANCELLED') NOT NULL DEFAULT 'PENDING',
+  `planSentAt` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+  `acceptedAt` datetime(3) DEFAULT NULL,
+  `rejectedAt` datetime(3) DEFAULT NULL,
+  `canceledAt` datetime(3) DEFAULT NULL,
+  `createdAt` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+  `updatedAt` datetime(3) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `Book_userId_fkey` (`userId`),
+  CONSTRAINT `Book_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Book`
+--
+
+LOCK TABLES `Book` WRITE;
+/*!40000 ALTER TABLE `Book` DISABLE KEYS */;
+INSERT INTO `Book` VALUES (1,'h','_',10,'photo-1761021771155-17545236.png',58,'PENDING','2025-10-20 17:00:00.000',NULL,NULL,NULL,'2025-10-21 04:42:51.159','2025-10-21 04:42:51.159'),(2,'H','-',10,'photo-1761021798932-935198506.png',58,'PENDING','2025-10-20 17:00:00.000',NULL,NULL,NULL,'2025-10-21 04:43:18.935','2025-10-21 04:43:18.935'),(3,'agama untuk peradaban','-',10,'photo-1761022005467-917419687.png',58,'ACCEPTED','2025-10-20 17:00:00.000','2025-10-21 04:53:17.797',NULL,NULL,'2025-10-21 04:46:45.469','2025-10-21 04:53:17.798');
+/*!40000 ALTER TABLE `Book` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `BookCategories`
+--
+
+DROP TABLE IF EXISTS `BookCategories`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `BookCategories` (
+  `bookId` int(11) NOT NULL,
+  `categoryId` int(11) NOT NULL,
+  PRIMARY KEY (`categoryId`,`bookId`),
+  KEY `BookCategories_bookId_fkey` (`bookId`),
+  CONSTRAINT `BookCategories_bookId_fkey` FOREIGN KEY (`bookId`) REFERENCES `Book` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `BookCategories_categoryId_fkey` FOREIGN KEY (`categoryId`) REFERENCES `Category` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `BookCategories`
+--
+
+LOCK TABLES `BookCategories` WRITE;
+/*!40000 ALTER TABLE `BookCategories` DISABLE KEYS */;
+INSERT INTO `BookCategories` VALUES (1,1),(2,1),(3,2);
+/*!40000 ALTER TABLE `BookCategories` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Category`
+--
+
+DROP TABLE IF EXISTS `Category`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Category` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(191) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Category`
+--
+
+LOCK TABLES `Category` WRITE;
+/*!40000 ALTER TABLE `Category` DISABLE KEYS */;
+INSERT INTO `Category` VALUES (1,'Fiksi'),(2,'Non-Fiksi');
+/*!40000 ALTER TABLE `Category` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Comment`
+--
+
+DROP TABLE IF EXISTS `Comment`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Comment` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `body` text NOT NULL,
+  `postId` int(11) NOT NULL,
+  `createdAt` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+  `updatedAt` datetime(3) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Comment`
+--
+
+LOCK TABLES `Comment` WRITE;
+/*!40000 ALTER TABLE `Comment` DISABLE KEYS */;
+INSERT INTO `Comment` VALUES (1,35,'Mencoba Komentar',1,'2024-10-28 04:46:39.521','2024-10-28 04:46:39.521'),(2,35,'Mencoba lagi komentar',1,'2024-10-28 04:46:46.075','2024-10-28 04:46:46.075'),(3,35,'Terbaru',1,'2024-10-28 04:47:10.741','2024-10-28 04:47:10.741'),(4,35,'halo',1,'2024-10-28 04:48:12.631','2024-10-28 04:48:12.631'),(6,35,'lagi',1,'2024-10-28 04:48:17.556','2024-10-28 04:48:17.556'),(7,35,'bismillah',1,'2024-10-28 04:48:20.578','2024-10-28 04:48:20.578'),(8,35,'rame si',1,'2024-10-28 04:48:23.838','2024-10-28 04:48:23.838'),(9,35,'bikin apps',1,'2024-10-28 04:48:27.136','2024-10-28 04:48:27.136'),(10,35,'suka haha jujurly',1,'2024-10-28 04:48:32.839','2024-10-28 04:48:32.839'),(11,35,'halo',1,'2024-10-28 04:48:38.406','2024-10-28 04:48:38.406'),(12,35,'halo',1,'2024-10-28 04:49:00.569','2024-10-28 04:49:00.569'),(13,35,'ih',1,'2024-10-28 04:49:17.201','2024-10-28 04:49:17.201'),(14,35,'Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32. The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from \"de Finibus Bonorum et Malorum\" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.',3,'2024-10-28 05:03:13.309','2024-10-28 05:03:13.309'),(15,35,'first',2,'2024-10-28 05:35:03.015','2024-10-28 05:35:03.015'),(16,35,'bv',2,'2024-10-28 05:40:54.018','2024-10-28 05:40:54.018'),(18,35,'fdd',3,'2024-10-28 05:44:18.835','2024-10-28 05:44:18.835'),(19,35,'hhh',3,'2024-10-28 05:47:07.669','2024-10-28 05:47:07.669'),(20,35,'fff',2,'2024-10-28 05:47:18.667','2024-10-28 05:47:18.667'),(21,35,'hhhh',2,'2024-10-28 05:48:13.208','2024-10-28 05:48:13.208'),(22,35,'hhh',2,'2024-10-28 05:52:47.040','2024-10-28 05:52:47.040'),(23,35,'hmm',2,'2024-10-28 05:53:06.502','2024-10-28 05:53:06.502'),(24,35,'dd',2,'2024-10-28 05:53:26.409','2024-10-28 05:53:26.409'),(25,35,'ddd',2,'2024-10-28 05:53:51.983','2024-10-28 05:53:51.983'),(26,35,'edd',2,'2024-10-28 05:54:28.246','2024-10-28 05:54:28.246'),(27,35,'fff',2,'2024-10-28 05:56:49.646','2024-10-28 05:56:49.646'),(28,35,'coba comment',6,'2024-10-28 09:49:24.788','2024-10-28 09:49:24.788'),(29,35,'mantap',6,'2024-10-28 09:49:30.245','2024-10-28 09:49:30.245'),(30,31,'Nilai-nilai utama yang perlu diajarkan sejak dini untuk membentuk karakter anak shaleh meliputi keimanan, akhlak mulia, kedisiplinan dalam ibadah, kasih sayang, tanggung jawab, kemandirian, dan kejujuran. Dengan memahami konsep Tuhan dan pentingnya ibadah, anak akan mengembangkan kedisiplinan dan cinta pada agama. Akhlak mulia, seperti jujur dan rendah hati, serta kasih sayang pada sesama, penting untuk membentuk karakter yang peduli dan menghormati orang lain. Tanggung jawab dan kemandirian juga perlu dilatih agar anak menjadi pribadi yang percaya diri dan mampu menghadapi tantangan. Dengan konsistensi dan teladan yang baik, nilai-nilai ini dapat membentuk anak menjadi pribadi yang shaleh dan berakhlak mulia.',7,'2024-10-29 10:07:02.062','2024-10-29 10:07:02.062'),(31,16,'Aku sih iyes.. ',8,'2025-10-08 11:07:59.638','2025-10-08 11:07:59.638');
+/*!40000 ALTER TABLE `Comment` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CommentBook`
+--
+
+DROP TABLE IF EXISTS `CommentBook`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `CommentBook` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `bookId` int(11) NOT NULL,
+  `description` text NOT NULL,
+  `createdAt` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+  `updatedAt` datetime(3) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `CommentBook_userId_fkey` (`userId`),
+  KEY `CommentBook_bookId_fkey` (`bookId`),
+  CONSTRAINT `CommentBook_bookId_fkey` FOREIGN KEY (`bookId`) REFERENCES `Book` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `CommentBook_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `CommentBook`
+--
+
+LOCK TABLES `CommentBook` WRITE;
+/*!40000 ALTER TABLE `CommentBook` DISABLE KEYS */;
+/*!40000 ALTER TABLE `CommentBook` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `CommentLike`
+--
+
+DROP TABLE IF EXISTS `CommentLike`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `CommentLike` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `commentId` int(11) NOT NULL,
+  `createdAt` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+  `updatedAt` datetime(3) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `CommentLike`
+--
+
+LOCK TABLES `CommentLike` WRITE;
+/*!40000 ALTER TABLE `CommentLike` DISABLE KEYS */;
+INSERT INTO `CommentLike` VALUES (1,35,2,'2024-10-28 04:47:19.205','2024-10-28 04:47:19.205'),(2,35,4,'2024-10-28 04:48:42.923','2024-10-28 04:48:42.923'),(3,35,5,'2024-10-28 04:48:45.973','2024-10-28 04:48:45.973'),(4,35,3,'2024-10-28 04:48:50.077','2024-10-28 04:48:50.077'),(6,35,1,'2024-10-28 04:49:05.525','2024-10-28 04:49:05.525'),(8,35,28,'2024-10-28 09:51:12.278','2024-10-28 09:51:12.278'),(9,35,29,'2024-10-28 09:51:15.701','2024-10-28 09:51:15.701'),(10,31,30,'2024-10-29 10:07:26.501','2024-10-29 10:07:26.501');
+/*!40000 ALTER TABLE `CommentLike` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Content`
+--
+
+DROP TABLE IF EXISTS `Content`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Content` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(191) NOT NULL,
+  `description` varchar(191) DEFAULT NULL,
+  `thumbnailUrl` varchar(191) NOT NULL,
+  `videoUrl` varchar(191) NOT NULL,
+  `duration` int(11) DEFAULT NULL,
+  `views` int(11) NOT NULL DEFAULT 0,
+  `publishedAt` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+  `uploaderId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `Content_uploaderId_fkey` (`uploaderId`),
+  CONSTRAINT `Content_uploaderId_fkey` FOREIGN KEY (`uploaderId`) REFERENCES `User` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Content`
+--
+
+LOCK TABLES `Content` WRITE;
+/*!40000 ALTER TABLE `Content` DISABLE KEYS */;
+INSERT INTO `Content` VALUES (1,'Perbaiki Shalatmu Maka Allah Akan Permudah Urusanmu - Ustadz Adi Hidayat','Selamat datang di saluran resmi Ustadz Adi Hidayat! \nSaksikan video ini hingga akhir, dan temukan amalan yang dapat membawa Anda lebih dekat kepada Allah SWT.','uploads/thumbnail-1762868647525-42338186.png','https://youtu.be/sX-kePnlgy4?si=QuQ1OldooFvanxVj',49,1,'2025-11-11 13:44:07.528',19);
+/*!40000 ALTER TABLE `Content` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ErrorLog`
+--
+
+DROP TABLE IF EXISTS `ErrorLog`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ErrorLog` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `errorMessage` text NOT NULL,
+  `stackTrace` text DEFAULT NULL,
+  `createdAt` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=97 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ErrorLog`
+--
+
+LOCK TABLES `ErrorLog` WRITE;
+/*!40000 ALTER TABLE `ErrorLog` DISABLE KEYS */;
+INSERT INTO `ErrorLog` VALUES (1,'EACCES: permission denied, open \'uploads/photo-1737020456452-725252028.png\'','Error: EACCES: permission denied, open \'uploads/photo-1737020456452-725252028.png\'','2025-01-16 09:40:56.483'),(2,'EACCES: permission denied, open \'uploads/photo-1737020587014-57109302.png\'','Error: EACCES: permission denied, open \'uploads/photo-1737020587014-57109302.png\'','2025-01-16 09:43:07.023'),(3,'EACCES: permission denied, open \'uploads/photo-1737020636175-991690655.png\'','Error: EACCES: permission denied, open \'uploads/photo-1737020636175-991690655.png\'','2025-01-16 09:43:56.192'),(4,'EACCES: permission denied, open \'uploads/photo-1737020662655-905428767.png\'','Error: EACCES: permission denied, open \'uploads/photo-1737020662655-905428767.png\'','2025-01-16 09:44:22.667'),(5,'EACCES: permission denied, open \'uploads/photo-1737020663572-529041013.png\'','Error: EACCES: permission denied, open \'uploads/photo-1737020663572-529041013.png\'','2025-01-16 09:44:23.591'),(6,'EACCES: permission denied, open \'uploads/photo-1737020844415-269978847.png\'','Error: EACCES: permission denied, open \'uploads/photo-1737020844415-269978847.png\'','2025-01-16 09:47:24.419'),(7,'EACCES: permission denied, open \'uploads/photo-1737020867320-162368565.png\'','Error: EACCES: permission denied, open \'uploads/photo-1737020867320-162368565.png\'','2025-01-16 09:47:47.331'),(8,'EACCES: permission denied, open \'uploads/photo-1737020872752-628758712.png\'','Error: EACCES: permission denied, open \'uploads/photo-1737020872752-628758712.png\'','2025-01-16 09:47:52.759'),(9,'EACCES: permission denied, open \'uploads/photo-1737020887986-498488108.png\'','Error: EACCES: permission denied, open \'uploads/photo-1737020887986-498488108.png\'','2025-01-16 09:48:07.990'),(10,'EACCES: permission denied, open \'uploads/photo-1737020904492-288228160.png\'','Error: EACCES: permission denied, open \'uploads/photo-1737020904492-288228160.png\'','2025-01-16 09:48:24.511'),(11,'EACCES: permission denied, open \'uploads/photo-1737020910299-60762202.png\'','Error: EACCES: permission denied, open \'uploads/photo-1737020910299-60762202.png\'','2025-01-16 09:48:30.311'),(12,'EACCES: permission denied, open \'uploads/photo-1737020931049-541434277.png\'','Error: EACCES: permission denied, open \'uploads/photo-1737020931049-541434277.png\'','2025-01-16 09:48:51.053'),(13,'EACCES: permission denied, open \'uploads/photo-1737020947239-749877427.png\'','Error: EACCES: permission denied, open \'uploads/photo-1737020947239-749877427.png\'','2025-01-16 09:49:07.247'),(14,'EACCES: permission denied, open \'uploads/photo-1737020947794-328256382.png\'','Error: EACCES: permission denied, open \'uploads/photo-1737020947794-328256382.png\'','2025-01-16 09:49:07.813'),(15,'EACCES: permission denied, open \'uploads/photo-1737020976398-490755169.png\'','Error: EACCES: permission denied, open \'uploads/photo-1737020976398-490755169.png\'','2025-01-16 09:49:36.405'),(16,'EACCES: permission denied, open \'uploads/photo-1737021047498-243373891.png\'','Error: EACCES: permission denied, open \'uploads/photo-1737021047498-243373891.png\'','2025-01-16 09:50:47.508'),(17,'Unexpected end of JSON input','SyntaxError: Unexpected end of JSON input\n    at JSON.parse (<anonymous>)\n    at parse (/var/www/ayah-hebat-backend-api/node_modules/body-parser/lib/types/json.js:92:19)\n    at /var/www/ayah-hebat-backend-api/node_modules/body-parser/lib/read.js:128:18\n    at AsyncResource.runInAsyncScope (node:async_hooks:203:9)\n    at invokeCallback (/var/www/ayah-hebat-backend-api/node_modules/raw-body/index.js:238:16)\n    at done (/var/www/ayah-hebat-backend-api/node_modules/raw-body/index.js:227:7)\n    at IncomingMessage.onEnd (/var/www/ayah-hebat-backend-api/node_modules/raw-body/index.js:287:7)\n    at IncomingMessage.emit (node:events:517:28)\n    at endReadableNT (node:internal/streams/readable:1400:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)','2025-02-13 14:20:08.832'),(18,'Unexpected end of JSON input','SyntaxError: Unexpected end of JSON input\n    at JSON.parse (<anonymous>)\n    at parse (/var/www/ayah-hebat-backend-api/node_modules/body-parser/lib/types/json.js:92:19)\n    at /var/www/ayah-hebat-backend-api/node_modules/body-parser/lib/read.js:128:18\n    at AsyncResource.runInAsyncScope (node:async_hooks:203:9)\n    at invokeCallback (/var/www/ayah-hebat-backend-api/node_modules/raw-body/index.js:238:16)\n    at done (/var/www/ayah-hebat-backend-api/node_modules/raw-body/index.js:227:7)\n    at IncomingMessage.onEnd (/var/www/ayah-hebat-backend-api/node_modules/raw-body/index.js:287:7)\n    at IncomingMessage.emit (node:events:517:28)\n    at endReadableNT (node:internal/streams/readable:1400:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)','2025-02-13 14:21:39.462'),(19,'EACCES: permission denied, open \'uploads/photo-1740972074023-890223574.png\'','Error: EACCES: permission denied, open \'uploads/photo-1740972074023-890223574.png\'','2025-03-03 03:21:14.031'),(20,'EACCES: permission denied, open \'uploads/photo-1740972078341-543613259.png\'','Error: EACCES: permission denied, open \'uploads/photo-1740972078341-543613259.png\'','2025-03-03 03:21:18.345'),(21,'EACCES: permission denied, open \'uploads/photo-1740972080144-958642914.png\'','Error: EACCES: permission denied, open \'uploads/photo-1740972080144-958642914.png\'','2025-03-03 03:21:20.148'),(22,'EACCES: permission denied, open \'uploads/photo-1740972105850-882889344.png\'','Error: EACCES: permission denied, open \'uploads/photo-1740972105850-882889344.png\'','2025-03-03 03:21:45.854'),(23,'EACCES: permission denied, open \'uploads/photo-1740972109071-294604106.png\'','Error: EACCES: permission denied, open \'uploads/photo-1740972109071-294604106.png\'','2025-03-03 03:21:49.073'),(24,'EACCES: permission denied, open \'uploads/photo-1740972111517-751796295.png\'','Error: EACCES: permission denied, open \'uploads/photo-1740972111517-751796295.png\'','2025-03-03 03:21:51.519'),(25,'EACCES: permission denied, open \'uploads/photo-1740972116606-141092978.png\'','Error: EACCES: permission denied, open \'uploads/photo-1740972116606-141092978.png\'','2025-03-03 03:21:56.609'),(26,'EACCES: permission denied, open \'uploads/photo-1740972121655-155348511.png\'','Error: EACCES: permission denied, open \'uploads/photo-1740972121655-155348511.png\'','2025-03-03 03:22:01.658'),(27,'EACCES: permission denied, open \'uploads/photo-1740972140260-792623733.png\'','Error: EACCES: permission denied, open \'uploads/photo-1740972140260-792623733.png\'','2025-03-03 03:22:20.262'),(28,'EACCES: permission denied, open \'uploads/photo-1740972150667-934144379.png\'','Error: EACCES: permission denied, open \'uploads/photo-1740972150667-934144379.png\'','2025-03-03 03:22:30.670'),(29,'EACCES: permission denied, open \'uploads/photo-1740972152623-549541314.png\'','Error: EACCES: permission denied, open \'uploads/photo-1740972152623-549541314.png\'','2025-03-03 03:22:32.626'),(30,'EACCES: permission denied, open \'uploads/photo-1740972153949-683568216.png\'','Error: EACCES: permission denied, open \'uploads/photo-1740972153949-683568216.png\'','2025-03-03 03:22:33.952'),(31,'EACCES: permission denied, open \'uploads/photo-1740972160968-101720121.png\'','Error: EACCES: permission denied, open \'uploads/photo-1740972160968-101720121.png\'','2025-03-03 03:22:40.970'),(32,'EACCES: permission denied, open \'uploads/photo-1740972195570-679993642.png\'','Error: EACCES: permission denied, open \'uploads/photo-1740972195570-679993642.png\'','2025-03-03 03:23:15.572'),(33,'EACCES: permission denied, open \'uploads/photo-1740972202110-704946637.png\'','Error: EACCES: permission denied, open \'uploads/photo-1740972202110-704946637.png\'','2025-03-03 03:23:22.112'),(34,'EACCES: permission denied, open \'uploads/photo-1740972265465-475542592.png\'','Error: EACCES: permission denied, open \'uploads/photo-1740972265465-475542592.png\'','2025-03-03 03:24:25.467'),(35,'EACCES: permission denied, open \'uploads/photo-1740972353746-104658942.png\'','Error: EACCES: permission denied, open \'uploads/photo-1740972353746-104658942.png\'','2025-03-03 03:25:53.747'),(36,'EACCES: permission denied, open \'uploads/photo-1740972459830-877186891.png\'','Error: EACCES: permission denied, open \'uploads/photo-1740972459830-877186891.png\'','2025-03-03 03:27:39.845'),(37,'EACCES: permission denied, open \'uploads/photo-1740972778032-721005995.png\'','Error: EACCES: permission denied, open \'uploads/photo-1740972778032-721005995.png\'','2025-03-03 03:32:58.037'),(38,'EACCES: permission denied, open \'uploads/photo-1740973427667-667794506.png\'','Error: EACCES: permission denied, open \'uploads/photo-1740973427667-667794506.png\'','2025-03-03 03:43:47.677'),(39,'EACCES: permission denied, open \'uploads/photo-1740973438163-266798143.png\'','Error: EACCES: permission denied, open \'uploads/photo-1740973438163-266798143.png\'','2025-03-03 03:43:58.166'),(40,'EACCES: permission denied, open \'uploads/photo-1740973451614-507137827.png\'','Error: EACCES: permission denied, open \'uploads/photo-1740973451614-507137827.png\'','2025-03-03 03:44:11.617'),(41,'EACCES: permission denied, open \'uploads/photo-1740973472486-107359632.png\'','Error: EACCES: permission denied, open \'uploads/photo-1740973472486-107359632.png\'','2025-03-03 03:44:32.490'),(42,'EACCES: permission denied, open \'uploads/photo-1740973628306-365626666.png\'','Error: EACCES: permission denied, open \'uploads/photo-1740973628306-365626666.png\'','2025-03-03 03:47:08.308'),(43,'EACCES: permission denied, open \'uploads/photo-1740973633548-104746265.png\'','Error: EACCES: permission denied, open \'uploads/photo-1740973633548-104746265.png\'','2025-03-03 03:47:13.551'),(44,'Expected property name or \'}\' in JSON at position 1','SyntaxError: Expected property name or \'}\' in JSON at position 1\n    at JSON.parse (<anonymous>)\n    at parse (/var/www/ayah-hebat-backend-api/node_modules/body-parser/lib/types/json.js:92:19)\n    at /var/www/ayah-hebat-backend-api/node_modules/body-parser/lib/read.js:128:18\n    at AsyncResource.runInAsyncScope (node:async_hooks:206:9)\n    at invokeCallback (/var/www/ayah-hebat-backend-api/node_modules/raw-body/index.js:238:16)\n    at done (/var/www/ayah-hebat-backend-api/node_modules/raw-body/index.js:227:7)\n    at IncomingMessage.onEnd (/var/www/ayah-hebat-backend-api/node_modules/raw-body/index.js:287:7)\n    at IncomingMessage.emit (node:events:518:28)\n    at endReadableNT (node:internal/streams/readable:1696:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)','2025-05-14 14:33:17.934'),(45,'Expected property name or \'}\' in JSON at position 1','SyntaxError: Expected property name or \'}\' in JSON at position 1\n    at JSON.parse (<anonymous>)\n    at parse (/var/www/ayah-hebat-backend-api/node_modules/body-parser/lib/types/json.js:92:19)\n    at /var/www/ayah-hebat-backend-api/node_modules/body-parser/lib/read.js:128:18\n    at AsyncResource.runInAsyncScope (node:async_hooks:206:9)\n    at invokeCallback (/var/www/ayah-hebat-backend-api/node_modules/raw-body/index.js:238:16)\n    at done (/var/www/ayah-hebat-backend-api/node_modules/raw-body/index.js:227:7)\n    at IncomingMessage.onEnd (/var/www/ayah-hebat-backend-api/node_modules/raw-body/index.js:287:7)\n    at IncomingMessage.emit (node:events:518:28)\n    at endReadableNT (node:internal/streams/readable:1696:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)','2025-05-14 14:33:52.420'),(46,'EACCES: permission denied, open \'uploads/photo-1759817879849-414263463.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759817879849-414263463.png\'','2025-10-07 06:17:59.857'),(47,'EACCES: permission denied, open \'uploads/photo-1759817882880-317432456.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759817882880-317432456.png\'','2025-10-07 06:18:02.885'),(48,'EACCES: permission denied, open \'uploads/photo-1759817884017-561513298.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759817884017-561513298.png\'','2025-10-07 06:18:04.021'),(49,'EACCES: permission denied, open \'uploads/photo-1759822967386-189315476.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759822967386-189315476.png\'','2025-10-07 07:42:47.394'),(50,'EACCES: permission denied, open \'uploads/photo-1759822972699-335645949.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759822972699-335645949.png\'','2025-10-07 07:42:52.702'),(51,'EACCES: permission denied, open \'uploads/photo-1759822987815-366948293.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759822987815-366948293.png\'','2025-10-07 07:43:07.819'),(52,'EACCES: permission denied, open \'uploads/photo-1759823007183-823613253.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759823007183-823613253.png\'','2025-10-07 07:43:27.187'),(53,'EACCES: permission denied, open \'uploads/photo-1759830804193-384784164.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759830804193-384784164.png\'','2025-10-07 09:53:24.195'),(54,'EACCES: permission denied, open \'uploads/photo-1759830812531-710223634.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759830812531-710223634.png\'','2025-10-07 09:53:32.533'),(55,'EACCES: permission denied, open \'uploads/photo-1759830828986-641352586.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759830828986-641352586.png\'','2025-10-07 09:53:48.988'),(56,'EACCES: permission denied, open \'uploads/photo-1759830879211-712713762.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759830879211-712713762.png\'','2025-10-07 09:54:39.213'),(57,'EACCES: permission denied, open \'uploads/photo-1759830880659-190398964.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759830880659-190398964.png\'','2025-10-07 09:54:40.661'),(58,'EACCES: permission denied, open \'uploads/photo-1759830881517-189504682.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759830881517-189504682.png\'','2025-10-07 09:54:41.520'),(59,'EACCES: permission denied, open \'uploads/photo-1759830882260-127427481.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759830882260-127427481.png\'','2025-10-07 09:54:42.262'),(60,'EACCES: permission denied, open \'uploads/photo-1759830883517-603514590.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759830883517-603514590.png\'','2025-10-07 09:54:43.519'),(61,'EACCES: permission denied, open \'uploads/photo-1759830884195-910974952.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759830884195-910974952.png\'','2025-10-07 09:54:44.198'),(62,'EACCES: permission denied, open \'uploads/photo-1759830884986-967719976.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759830884986-967719976.png\'','2025-10-07 09:54:44.989'),(63,'EACCES: permission denied, open \'uploads/photo-1759830885741-806266572.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759830885741-806266572.png\'','2025-10-07 09:54:45.743'),(64,'EACCES: permission denied, open \'uploads/photo-1759830886473-426441351.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759830886473-426441351.png\'','2025-10-07 09:54:46.476'),(65,'EACCES: permission denied, open \'uploads/photo-1759830887127-54159859.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759830887127-54159859.png\'','2025-10-07 09:54:47.130'),(66,'EACCES: permission denied, open \'uploads/photo-1759830887746-860605395.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759830887746-860605395.png\'','2025-10-07 09:54:47.749'),(67,'EACCES: permission denied, open \'uploads/photo-1759830888567-985782599.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759830888567-985782599.png\'','2025-10-07 09:54:48.570'),(68,'EACCES: permission denied, open \'uploads/photo-1759830891235-765670259.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759830891235-765670259.png\'','2025-10-07 09:54:51.237'),(69,'EACCES: permission denied, open \'uploads/photo-1759830895111-54628064.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759830895111-54628064.png\'','2025-10-07 09:54:55.114'),(70,'EACCES: permission denied, open \'uploads/photo-1759831087488-637888640.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759831087488-637888640.png\'','2025-10-07 09:58:07.491'),(71,'EACCES: permission denied, open \'uploads/photo-1759831097870-948370060.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759831097870-948370060.png\'','2025-10-07 09:58:17.873'),(72,'EACCES: permission denied, open \'uploads/photo-1759831102993-950272058.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759831102993-950272058.png\'','2025-10-07 09:58:22.997'),(73,'EACCES: permission denied, open \'uploads/photo-1759831178643-117814902.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759831178643-117814902.png\'','2025-10-07 09:59:38.645'),(74,'EACCES: permission denied, open \'uploads/photo-1759831183684-447369877.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759831183684-447369877.png\'','2025-10-07 09:59:43.687'),(75,'EACCES: permission denied, open \'uploads/photo-1759831222508-445044264.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759831222508-445044264.png\'','2025-10-07 10:00:22.511'),(76,'EACCES: permission denied, open \'uploads/photo-1759831382719-469676259.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759831382719-469676259.png\'','2025-10-07 10:03:02.721'),(77,'EACCES: permission denied, open \'uploads/photo-1759831393151-653712323.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759831393151-653712323.png\'','2025-10-07 10:03:13.153'),(78,'EACCES: permission denied, open \'uploads/photo-1759831897895-608454223.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759831897895-608454223.png\'','2025-10-07 10:11:37.898'),(79,'EACCES: permission denied, open \'uploads/photo-1759832062836-572815470.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759832062836-572815470.png\'','2025-10-07 10:14:22.838'),(80,'EACCES: permission denied, open \'uploads/photo-1759832066046-13584206.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759832066046-13584206.png\'','2025-10-07 10:14:26.049'),(81,'Unexpected field','MulterError: Unexpected field\n    at wrappedFileFilter (/var/www/ayah-hebat-backend-api/node_modules/multer/index.js:40:19)\n    at Multipart.<anonymous> (/var/www/ayah-hebat-backend-api/node_modules/multer/lib/make-middleware.js:107:7)\n    at Multipart.emit (node:events:517:28)\n    at HeaderParser.cb (/var/www/ayah-hebat-backend-api/node_modules/busboy/lib/types/multipart.js:358:14)\n    at HeaderParser.push (/var/www/ayah-hebat-backend-api/node_modules/busboy/lib/types/multipart.js:162:20)\n    at SBMH.ssCb [as _cb] (/var/www/ayah-hebat-backend-api/node_modules/busboy/lib/types/multipart.js:394:37)\n    at feed (/var/www/ayah-hebat-backend-api/node_modules/streamsearch/lib/sbmh.js:248:10)\n    at SBMH.push (/var/www/ayah-hebat-backend-api/node_modules/streamsearch/lib/sbmh.js:104:16)\n    at Multipart._write (/var/www/ayah-hebat-backend-api/node_modules/busboy/lib/types/multipart.js:567:19)\n    at writeOrBuffer (node:internal/streams/writable:392:12)','2025-10-07 10:15:54.242'),(82,'EACCES: permission denied, open \'uploads/photo-1759833371648-104487564.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759833371648-104487564.png\'','2025-10-07 10:36:11.655'),(83,'EACCES: permission denied, open \'uploads/photo-1759833390067-754480110.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759833390067-754480110.png\'','2025-10-07 10:36:30.070'),(84,'EACCES: permission denied, open \'uploads/file1-1759833402828-622248042.png\'','Error: EACCES: permission denied, open \'uploads/file1-1759833402828-622248042.png\'','2025-10-07 10:36:42.832'),(85,'EACCES: permission denied, open \'uploads/file1-1759833418033-210262249.png\'','Error: EACCES: permission denied, open \'uploads/file1-1759833418033-210262249.png\'','2025-10-07 10:36:58.035'),(86,'EACCES: permission denied, open \'uploads/file1-1759833458821-274295485.png\'','Error: EACCES: permission denied, open \'uploads/file1-1759833458821-274295485.png\'','2025-10-07 10:37:38.825'),(87,'EACCES: permission denied, open \'uploads/file1-1759833460100-914648227.png\'','Error: EACCES: permission denied, open \'uploads/file1-1759833460100-914648227.png\'','2025-10-07 10:37:40.102'),(88,'EACCES: permission denied, open \'uploads/file1-1759833561246-16834085.png\'','Error: EACCES: permission denied, open \'uploads/file1-1759833561246-16834085.png\'','2025-10-07 10:39:21.249'),(89,'EACCES: permission denied, open \'uploads/photo-1759887869788-783095722.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759887869788-783095722.png\'','2025-10-08 01:44:29.791'),(90,'EACCES: permission denied, open \'uploads/photo-1759887908100-838308085.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759887908100-838308085.png\'','2025-10-08 01:45:08.103'),(91,'EACCES: permission denied, open \'uploads/photo-1759887935988-235371408.png\'','Error: EACCES: permission denied, open \'uploads/photo-1759887935988-235371408.png\'','2025-10-08 01:45:35.991'),(92,'Unexpected field','MulterError: Unexpected field\n    at wrappedFileFilter (/var/www/ayah-hebat-backend-api/node_modules/multer/index.js:40:19)\n    at Multipart.<anonymous> (/var/www/ayah-hebat-backend-api/node_modules/multer/lib/make-middleware.js:107:7)\n    at Multipart.emit (node:events:517:28)\n    at HeaderParser.cb (/var/www/ayah-hebat-backend-api/node_modules/busboy/lib/types/multipart.js:358:14)\n    at HeaderParser.push (/var/www/ayah-hebat-backend-api/node_modules/busboy/lib/types/multipart.js:162:20)\n    at SBMH.ssCb [as _cb] (/var/www/ayah-hebat-backend-api/node_modules/busboy/lib/types/multipart.js:394:37)\n    at feed (/var/www/ayah-hebat-backend-api/node_modules/streamsearch/lib/sbmh.js:248:10)\n    at SBMH.push (/var/www/ayah-hebat-backend-api/node_modules/streamsearch/lib/sbmh.js:104:16)\n    at Multipart._write (/var/www/ayah-hebat-backend-api/node_modules/busboy/lib/types/multipart.js:567:19)\n    at writeOrBuffer (node:internal/streams/writable:392:12)','2025-10-08 01:48:27.278'),(93,'Unexpected field','MulterError: Unexpected field\n    at wrappedFileFilter (/var/www/ayah-hebat-backend-api/node_modules/multer/index.js:40:19)\n    at Multipart.<anonymous> (/var/www/ayah-hebat-backend-api/node_modules/multer/lib/make-middleware.js:107:7)\n    at Multipart.emit (node:events:518:28)\n    at HeaderParser.cb (/var/www/ayah-hebat-backend-api/node_modules/busboy/lib/types/multipart.js:358:14)\n    at HeaderParser.push (/var/www/ayah-hebat-backend-api/node_modules/busboy/lib/types/multipart.js:162:20)\n    at SBMH.ssCb [as _cb] (/var/www/ayah-hebat-backend-api/node_modules/busboy/lib/types/multipart.js:394:37)\n    at feed (/var/www/ayah-hebat-backend-api/node_modules/streamsearch/lib/sbmh.js:219:14)\n    at SBMH.push (/var/www/ayah-hebat-backend-api/node_modules/streamsearch/lib/sbmh.js:104:16)\n    at Multipart._write (/var/www/ayah-hebat-backend-api/node_modules/busboy/lib/types/multipart.js:567:19)\n    at writeOrBuffer (node:internal/streams/writable:564:12)','2025-12-24 02:35:37.053'),(94,'Unexpected field','MulterError: Unexpected field\n    at wrappedFileFilter (/var/www/ayah-hebat-backend-api/node_modules/multer/index.js:40:19)\n    at Multipart.<anonymous> (/var/www/ayah-hebat-backend-api/node_modules/multer/lib/make-middleware.js:107:7)\n    at Multipart.emit (node:events:518:28)\n    at HeaderParser.cb (/var/www/ayah-hebat-backend-api/node_modules/busboy/lib/types/multipart.js:358:14)\n    at HeaderParser.push (/var/www/ayah-hebat-backend-api/node_modules/busboy/lib/types/multipart.js:162:20)\n    at SBMH.ssCb [as _cb] (/var/www/ayah-hebat-backend-api/node_modules/busboy/lib/types/multipart.js:394:37)\n    at feed (/var/www/ayah-hebat-backend-api/node_modules/streamsearch/lib/sbmh.js:219:14)\n    at SBMH.push (/var/www/ayah-hebat-backend-api/node_modules/streamsearch/lib/sbmh.js:104:16)\n    at Multipart._write (/var/www/ayah-hebat-backend-api/node_modules/busboy/lib/types/multipart.js:567:19)\n    at writeOrBuffer (node:internal/streams/writable:564:12)','2025-12-24 02:35:50.657'),(95,'Invalid file type. Only images, audio, or video are allowed.','Error: Invalid file type. Only images, audio, or video are allowed.\n    at fileFilter (/var/www/ayah-hebat-backend-api/middlewares/multerConfig.js:20:8)\n    at wrappedFileFilter (/var/www/ayah-hebat-backend-api/node_modules/multer/index.js:44:7)\n    at Multipart.<anonymous> (/var/www/ayah-hebat-backend-api/node_modules/multer/lib/make-middleware.js:107:7)\n    at Multipart.emit (node:events:518:28)\n    at HeaderParser.cb (/var/www/ayah-hebat-backend-api/node_modules/busboy/lib/types/multipart.js:358:14)\n    at HeaderParser.push (/var/www/ayah-hebat-backend-api/node_modules/busboy/lib/types/multipart.js:162:20)\n    at SBMH.ssCb [as _cb] (/var/www/ayah-hebat-backend-api/node_modules/busboy/lib/types/multipart.js:394:37)\n    at feed (/var/www/ayah-hebat-backend-api/node_modules/streamsearch/lib/sbmh.js:219:14)\n    at SBMH.push (/var/www/ayah-hebat-backend-api/node_modules/streamsearch/lib/sbmh.js:104:16)\n    at Multipart._write (/var/www/ayah-hebat-backend-api/node_modules/busboy/lib/types/multipart.js:567:19)','2025-12-24 03:06:47.421'),(96,'Invalid file type. Only images, audio, or video are allowed.','Error: Invalid file type. Only images, audio, or video are allowed.\n    at fileFilter (/var/www/ayah-hebat-backend-api/middlewares/multerConfig.js:20:8)\n    at wrappedFileFilter (/var/www/ayah-hebat-backend-api/node_modules/multer/index.js:44:7)\n    at Multipart.<anonymous> (/var/www/ayah-hebat-backend-api/node_modules/multer/lib/make-middleware.js:107:7)\n    at Multipart.emit (node:events:518:28)\n    at HeaderParser.cb (/var/www/ayah-hebat-backend-api/node_modules/busboy/lib/types/multipart.js:358:14)\n    at HeaderParser.push (/var/www/ayah-hebat-backend-api/node_modules/busboy/lib/types/multipart.js:162:20)\n    at SBMH.ssCb [as _cb] (/var/www/ayah-hebat-backend-api/node_modules/busboy/lib/types/multipart.js:394:37)\n    at feed (/var/www/ayah-hebat-backend-api/node_modules/streamsearch/lib/sbmh.js:219:14)\n    at SBMH.push (/var/www/ayah-hebat-backend-api/node_modules/streamsearch/lib/sbmh.js:104:16)\n    at Multipart._write (/var/www/ayah-hebat-backend-api/node_modules/busboy/lib/types/multipart.js:567:19)','2025-12-24 03:07:14.011');
+/*!40000 ALTER TABLE `ErrorLog` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Infaq`
+--
+
+DROP TABLE IF EXISTS `Infaq`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Infaq` (
+  `id` varchar(191) NOT NULL,
+  `userId` int(11) NOT NULL,
+  `amount` double NOT NULL,
+  `status` varchar(191) NOT NULL DEFAULT 'pending',
+  `orderId` varchar(191) NOT NULL,
+  `redirectUrl` varchar(191) NOT NULL DEFAULT 'https://www.google.com',
+  `allocationTypeCode` varchar(191) NOT NULL,
+  `paymentType` varchar(191) DEFAULT NULL,
+  `createdAt` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+  `updatedAt` datetime(3) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `Infaq_orderId_key` (`orderId`),
+  KEY `Infaq_userId_fkey` (`userId`),
+  CONSTRAINT `Infaq_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Infaq`
+--
+
+LOCK TABLES `Infaq` WRITE;
+/*!40000 ALTER TABLE `Infaq` DISABLE KEYS */;
+INSERT INTO `Infaq` VALUES ('12a6f689-bc92-4624-91c1-de0d4298ddae',53,10000,'failed','ASV8-1759906868698','https://app.midtrans.com/snap/v4/redirection/4f2ccf3e-be07-4340-8de0-999033599730','ASV8','bank_transfer','2025-10-08 07:01:08.814','2025-10-09 07:02:28.887'),('274befe7-76f4-4b22-a24d-c66b1b5fe6d6',42,20000,'failed','DDBA-1740658743125','https://app.midtrans.com/snap/v4/redirection/a86aa1c5-9bc4-4214-91cc-ec900443ad15','DDBA','bank_transfer','2025-02-27 12:19:03.319','2025-02-28 12:41:44.089'),('3209d2dd-64c1-4d18-b2df-05623710f631',38,25000,'failed','QF9T-1740483673496','https://app.midtrans.com/snap/v4/redirection/6224214a-a956-411e-9ff8-c5bdda043057','QF9T','qris','2025-02-25 11:41:13.800','2025-02-25 12:02:25.452'),('393931a0-0500-497b-b8df-19d2b88a1fd6',38,20000,'failed','DDBA-1740479056738','https://app.midtrans.com/snap/v4/redirection/04b97c30-00d9-4df5-8282-784285fcbc84','DDBA','qris','2025-02-25 10:24:17.006','2025-02-25 11:00:28.428'),('47f10b3c-a4c0-4454-9705-e9b25a9091f6',15,15000,'failed','DDBA-1759915603187','https://app.midtrans.com/snap/v4/redirection/1d26df57-0ece-4ca5-a3bb-ea3973b8cd50','DDBA','bank_transfer','2025-10-08 09:26:43.284','2025-10-09 09:28:01.003'),('52625492-397d-4e6b-ad34-e4d26122e836',51,50000,'failed','QF9T-1759913398267','https://app.midtrans.com/snap/v4/redirection/0c10b618-c432-45d7-b50b-6200de49c12c','QF9T','qris','2025-10-08 08:49:58.403','2025-10-08 09:06:07.890'),('6a428819-a5b0-4d2f-92ca-44fd4976f3a4',53,10000,'failed','ASV8-1759914808146','https://app.midtrans.com/snap/v4/redirection/095f7140-6202-47b8-8283-bbb46e335472','ASV8','qris','2025-10-08 09:13:28.246','2025-10-08 09:29:37.708'),('6b97ac2d-6416-4ac5-9cab-a97c3e222c32',53,10000,'success','ASV8-1759914892372','https://app.midtrans.com/snap/v4/redirection/a639d96b-11a7-4355-9130-9decfa917c2d','ASV8','bank_transfer','2025-10-08 09:14:52.462','2025-10-08 09:19:28.567'),('7a1dd8cd-9309-4cab-86ab-117f7bc9f229',52,10000,'failed','QF9T-1759893675764','https://app.midtrans.com/snap/v4/redirection/d8578c97-659c-4418-8c4d-fba5c2f650f0','QF9T','gopay','2025-10-08 03:21:15.878','2025-10-08 03:37:27.450'),('8193624e-725c-42b2-9fdd-2ee5d19ca7a9',44,12000,'failed','QF9T-1740980449626','https://app.midtrans.com/snap/v4/redirection/5b24ff60-cd62-41bd-8431-94e8f12a8812','QF9T','qris','2025-03-03 05:40:49.876','2025-03-03 05:56:57.733'),('8aa46251-e5d3-4817-ba67-d57f40034a5c',51,10000,'failed','ASV8-1759913527243','https://app.midtrans.com/snap/v4/redirection/30471b29-6b9a-47da-a126-39ba1db6509f','ASV8','qris','2025-10-08 08:52:07.340','2025-10-08 09:08:13.052'),('8e2fda05-ce82-4cb7-b0fc-fa07671e0a2a',15,10000,'failed','DDBA-1759914906480','https://app.midtrans.com/snap/v4/redirection/11e84b1f-401c-4cce-9340-f1b2e1297f34','DDBA','bank_transfer','2025-10-08 09:15:06.592','2025-10-09 09:16:30.978'),('935918a6-1484-440d-9785-8e36b49b5f5a',45,10000,'pending','QF9T-1741223227506','https://app.midtrans.com/snap/v4/redirection/59d06706-fd53-49a5-9935-f389b5c710dc','QF9T',NULL,'2025-03-06 01:07:07.779','2025-03-06 01:07:07.779'),('9f9773af-b5a1-463e-a757-bc36a1160b9a',15,15000,'success','DDBA-1759915966206','https://app.midtrans.com/snap/v4/redirection/03e73368-381b-4a40-b6b4-67f831284a56','DDBA','qris','2025-10-08 09:32:46.298','2025-10-08 09:36:59.024'),('b336032f-a888-4bca-ac85-fd6746eddd80',51,10000,'failed','DDBA-1759913716747','https://app.midtrans.com/snap/v4/redirection/d2e4a4b5-dc04-40f5-8667-65a2c6fef128','DDBA','qris','2025-10-08 08:55:16.826','2025-10-08 09:11:27.900'),('bed4c3fe-3b4e-476b-9d54-e4a673d089a2',57,10000,'failed','QF9T-1761019659192','https://app.midtrans.com/snap/v4/redirection/7ac33df9-3569-40ce-a2f7-b5901f7159d8','QF9T','qris','2025-10-21 04:07:39.326','2025-10-21 04:23:58.704'),('c7d80830-5580-4fa4-9483-c4e8f3cf7695',51,10000,'failed','ASV8-1759913547385','https://app.midtrans.com/snap/v4/redirection/b5e81da7-8e29-4061-a72d-21b3f7075c4e','ASV8','qris','2025-10-08 08:52:27.476','2025-10-08 09:08:31.646'),('c826d28b-60fd-48b7-95d7-df8ad0015e68',38,10000,'failed','ASV8-1740484844283','https://app.midtrans.com/snap/v4/redirection/24a5e090-6ea7-4cf1-95b0-98599141427f','ASV8','qris','2025-02-25 12:00:44.401','2025-02-25 13:24:59.193'),('caf2aa96-5fc1-47bd-924e-91ef6d4842a9',15,10000,'failed','ASV8-1759909813180','https://app.midtrans.com/snap/v4/redirection/ca7e7f26-6d96-46c6-9be4-0031b8073ed0','ASV8','qris','2025-10-08 07:50:13.270','2025-10-08 08:07:07.876'),('d68cf33a-f182-49e8-9248-bc74c5ea531c',55,25000,'success','ASV8-1759979223884','https://app.midtrans.com/snap/v4/redirection/3e6c424e-3852-4352-b74c-2cad498d4d9e','ASV8','bank_transfer','2025-10-09 03:07:04.007','2025-10-09 03:35:04.145'),('daf670e2-51db-4174-97bf-1620a2c28938',51,10000,'failed','QF9T-1759913759127','https://app.midtrans.com/snap/v4/redirection/3b2895e6-2462-4a13-9dd7-78e90814f426','QF9T','echannel','2025-10-08 08:55:59.207','2025-10-09 08:57:17.760'),('dcb5b799-8ff4-47fb-b302-c62ffd525ea5',44,20000,'failed','ASV8-1741230465098','https://app.midtrans.com/snap/v4/redirection/6f66a3d4-2cdc-4011-a998-68acb0e17627','ASV8','echannel','2025-03-06 03:07:45.430','2025-03-07 03:08:53.318'),('e333eab8-8770-4b50-8db2-ecf158441528',4,10000,'pending','DDBA-1748700638160','https://app.midtrans.com/snap/v4/redirection/27004e35-a227-42a4-aa33-2b7e371bd2eb','DDBA',NULL,'2025-05-31 14:10:38.406','2025-05-31 14:10:38.406'),('e80c62a5-5d5b-42ef-b8b2-395e9e080c85',15,10000,'failed','DDBA-1759914567448','https://app.midtrans.com/snap/v4/redirection/6fe00615-f157-44b8-8024-c6191245ec71','DDBA','qris','2025-10-08 09:09:27.529','2025-10-08 09:26:03.738'),('ffac2ac8-84c9-4235-93b2-d7cffcbe5831',15,10000,'failed','DDBA-1759914739618','https://app.midtrans.com/snap/v4/redirection/93876b8a-3527-41ed-97b9-4e89a57eb3cd','DDBA','bank_transfer','2025-10-08 09:12:19.708','2025-10-09 09:17:03.557');
+/*!40000 ALTER TABLE `Infaq` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Kegiatan`
+--
+
+DROP TABLE IF EXISTS `Kegiatan`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Kegiatan` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(191) NOT NULL,
+  `file1` varchar(191) DEFAULT NULL,
+  `file2` varchar(191) DEFAULT NULL,
+  `file3` varchar(191) DEFAULT NULL,
+  `userId` int(11) NOT NULL,
+  `score` int(11) DEFAULT NULL,
+  `createdAt` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+  `updatedAt` datetime(3) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `Kegiatan_userId_fkey` (`userId`),
+  CONSTRAINT `Kegiatan_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Kegiatan`
+--
+
+LOCK TABLES `Kegiatan` WRITE;
+/*!40000 ALTER TABLE `Kegiatan` DISABLE KEYS */;
+INSERT INTO `Kegiatan` VALUES (1,'Diari (Dialog iman sekali sehari)','file1-1711515688334-573882543.png',NULL,NULL,1,10,'2024-03-27 05:01:28.338','2024-03-27 05:01:28.338'),(2,'Diari (Dialog iman sekali sehari)','file1-1711515711967-266864860.mp4',NULL,NULL,1,10,'2024-03-27 05:01:51.981','2024-03-27 05:01:51.981'),(3,'Berkisah',NULL,NULL,NULL,1,10,'2024-03-27 05:01:59.035','2024-03-27 05:01:59.035'),(4,'Diari (Dialog iman sekali sehari)','file1-1711515945875-206643942.png','file2-1711515945877-607030042.png','file3-1711515945879-538732308.png',2,10,'2024-03-27 05:05:45.884','2024-03-27 05:05:45.884'),(5,'Berkisah',NULL,NULL,NULL,2,10,'2024-03-27 05:06:22.681','2024-03-27 05:06:22.681'),(6,'Sajarah (Satu jam bersama ayah)',NULL,NULL,NULL,2,10,'2024-03-27 05:06:26.376','2024-03-27 05:06:26.376'),(7,'MasaIyah (Magrib sampai Isya ditemanI ayah)',NULL,NULL,NULL,1,10,'2024-04-01 07:38:08.334','2024-04-01 07:38:08.334'),(8,'Sajarah (Satu jam bersama ayah)',NULL,NULL,NULL,1,10,'2024-04-01 07:38:12.944','2024-04-01 07:38:12.944'),(9,'MasaIyah (Magrib sampai Isya ditemanI ayah)','file1-1712297871601-72744189.png',NULL,NULL,1,10,'2024-04-05 06:17:51.606','2024-04-05 06:17:51.606'),(10,'Berkisah','file1-1712328195654-336352917.png',NULL,NULL,8,10,'2024-04-05 14:43:15.667','2024-04-05 14:43:15.667'),(11,'MasaIyah (Magrib sampai Isya ditemanI ayah)','file1-1712328237065-541136965.png',NULL,NULL,8,10,'2024-04-05 14:43:57.073','2024-04-05 14:43:57.073'),(12,'Sajarah (Satu jam bersama ayah)','file1-1712500156530-219300973.png',NULL,NULL,4,10,'2024-04-07 14:29:16.551','2024-04-07 14:29:16.551'),(13,'Sajarah (Satu jam bersama ayah)','file1-1712551701698-983128348.png',NULL,NULL,4,10,'2024-04-08 04:48:21.711','2024-04-08 04:48:21.711'),(14,'Diari (Dialog iman sekali sehari)',NULL,NULL,NULL,1,10,'2024-04-08 06:54:27.966','2024-04-08 06:54:27.966'),(15,'Sajarah (Satu jam bersama ayah)','file1-1713796065353-44576843.png',NULL,NULL,10,10,'2024-04-22 14:27:45.380','2024-04-22 14:27:45.380'),(16,'hanif bersama bibinya di Cianjur','file1-1713796435838-910078158.png',NULL,NULL,11,10,'2024-04-22 14:33:55.854','2024-04-22 14:33:55.854'),(17,'Diari (Dialog iman sekali sehari)',NULL,NULL,NULL,20,10,'2024-06-09 07:34:51.325','2024-06-09 07:34:51.325'),(18,'MasaIyah (Magrib sampai Isya ditemanI ayah)',NULL,NULL,NULL,1,10,'2024-06-09 08:36:06.537','2024-06-09 08:36:06.537'),(19,'Berkisah',NULL,NULL,NULL,1,10,'2024-06-09 08:49:17.430','2024-06-09 08:49:17.430'),(20,'Berkisah','file1-1719127325634-828872958.png',NULL,NULL,4,10,'2024-06-23 07:22:05.643','2024-06-23 07:22:05.643'),(21,'MasaIyah (Magrib sampai Isya ditemanI ayah)','file1-1727360480682-979003269.png',NULL,NULL,35,10,'2024-09-26 14:21:20.875','2024-09-26 14:21:20.875'),(22,'Diari (Dialog iman sekali sehari)','file1-1730093799441-234012196.png',NULL,NULL,35,10,'2024-10-28 05:36:39.486','2024-10-28 05:36:39.486'),(23,'Sajarah (Satu jam bersama ayah)',NULL,NULL,NULL,1,10,'2024-10-29 06:55:43.333','2024-10-29 06:55:43.333'),(24,'MasaIyah (Magrib sampai Isya ditemanI ayah)','file1-1740491699677-145663824.png',NULL,NULL,38,10,'2025-02-25 13:54:59.684','2025-02-25 13:54:59.684'),(25,'MasaIyah (Magrib sampai Isya ditemanI ayah)','file1-1740629706646-550907436.png',NULL,NULL,38,10,'2025-02-27 04:15:06.662','2025-02-27 04:15:06.662'),(26,'Sajarah (Satu jam bersama ayah)','file1-1740630953596-638503602.png',NULL,NULL,38,10,'2025-02-27 04:35:53.609','2025-02-27 04:35:53.609'),(27,'MasaIyah (Magrib sampai Isya ditemanI ayah)','file1-1740633116454-981525258.png',NULL,NULL,38,10,'2025-02-27 05:11:56.467','2025-02-27 05:11:56.467'),(28,'MasaIyah (Magrib sampai Isya ditemanI ayah)','file1-1740658723726-559640243.png',NULL,NULL,42,10,'2025-02-27 12:18:43.729','2025-02-27 12:18:43.729'),(29,'Diari (Dialog iman sekali sehari)','file1-1759889275471-178500192.png',NULL,NULL,51,10,'2025-10-08 02:07:55.477','2025-10-08 02:07:55.477'),(30,'percetakan gratis','file1-1759893450112-960741070.png',NULL,NULL,52,10,'2025-10-08 03:17:30.127','2025-10-08 03:17:30.127'),(31,'pertemuan para Ayah dan pengurus masjid Firdaus di Ciawi dalam rangka silaturahmi dan pengantaran ananda untuk mengikuti Daham di Villa Denis','file1-1759914663619-351848260.png',NULL,NULL,53,10,'2025-10-08 09:11:03.663','2025-10-08 09:11:03.663'),(32,'PT Mucinesia Capital Bersama','file1-1759958794807-184634165.png',NULL,NULL,15,10,'2025-10-08 21:26:34.813','2025-10-08 21:26:34.813'),(33,'keluarga syurgawi','file1-1759979123744-338881341.png',NULL,NULL,55,10,'2025-10-09 03:05:23.749','2025-10-09 03:05:23.749'),(34,'Diari (Dialog iman sekali sehari)','file1-1760700793481-332665623.png',NULL,NULL,55,10,'2025-10-17 11:33:13.537','2025-10-17 11:33:13.537'),(35,'MasaIyah (Magrib sampai Isya ditemanI ayah)','file1-1767162521605-761696410.png',NULL,NULL,64,10,'2025-12-31 06:28:41.631','2025-12-31 06:28:41.631');
+/*!40000 ALTER TABLE `Kegiatan` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `News`
+--
+
+DROP TABLE IF EXISTS `News`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `News` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(191) NOT NULL,
+  `subTitle` varchar(191) NOT NULL,
+  `author` varchar(191) NOT NULL,
+  `imageUrl` varchar(191) DEFAULT NULL,
+  `content` text NOT NULL,
+  `createdAt` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+  `updatedAt` datetime(3) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `News`
+--
+
+LOCK TABLES `News` WRITE;
+/*!40000 ALTER TABLE `News` DISABLE KEYS */;
+INSERT INTO `News` VALUES (1,'Peran Penting Orang Tua Dalam Membesarkan Anak','Peran penting orang tua adalah memiliki tanggung jawab yang besar dalam membimbing dan merawat anak-anak mereka... ','ayahebat','https://backend.ayahhebat.mangcoding.com/uploads/photo-1717844239896-498905138.png','Peran penting orang tua adalah memiliki tanggung jawab yang besar dalam membimbing dan merawat anak-anak mereka. Bukan hanya sebagai pelindung fisik, tetapi juga sebagai pengajar, pemberi contoh, dan penentu arah hidup bagi anak-anak.\n\nArtikel ini akan membahas kewajiban sebagai orang tua dan peran pentingnya dalam membesarkan seorang anak.\n\nDalam menjalankan peran mereka, orang tua memiliki kewajiban yang harus dipenuhi untuk memastikan anak-anak mereka tumbuh dan berkembang dengan baik.\n\n# Kewajiban sebagai orang tua\n## 1. Memberikan Nama yang Bermakna\n\nPemberian nama yang baik adalah salah satu langkah awal dalam menjalankan tanggung jawab sebagai orang tua.\n\nNama merupakan identitas seseorang sepanjang hidupnya, oleh karena itu, penting untuk memilih nama yang memiliki makna positif dan dapat menjadi kebanggaan bagi anak. Hindari memberikan nama yang dapat menjadi beban atau bahan ejekan bagi anak di masa depan.\n\n## 2. Memenuhi Kebutuhan Dasar\n\nSandang, pangan, dan papan merupakan kebutuhan dasar yang harus dipenuhi oleh orang tua bagi anak-anak mereka. Memberikan pakaian yang layak, makanan bergizi, dan tempat tinggal yang aman adalah kewajiban yang tidak dapat diabaikan.\n\nOrang tua perlu berusaha sekuat tenaga untuk memastikan kebutuhan dasar anak tercukupi, meskipun tidak selalu harus mewah dan mahal.\n\n## 3. Memberikan Pendidikan\n\nPendidikan adalah kunci untuk membuka pintu masa depan yang cerah bagi anak-anak. Orang tua memiliki tanggung jawab untuk memberikan pendidikan yang baik kepada anak-anak mereka, baik secara formal maupun informal.\n\nHal ini mencakup memberikan akses terhadap sekolah yang berkualitas serta memberikan pengajaran tentang nilai-nilai kehidupan yang penting.\n\n## 4. Mengajarkan Nilai-nilai dan Karakter yang Baik\n\nSelain memberikan pendidikan formal, orang tua juga bertanggung jawab untuk mengajarkan anak-anak tentang nilai-nilai dan karakter yang baik. Ini meliputi kedisiplinan, kemandirian, sopan santun, dan nilai-nilai moral lainnya.\n\nOrang tua harus menjadi contoh yang baik bagi anak-anak mereka dan membimbing mereka untuk menjadi individu yang bertanggung jawab dan berakhlak baik.\n\n## 5. Memberikan Kasih Sayang\n\nKasih sayang adalah elemen penting dalam pembentukan kepribadian dan kesejahteraan emosional anak-anak. Orang tua perlu memberikan cinta, perhatian, dan dukungan kepada anak-anak mereka sepanjang waktu.\n\nIni mencakup memberikan ASI, mendengarkan anak-anak ketika berkomunikasi, mendampingi mereka dalam aktivitas sehari-hari, serta melindungi dan menyayangi mereka dengan tulus.\n\nSelain memiliki tanggung jawab yang besar terhadap anak-anak, peran ibu dan ayah dalam keluarga juga sangat penting. Karena tanpa ibu dan ayah, seorang anak akan kehilangan rumahnya dan psikis anak bisa terganggu.\n\n# Peran Ibu dalam Keluarga\n## 1. Mengelola Keuangan :\n\nBiasanya, ibu memiliki peran dalam mengatur keuangan keluarga dan memastikan bahwa kebutuhan keluarga terpenuhi secara finansial.\n\n## 2. Menjadi Guru bagi Anak-anak :\n\nIbu sering menjadi guru pertama bagi anak-anak mereka, mengajarkan mereka berbagai keterampilan dan nilai-nilai penting dalam kehidupan.\n\n## 3. Mengurus Rumah Tangga :\n\nMerupakan tanggung jawab ibu untuk mengurus rumah tangga dan memastikan segala sesuatunya berjalan dengan lancar di rumah.\n\n## 4. Membentuk Mental dan Emosional Anak:\n\nIbu memiliki peran besar dalam membentuk kepribadian dan kesejahteraan emosional anak-anak, menjadi sumber dukungan dan keamanan bagi mereka.\n\n## 5. Menjadi Koki :\n\nIbu sering menjadi koki di rumah, menyediakan makanan yang enak dan menyehatkan bagi keluarga mereka.\n\n# Peran Ayah dalam Keluarga\n## 1. Memberikan Nafkah :\n\nTanggung jawab utama seorang ayah adalah memberikan nafkah bagi keluarga mereka, memastikan kebutuhan finansial keluarga tercukupi.\n\n## 2. Mengambil Keputusan :\n\nAyah sering kali menjadi pengambil keputusan utama dalam keluarga, memimpin keluarga dalam hal-hal penting seperti pendidikan, karier, dan keuangan.\n\n## 3. Mendisiplinkan Anggota Keluarga :\n\nAyah memiliki peran dalam mendisiplinkan anggota keluarga, mengajarkan tanggung jawab dan kedisiplinan\n\nBeberapa poin dan informasi diatas mudah-mudahan dapat memberikan sebuah perhatian untuk kita semua sebagai orang tua yang berperan penting untuk pertumbuhan anak-anak kita, Jika ada saran atau tanggapan yang dapat membangun untuk kemajuan bersama, silahkan dapat kirimkan melalui Email atau form Kontak Kami.','2024-06-08 10:57:19.901','2024-06-08 10:57:19.901'),(2,'Peran Orang Tua dalam Pendidikan Agama','Peran orang tua dalam pendidikan agama memiliki peran sentral dalam membentuk identitas agama anak dan memperkuat nilai-nilai keagamaan dalam kehidupan sehari-hari...','ayahebat','https://backend.ayahhebat.mangcoding.com/uploads/photo-1717844766041-918168513.png','Peran orang tua dalam pendidikan agama memiliki peran sentral dalam membentuk identitas agama anak dan memperkuat nilai-nilai keagamaan dalam kehidupan sehari-hari.\n\nOrang tua memegang peran yang sangat penting dalam pendidikan agama anak-anak mereka. Berikut ini adalah beberapa peran utama yang dimainkan oleh orang tua dalam pendidikan agama :\n\n# Peran Utama\n- Membangun Cinta dan Keterikatan dengan Agama: Orang tua harus membantu anak-anak untuk mengembangkan cinta dan keterikatan yang kuat terhadap agama mereka.\n- Memberikan Teladan: Orang tua adalah teladan pertama bagi anak-anak dalam hal praktik keagamaan. Mereka harus mempraktikkan nilai-nilai agama dalam kehidupan sehari-hari dan menunjukkan komitmen terhadap ajaran agama yang mereka anut.\n- Memberikan Pemahaman tentang Nilai-nilai Agama: Orang tua harus membantu anak-anak memahami nilai-nilai agama yang mendasari ajaran agama mereka. Ini termasuk nilai-nilai seperti keadilan, kasih sayang, tolong-menolong, kejujuran, dan kesabaran.\n- Mengajarkan Etika dan Moral Agama: Agama tidak hanya tentang ibadah, tetapi juga tentang etika dan moral yang harus diterapkan dalam kehidupan sehari-hari. Orang tua perlu mengajarkan anak-anak tentang nilai-nilai etika dan moral agama, seperti kejujuran, keadilan, kasih sayang, dan kerja keras.\n- Membimbing dalam Menghadapi Tantangan Keagamaan: Dalam dunia yang semakin kompleks, anak-anak seringkali dihadapkan pada tantangan yang berkaitan dengan agama. Orang tua harus memberikan bimbingan dan dukungan kepada anak-anak untuk menghadapi pertanyaan-pertanyaan sulit, konflik nilai, dan situasi yang menantang terkait agama.','2024-06-08 11:06:06.087','2024-06-08 11:06:06.087'),(3,'Mendukung Kemandirian Anak dalam Keluarga','Kemandirian anak dalam keluarga adalah keterampilan yang penting untuk dikembangkan pada anak-anak. Kemampuan untuk mengambil tanggung jawab atas tugas dan keputusan mereka sendiri','ayahebat','https://backend.ayahhebat.mangcoding.com/uploads/photo-1717845555545-244279648.png','Kemandirian anak dalam keluarga adalah keterampilan yang penting untuk dikembangkan pada anak-anak. Kemampuan untuk mengambil tanggung jawab atas tugas dan keputusan mereka sendiri\n\nHal itu akan membantu mereka menjadi individu yang mandiri, percaya diri, dan siap menghadapi tantangan dalam kehidupan. Adanya kemandirian anak dapat berguna ketika ia mendapatkan masalah, dalam hal ini ada beberapa cara diantaranya\n\n# Diantaranya\n1. Memberikan Keterampilan Hidup: Seiring dengan memberikan tanggung jawab kepada anak-anak, penting untuk mengajarkan mereka keterampilan hidup yang praktis. Ini termasuk hal-hal seperti memasak makanan sederhana, membersihkan rumah, atau mengatur keuangan pribadi.\n2. Ajarkan Keterampilan Komunikasi dan Negosiasi: Keterampilan komunikasi yang efektif adalah aspek penting dari kemandirian. Ajarkan anak-anak tentang pentingnya menyampaikan pikiran dan perasaan mereka dengan jelas dan hormat kepada orang lain.\n3. Libatkan Anak dalam Pemecahan Masalah Keluarga: Melibatkan anak-anak dalam proses pemecahan masalah keluarga dapat membantu mereka merasa memiliki peran yang penting dalam keluarga. Diskusikan masalah atau keputusan keluarga bersama-sama dan dengarkan pendapat mereka. \n4. Memberikan Kesempatan untuk Mengambil Keputusan: Memberikan anak kesempatan untuk mengambil keputusan sejak dini adalah langkah awal dalam mengembangkan kemandirian. Berikan mereka ruang untuk memilih antara beberapa pilihan yang sesuai dengan usia dan tingkat perkembangan mereka.\n5. Menetapkan Tugas Tanggung Jawab Sesuai Usia: Menugaskan tugas-tugas rumah tangga kepada anak-anak sesuai dengan usia dan kemampuan mereka adalah cara lain untuk mendukung kemandirian. Misalnya, memberikan tanggung jawab kepada anak untuk merapikan tempat tidur mereka sendiri, menyimpan mainan mereka, atau membantu dengan pekerjaan ringan di dapur.\n6. Memupuk Rasa Percaya Diri: Memberikan pujian dan dorongan yang tulus kepada anak saat mereka berhasil melakukan sesuatu dengan mandiri sangat penting. Ini akan membangun rasa percaya diri mereka dan mendorong mereka untuk terus mengembangkan kemandirian.','2024-06-08 11:19:15.548','2024-06-08 11:19:15.548'),(4,'Keluarga Tetaplah Keluarga, Support System yang Kuat','Keluarga adalah Support System yang Kuat sebuah unit sosial yang terdiri dari individu-individu yang saling terkait oleh ikatan darah','ayahebat','https://backend.ayahhebat.mangcoding.com/uploads/photo-1717845781838-295199028.png','Keluarga adalah Support System yang Kuat sebuah unit sosial yang terdiri dari individu-individu yang saling terkait oleh ikatan darah, perkawinan, atau adopsi. Keluarga juga memiliki berbagai peran penting dalam kehidupan individu.\n\nMereka memberikan kasih sayang, dukungan emosional, dan keamanan. Mereka adalah orang-orang yang dapat kita andalkan dalam segala situasi.\n\nNamun, terkadang keluarga mengalami konflik dan masalah internal. Dalam situasi seperti ini, penting untuk memperkuat support system keluarga. Komunikasi yang terbuka dan jujur adalah kunci dalam memecahkan masalah.\n\nMendengarkan dengan empati, menghargai perbedaan pendapat, dan mencari solusi bersama adalah langkah-langkah penting dalam membangun kekuatan keluarga.\n\nDalam dunia yang terus berkembang dan kompleks ini, keluarga tetaplah menjadi dasar yang kokoh. Mereka adalah support system yang paling penting dalam kehidupan kita. Dukungan dan kasih sayang yang diberikan oleh keluarga tidak dapat digantikan oleh apapun.\n\nDengan memperkuat ikatan keluarga dan membangun support system yang kuat, kita dapat menghadapi segala situasi dalam hidup dengan lebih percaya diri dan tenang.\n\nSelain itu, keluarga juga dapat memperluas support system melalui hubungan dengan keluarga luas, teman dekat, dan jaringan sosial lainnya.\n\nMelibatkan orang lain dalam kehidupan keluarga dapat memberikan perspektif baru, saran, dan dukungan tambahan. Jaringan sosial yang kuat juga dapat membantu dalam mengatasi stres dan menghadapi tantangan hidup.','2024-06-08 11:23:01.841','2024-06-08 11:23:01.841'),(5,'Peran Keluarga dalam Masyarakat yang jarang diketahui','Peran Keluarga dalam Masyarakat sangat penting dalam kehidupan individu. Mereka memberikan kasih sayang, dukungan emosional, dan keamanan.','ayahebat','https://backend.ayahhebat.mangcoding.com/uploads/photo-1717846071892-483166000.png','Peran Keluarga dalam Masyarakat sangat penting dalam kehidupan individu. Mereka memberikan kasih sayang, dukungan emosional, dan keamanan. Keluarga juga bertanggung jawab untuk memberikan pemenuhan kebutuhan dasar seperti pangan, sandang, dan papan. Selain itu, keluarga berperan dalam pendidikan dan pengasuhan anak, membantu dalam pengembangan keterampilan sosial, moral, dan intelektual. Adapun peran peran dari keluarga diantaranya yaitu :\n\n- Dukungan Emosional dan Psikologis: Keluarga menyediakan dukungan emosional yang penting dalam kehidupan individu. Mereka menjadi tempat di mana anggota keluarga saling berbagi kegembiraan, kesedihan, dan kekhawatiran.\n- Membangun Hubungan Sosial dan Jaringan Dukungan: Keluarga dapat membantu individu dalam membangun hubungan sosial yang sehat di masyarakat. Mereka memperkenalkan anak-anak dengan keluarga luas, tetangga, dan teman-teman.\n- Stabilitas dan Keamanan: Keluarga memberikan stabilitas dan keamanan bagi anggota-anggotanya. Dalam dunia yang serba kompleks dan tidak stabil, keluarga menjadi tempat yang dapat diandalkan di mana individu merasa aman, dilindungi, dan diterima.\n- Peran Sosial dan Partisipasi Masyarakat: Keluarga memberikan individu pengalaman awal tentang interaksi sosial dan partisipasi dalam masyarakat. Melalui keluarga, anak-anak belajar tentang kewajiban mereka sebagai anggota masyarakat, pentingnya etika, tanggung jawab sosial, dan partisipasi dalam kegiatan sosial.\n- Pembentukan dan Pemeliharaan Nilai-nilai Moral: Keluarga merupakan tempat pertama di mana individu belajar tentang nilai-nilai moral, etika, dan perilaku yang diharapkan dalam masyarakat. Orang tua berperan dalam memberikan contoh yang baik, mengajarkan anak-anak tentang integritas, empati, tanggung jawab, dan menghargai perbedaan.\n- Peran Sosial dan Partisipasi Masyarakat: Keluarga memberikan individu pengalaman awal tentang interaksi sosial dan partisipasi dalam masyarakat. Melalui keluarga, anak-anak belajar tentang kewajiban mereka sebagai anggota masyarakat, pentingnya etika, tanggung jawab sosial, dan partisipasi dalam kegiatan sosial.','2024-06-08 11:27:51.894','2024-06-08 11:27:51.894'),(6,'Merawat Keluarga atau Sahabat yang Sakit Berat','Merawat keluarga atau sahabat yang mengalami penyakit berat adalah tugas yang membutuhkan perhatian, kepedulian, dan dedikasi.','ayahebat','https://backend.ayahhebat.mangcoding.com/uploads/photo-1717907214697-95542300.png','Merawat keluarga atau sahabat yang mengalami penyakit berat adalah tugas yang membutuhkan perhatian, kepedulian, dan dedikasi. Dalam artikel ini, kita akan membahas beberapa langkah penting yang dapat diambil untuk merawat mereka dengan baik.\n\n1. Bantu dengan Kegiatan Sehari-hari: Dalam kasus penyakit yang membatasi mobilitas atau kemampuan fisik, anggota keluarga atau sahabat mungkin membutuhkan bantuan dalam melakukan kegiatan sehari-hari seperti makan, mandi, atau berpindah tempat tidur.\n2. Berikan Ruang untuk Ekspresi Emosi: Orang yang sakit berat mungkin mengalami berbagai macam emosi, termasuk marah, frustrasi, atau kesedihan. Penting untuk memberikan mereka ruang untuk mengungkapkan emosi mereka tanpa dihakimi atau diabaikan.\n3. Jaga Komunikasi yang Terbuka: Komunikasi yang terbuka adalah kunci dalam merawat seseorang yang sakit berat. Terus terhubung dengan anggota keluarga atau sahabat tersebut dan beri tahu mereka tentang perkembangan terkini, perubahan dalam perawatan, atau informasi penting lainnya.\n4. Berikan Dukungan Fisik dan Praktis: Selain dukungan emosional, mereka mungkin juga membutuhkan dukungan fisik dan praktis. Pastikan mereka mendapatkan perawatan medis yang tepat, ikuti panduan dokter, dan bantu mereka dengan kebutuhan sehari-hari seperti makanan, obat-obatan, dan perawatan pribadi.\n5. Jaga Kualitas Hidup: Selain perawatan medis, penting untuk membantu menjaga kualitas hidup anggota keluarga atau sahabat yang sakit berat. Dukung mereka dalam melakukan aktivitas yang mereka nikmati, seperti membaca buku, menonton film, atau bermain game.\n6. Dukung Proses Pemulihan: Setelah pengobatan atau perawatan intensif, proses pemulihan adalah tahap penting dalam perawatan mereka. Dukung mereka dengan memastikan mereka menjalani gaya hidup sehat, mengikuti instruksi medis, dan memberikan motivasi dan dukungan untuk memulihkan kekuatan fisik dan mental.\n\nBeberapa poin dan informasi diatas mudah-mudahan dapat memberikan sebuah perhatian untuk kita semua sebagai keluarga dan masyarakat untuk saling mambantu dalam kebaikan, Jika ada saran atau tanggapan yang dapat membangun untuk kemajuan bersama, silahkan dapat kirimkan melalui Email atau form Kontak Kami.','2024-06-09 04:26:54.700','2024-06-09 04:26:54.700'),(7,'Alasan Boleh Mengembalikan Suami atau Istri kepada Keluarganya','Pernikahan adalah ikatan sakral antara dua individu yang berkomitmen untuk saling mencintai, menghormati, dan mendukung satu sama lain sepanjang hidup. ','ayahebat','https://backend.ayahhebat.mangcoding.com/uploads/photo-1717907700562-718401316.png','Pernikahan adalah ikatan sakral antara dua individu yang berkomitmen untuk saling mencintai, menghormati, dan mendukung satu sama lain sepanjang hidup. Pernikahan adalah institusi yang penting dalam masyarakat karena memberikan dasar bagi pembentukan keluarga, stabilitas, dan hubungan yang erat antara pasangan.\n\nDalam pernikahan, pasangan saling berbagi tanggung jawab, kegembiraan, dan kesedihan. Mereka bekerja sama dalam menghadapi tantangan hidup, membangun kepercayaan, dan memperkuat ikatan emosional.\nPernikahan juga memberikan lingkungan yang stabil dan aman bagi pertumbuhan dan perkembangan anak-anak, serta menyediakan dukungan sosial dan emosional yang penting. Dalam beberapa kasus, ada alasan yang dapat membenarkan keputusan untuk mengembalikan suami atau istri kepada keluarganya. Artikel ini akan membahas beberapa alasan tersebut.\n## Alasannya\n1. Ketidakcocokan yang Mendalam: Terkadang, dalam hubungan pernikahan, terjadi ketidakcocokan yang mendalam antara suami dan istri. Perbedaan nilai-nilai, tujuan hidup, atau pandangan tentang masa depan dapat menjadi alasan kuat untuk mempertimbangkan mengembalikan suami atau istri kepada keluarganya.\n2. Gangguan Kesehatan Mental yang Parah: Gangguan kesehatan mental yang parah dapat memengaruhi kemampuan seseorang untuk menjalani kehidupan pernikahan yang sehat dan bahagia. Jika suami atau istri Anda menderita gangguan mental yang mengganggu fungsi mereka sehari-hari, dan mereka tidak mampu atau enggan mencari bantuan yang diperlukan, mengembalikan mereka kepada keluarganya mungkin menjadi langkah yang perlu.\n3. Tidak Adanya Perubahan atau Perbaikan: Jika masalah dalam pernikahan telah lama berlangsung dan tidak ada tanda-tanda perubahan atau perbaikan, mengembalikan suami atau istri kepada keluarganya bisa menjadi pilihan.\n4. Penghinaan dan Perlakuan Buruk yang Konstan: Jika suami atau istri Anda secara terus-menerus melakukan penghinaan, pelecehan, atau perlakuan buruk lainnya yang merugikan secara emosional atau fisik, mengembalikan mereka kepada keluarganya dapat memberikan perlindungan dan keselamatan.\n5. Kesenjangan Komunikasi yang Tidak Teratasi: Komunikasi yang buruk atau kesenjangan dalam komunikasi dapat menjadi beban besar dalam pernikahan.\n6. Kekerasan dalam Rumah Tangga: Kekerasan dalam rumah tangga adalah salah satu alasan yang paling serius untuk mempertimbangkan mengembalikan suami atau istri kepada keluarganya. Jika pasangan Anda terlibat dalam perilaku fisik, emosional, atau seksual yang merugikan, tindakan ini dapat diambil untuk melindungi diri Anda dan anak-anak, jika ada.\n7. Ketidaksetiaan yang Berulang: Ketidaksetiaan dapat menghancurkan kepercayaan dalam pernikahan. Jika suami atau istri Anda terus-menerus terlibat dalam perselingkuhan atau perilaku yang melanggar kesetiaan, mengembalikan mereka kepada keluarganya bisa menjadi pilihan yang dipertimbangkan.\n\nBeberapa poin dan informasi diatas mudah-mudahan dapat memberikan sebuah perhatian untuk kita semua sebagai pasangan yang berkomitmen untuk saling mencintai, menghormati, dan mendukung satu sama lain sepanjang hidup, Jika ada saran atau tanggapan yang dapat membangun untuk kemajuan bersama, silahkan dapat kirimkan melalui Email atau form Kontak Kami.','2024-06-09 04:35:00.564','2024-06-09 04:35:00.564'),(8,'Bahaya Anak dan Ponsel Cerdas Tanpa Pengawasan','Perkembangan teknologi, khususnya ponsel cerdas, telah mengubah cara kita hidup dan berinteraksi dengan dunia di sekitar kita.','ayahebat','https://backend.ayahhebat.mangcoding.com/uploads/photo-1717907974186-551761743.png','Perkembangan teknologi, khususnya ponsel cerdas, telah mengubah cara kita hidup dan berinteraksi dengan dunia di sekitar kita. Namun, bahaya anak dan ponsel cerdas yang tidak terawasi dengan baik dapat menimbulkan berbagai bahaya dan risiko.\n\nArtikel ini akan membahas bahaya yang mungkin terjadi ketika anak-anak menggunakan ponsel cerdas tanpa pengawasan yang memadai.\n\n# Akibat buat Anak :\n1. Penurunan Kualitas Hidup: Penggunaan ponsel cerdas yang berlebihan dapat mengganggu kegiatan sehari-hari yang penting, seperti tidur yang cukup, berinteraksi secara langsung dengan keluarga dan teman, atau berpartisipasi dalam aktivitas fisik dan kreatif.\n2. Gangguan Belajar dan Akademik: Penggunaan ponsel cerdas tanpa pengawasan yang memadai dapat mengganggu fokus dan konsentrasi anak-anak dalam belajar.\n3. Perubahan Pola Tidur: Ponsel cerdas sering kali digunakan anak-anak di malam hari, yang dapat mengganggu pola tidur yang sehat. Paparan cahaya biru dari layar ponsel cerdas dapat mengganggu produksi hormon tidur dan menghambat kualitas tidur, yang pada gilirannya dapat berdampak negatif pada kesehatan fisik dan mental anak-anak.\n4. Menurunnya Aktivitas Fisik: Penggunaan ponsel cerdas yang berlebihan dapat mengurangi waktu yang dihabiskan anak-anak untuk berpartisipasi dalam aktivitas fisik dan olahraga.\n5. Tidak Menjalin Hubungan yang Kuat dengan Orang Lain: Penggunaan ponsel cerdas yang berlebihan dapat menghambat kemampuan anak-anak untuk menjalin hubungan yang kuat dan bermakna dengan orang lain.\n6. Gangguan pada Kesehatan Mental: Penggunaan ponsel cerdas yang berlebihan tanpa pengawasan dapat berdampak negatif pada kesehatan mental anak-anak. Mereka mungkin terjebak dalam pola perilaku yang tidak sehat, seperti kecanduan media sosial, permainan online, atau pembandingan diri yang berlebihan dengan orang lain.\n7. Risiko Keamanan dan Privasi: Penggunaan ponsel cerdas oleh anak-anak yang tidak terawasi juga dapat meningkatkan risiko keamanan dan privasi. Anak-anak mungkin tidak menyadari risiko yang terkait dengan berbagi informasi pribadi secara online atau berinteraksi dengan orang asing melalui media sosial atau aplikasi pesan.\nBeberapa poin dan informasi diatas mudah-mudahan dapat memberikan sebuah perhatian untuk kita semua sebagai orang tua yang berperan penting untuk pertumbuhan anak-anak kita, Jika ada saran atau tanggapan yang dapat membangun untuk kemajuan bersama, silahkan dapat kirimkan melalui Email atau form Kontak Kami.','2024-06-09 04:39:34.188','2024-06-09 04:39:34.188'),(9,'Bahaya Anak dan Ponsel Cerdas Tanpa Pengawasan','Perkembangan teknologi, khususnya ponsel cerdas, telah mengubah cara kita hidup dan berinteraksi dengan dunia di sekitar kita.','ayahebat','https://backend.ayahhebat.mangcoding.com/uploads/photo-1731630843507-230083566.png','Perkembangan teknologi, khususnya ponsel cerdas, telah mengubah cara kita hidup dan berinteraksi dengan dunia di sekitar kita. Namun, bahaya anak dan ponsel cerdas yang tidak terawasi dengan baik dapat menimbulkan berbagai bahaya dan risiko.\n\nArtikel ini akan membahas bahaya yang mungkin terjadi ketika anak-anak menggunakan ponsel cerdas tanpa pengawasan yang memadai.\n\n# Akibat buat Anak :\n1. Penurunan Kualitas Hidup: Penggunaan ponsel cerdas yang berlebihan dapat mengganggu kegiatan sehari-hari yang penting, seperti tidur yang cukup, berinteraksi secara langsung dengan keluarga dan teman, atau berpartisipasi dalam aktivitas fisik dan kreatif.\n2. Gangguan Belajar dan Akademik: Penggunaan ponsel cerdas tanpa pengawasan yang memadai dapat mengganggu fokus dan konsentrasi anak-anak dalam belajar.\n3. Perubahan Pola Tidur: Ponsel cerdas sering kali digunakan anak-anak di malam hari, yang dapat mengganggu pola tidur yang sehat. Paparan cahaya biru dari layar ponsel cerdas dapat mengganggu produksi hormon tidur dan menghambat kualitas tidur, yang pada gilirannya dapat berdampak negatif pada kesehatan fisik dan mental anak-anak.\n4. Menurunnya Aktivitas Fisik: Penggunaan ponsel cerdas yang berlebihan dapat mengurangi waktu yang dihabiskan anak-anak untuk berpartisipasi dalam aktivitas fisik dan olahraga.\n5. Tidak Menjalin Hubungan yang Kuat dengan Orang Lain: Penggunaan ponsel cerdas yang berlebihan dapat menghambat kemampuan anak-anak untuk menjalin hubungan yang kuat dan bermakna dengan orang lain.\n6. Gangguan pada Kesehatan Mental: Penggunaan ponsel cerdas yang berlebihan tanpa pengawasan dapat berdampak negatif pada kesehatan mental anak-anak. Mereka mungkin terjebak dalam pola perilaku yang tidak sehat, seperti kecanduan media sosial, permainan online, atau pembandingan diri yang berlebihan dengan orang lain.\n7. Risiko Keamanan dan Privasi: Penggunaan ponsel cerdas oleh anak-anak yang tidak terawasi juga dapat meningkatkan risiko keamanan dan privasi. Anak-anak mungkin tidak menyadari risiko yang terkait dengan berbagi informasi pribadi secara online atau berinteraksi dengan orang asing melalui media sosial atau aplikasi pesan.\nBeberapa poin dan informasi diatas mudah-mudahan dapat memberikan sebuah perhatian untuk kita semua sebagai orang tua yang berperan penting untuk pertumbuhan anak-anak kita, Jika ada saran atau tanggapan yang dapat membangun untuk kemajuan bersama, silahkan dapat kirimkan melalui Email atau form Kontak Kami.','2024-11-15 00:29:04.415','2024-11-15 00:34:03.513');
+/*!40000 ALTER TABLE `News` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Notification`
+--
+
+DROP TABLE IF EXISTS `Notification`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Notification` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(191) NOT NULL,
+  `body` varchar(191) NOT NULL,
+  `data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `userId` int(11) NOT NULL,
+  `imageUrl` varchar(191) DEFAULT NULL,
+  `createdAt` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+  `updateAt` datetime(3) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `Notification_userId_fkey` (`userId`),
+  CONSTRAINT `Notification_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=114 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Notification`
+--
+
+LOCK TABLES `Notification` WRITE;
+/*!40000 ALTER TABLE `Notification` DISABLE KEYS */;
+INSERT INTO `Notification` VALUES (107,'Penyambutan dan Pengenalan Fitur Aplikasi Ayah Hebat','Kami dengan gembira menyambut Anda sebagai pengguna baru aplikasi Ayah Hebat.','{\"content\":\"Assalamu\'alaikum Warahmatullahi Wabarakatuh,\\nKami dengan gembira menyambut Anda sebagai pengguna baru aplikasi Ayah Hebat. Aplikasi ini dirancang untuk membantu keluarga Anda dalam mendokumentasikan dan mengelola kegiatan islami anak dengan lebih mudah dan efektif. Berikut adalah beberapa fitur utama yang dapat Anda manfaatkan:\\n## 1. Dokumentasi Kegiatan Islami Anak\\nAnda dapat mengunggah foto atau video kegiatan islami anak Anda untuk didokumentasikan. Fitur ini memungkinkan Anda menyimpan momen-momen berharga dan berbagi pengalaman spiritual keluarga.\\n## 2. Leaderboard Kegiatan Islami\\nNikmati fitur leaderboard yang menampilkan keluarga dengan kegiatan islami terbanyak dan terberkualitas. Fitur ini bertujuan untuk memotivasi dan menginspirasi keluarga lain dalam menjalankan aktivitas islami sehari-hari.\\n## 3. Berita dan Artikel\\nDapatkan berita dan artikel terkini seputar dunia islami, parenting, dan edukasi anak. Kami menyediakan konten yang bermanfaat untuk memperkaya pengetahuan dan wawasan Anda.\\n## 4. Fitur FAQ\\nTemukan jawaban atas pertanyaan umum mengenai penggunaan aplikasi dan berbagai topik terkait melalui fitur FAQ yang tersedia.\\n## 5. Fitur Pengumuman\\nTetap terinformasi dengan pengumuman penting dari tim Ayah Hebat mengenai update aplikasi, acara, dan informasi penting lainnya.\\n## 6. Layanan Pelanggan (Customer Service)\\nJika Anda membutuhkan bantuan atau memiliki pertanyaan lebih lanjut, fitur customer service kami siap membantu Anda. Anda akan diarahkan ke WhatsApp untuk komunikasi yang lebih cepat dan mudah.\\nKami berharap fitur-fitur ini dapat membantu Anda dalam mendidik dan membimbing anak-anak dalam kegiatan islami dengan lebih baik. Terima kasih telah memilih Ayah Hebat sebagai pendamping keluarga Anda dalam perjalanan spiritual ini.\\nWassalamu\'alaikum Warahmatullahi Wabarakatuh,\\nTim Ayah Hebat\",\"routes\":\"/\"}',31,'https://backend.ayahhebat.mangcoding.com/uploads/photo-1725954264635-174416811.png','2024-09-10 07:44:25.030','2024-09-10 07:44:25.030'),(108,'Penyambutan dan Pengenalan Fitur Aplikasi Ayah Hebat','Kami dengan gembira menyambut Anda sebagai pengguna baru aplikasi Ayah Hebat.','{\"content\":\"Assalamu\'alaikum Warahmatullahi Wabarakatuh,\\nKami dengan gembira menyambut Anda sebagai pengguna baru aplikasi Ayah Hebat. Aplikasi ini dirancang untuk membantu keluarga Anda dalam mendokumentasikan dan mengelola kegiatan islami anak dengan lebih mudah dan efektif. Berikut adalah beberapa fitur utama yang dapat Anda manfaatkan:\\n## 1. Dokumentasi Kegiatan Islami Anak\\nAnda dapat mengunggah foto atau video kegiatan islami anak Anda untuk didokumentasikan. Fitur ini memungkinkan Anda menyimpan momen-momen berharga dan berbagi pengalaman spiritual keluarga.\\n## 2. Leaderboard Kegiatan Islami\\nNikmati fitur leaderboard yang menampilkan keluarga dengan kegiatan islami terbanyak dan terberkualitas. Fitur ini bertujuan untuk memotivasi dan menginspirasi keluarga lain dalam menjalankan aktivitas islami sehari-hari.\\n## 3. Berita dan Artikel\\nDapatkan berita dan artikel terkini seputar dunia islami, parenting, dan edukasi anak. Kami menyediakan konten yang bermanfaat untuk memperkaya pengetahuan dan wawasan Anda.\\n## 4. Fitur FAQ\\nTemukan jawaban atas pertanyaan umum mengenai penggunaan aplikasi dan berbagai topik terkait melalui fitur FAQ yang tersedia.\\n## 5. Fitur Pengumuman\\nTetap terinformasi dengan pengumuman penting dari tim Ayah Hebat mengenai update aplikasi, acara, dan informasi penting lainnya.\\n## 6. Layanan Pelanggan (Customer Service)\\nJika Anda membutuhkan bantuan atau memiliki pertanyaan lebih lanjut, fitur customer service kami siap membantu Anda. Anda akan diarahkan ke WhatsApp untuk komunikasi yang lebih cepat dan mudah.\\nKami berharap fitur-fitur ini dapat membantu Anda dalam mendidik dan membimbing anak-anak dalam kegiatan islami dengan lebih baik. Terima kasih telah memilih Ayah Hebat sebagai pendamping keluarga Anda dalam perjalanan spiritual ini.\\nWassalamu\'alaikum Warahmatullahi Wabarakatuh,\\nTim Ayah Hebat\",\"routes\":\"/\"}',35,'https://backend.ayahhebat.mangcoding.com/uploads/photo-1727347269267-846324119.png','2024-09-26 10:41:09.525','2024-09-26 10:41:09.525'),(109,'Penyambutan dan Pengenalan Fitur Aplikasi Ayah Hebat','Kami dengan gembira menyambut Anda sebagai pengguna baru aplikasi Ayah Hebat.','{\"content\":\"Assalamu\'alaikum Warahmatullahi Wabarakatuh,\\nKami dengan gembira menyambut Anda sebagai pengguna baru aplikasi Ayah Hebat. Aplikasi ini dirancang untuk membantu keluarga Anda dalam mendokumentasikan dan mengelola kegiatan islami anak dengan lebih mudah dan efektif. Berikut adalah beberapa fitur utama yang dapat Anda manfaatkan:\\n## 1. Dokumentasi Kegiatan Islami Anak\\nAnda dapat mengunggah foto atau video kegiatan islami anak Anda untuk didokumentasikan. Fitur ini memungkinkan Anda menyimpan momen-momen berharga dan berbagi pengalaman spiritual keluarga.\\n## 2. Leaderboard Kegiatan Islami\\nNikmati fitur leaderboard yang menampilkan keluarga dengan kegiatan islami terbanyak dan terberkualitas. Fitur ini bertujuan untuk memotivasi dan menginspirasi keluarga lain dalam menjalankan aktivitas islami sehari-hari.\\n## 3. Berita dan Artikel\\nDapatkan berita dan artikel terkini seputar dunia islami, parenting, dan edukasi anak. Kami menyediakan konten yang bermanfaat untuk memperkaya pengetahuan dan wawasan Anda.\\n## 4. Fitur FAQ\\nTemukan jawaban atas pertanyaan umum mengenai penggunaan aplikasi dan berbagai topik terkait melalui fitur FAQ yang tersedia.\\n## 5. Fitur Pengumuman\\nTetap terinformasi dengan pengumuman penting dari tim Ayah Hebat mengenai update aplikasi, acara, dan informasi penting lainnya.\\n## 6. Layanan Pelanggan (Customer Service)\\nJika Anda membutuhkan bantuan atau memiliki pertanyaan lebih lanjut, fitur customer service kami siap membantu Anda. Anda akan diarahkan ke WhatsApp untuk komunikasi yang lebih cepat dan mudah.\\nKami berharap fitur-fitur ini dapat membantu Anda dalam mendidik dan membimbing anak-anak dalam kegiatan islami dengan lebih baik. Terima kasih telah memilih Ayah Hebat sebagai pendamping keluarga Anda dalam perjalanan spiritual ini.\\nWassalamu\'alaikum Warahmatullahi Wabarakatuh,\\nTim Ayah Hebat\",\"routes\":\"/\"}',34,'https://backend.ayahhebat.mangcoding.com/uploads/photo-1727347274656-224048197.png','2024-09-26 10:41:14.783','2024-09-26 10:41:14.783'),(110,'Penyambutan dan Pengenalan Fitur Aplikasi Ayah Hebat','Kami dengan gembira menyambut Anda sebagai pengguna baru aplikasi Ayah Hebat.','{\"content\":\"Assalamu\'alaikum Warahmatullahi Wabarakatuh,\\nKami dengan gembira menyambut Anda sebagai pengguna baru aplikasi Ayah Hebat. Aplikasi ini dirancang untuk membantu keluarga Anda dalam mendokumentasikan dan mengelola kegiatan islami anak dengan lebih mudah dan efektif. Berikut adalah beberapa fitur utama yang dapat Anda manfaatkan:\\n## 1. Dokumentasi Kegiatan Islami Anak\\nAnda dapat mengunggah foto atau video kegiatan islami anak Anda untuk didokumentasikan. Fitur ini memungkinkan Anda menyimpan momen-momen berharga dan berbagi pengalaman spiritual keluarga.\\n## 2. Leaderboard Kegiatan Islami\\nNikmati fitur leaderboard yang menampilkan keluarga dengan kegiatan islami terbanyak dan terberkualitas. Fitur ini bertujuan untuk memotivasi dan menginspirasi keluarga lain dalam menjalankan aktivitas islami sehari-hari.\\n## 3. Berita dan Artikel\\nDapatkan berita dan artikel terkini seputar dunia islami, parenting, dan edukasi anak. Kami menyediakan konten yang bermanfaat untuk memperkaya pengetahuan dan wawasan Anda.\\n## 4. Fitur FAQ\\nTemukan jawaban atas pertanyaan umum mengenai penggunaan aplikasi dan berbagai topik terkait melalui fitur FAQ yang tersedia.\\n## 5. Fitur Pengumuman\\nTetap terinformasi dengan pengumuman penting dari tim Ayah Hebat mengenai update aplikasi, acara, dan informasi penting lainnya.\\n## 6. Layanan Pelanggan (Customer Service)\\nJika Anda membutuhkan bantuan atau memiliki pertanyaan lebih lanjut, fitur customer service kami siap membantu Anda. Anda akan diarahkan ke WhatsApp untuk komunikasi yang lebih cepat dan mudah.\\nKami berharap fitur-fitur ini dapat membantu Anda dalam mendidik dan membimbing anak-anak dalam kegiatan islami dengan lebih baik. Terima kasih telah memilih Ayah Hebat sebagai pendamping keluarga Anda dalam perjalanan spiritual ini.\\nWassalamu\'alaikum Warahmatullahi Wabarakatuh,\\nTim Ayah Hebat\",\"routes\":\"/\"}',31,'https://backend.ayahhebat.mangcoding.com/uploads/photo-1727363515425-7455839.png','2024-09-26 15:11:55.640','2024-09-26 15:11:55.640'),(111,'Penyambutan dan Pengenalan Fitur Aplikasi Ayah Hebat','Kami dengan gembira menyambut Anda sebagai pengguna baru aplikasi Ayah Hebat.','{\"content\":\"Assalamu\'alaikum Warahmatullahi Wabarakatuh,\\nKami dengan gembira menyambut Anda sebagai pengguna baru aplikasi Ayah Hebat. Aplikasi ini dirancang untuk membantu keluarga Anda dalam mendokumentasikan dan mengelola kegiatan islami anak dengan lebih mudah dan efektif. Berikut adalah beberapa fitur utama yang dapat Anda manfaatkan:\\n## 1. Dokumentasi Kegiatan Islami Anak\\nAnda dapat mengunggah foto atau video kegiatan islami anak Anda untuk didokumentasikan. Fitur ini memungkinkan Anda menyimpan momen-momen berharga dan berbagi pengalaman spiritual keluarga.\\n## 2. Leaderboard Kegiatan Islami\\nNikmati fitur leaderboard yang menampilkan keluarga dengan kegiatan islami terbanyak dan terberkualitas. Fitur ini bertujuan untuk memotivasi dan menginspirasi keluarga lain dalam menjalankan aktivitas islami sehari-hari.\\n## 3. Berita dan Artikel\\nDapatkan berita dan artikel terkini seputar dunia islami, parenting, dan edukasi anak. Kami menyediakan konten yang bermanfaat untuk memperkaya pengetahuan dan wawasan Anda.\\n## 4. Fitur FAQ\\nTemukan jawaban atas pertanyaan umum mengenai penggunaan aplikasi dan berbagai topik terkait melalui fitur FAQ yang tersedia.\\n## 5. Fitur Pengumuman\\nTetap terinformasi dengan pengumuman penting dari tim Ayah Hebat mengenai update aplikasi, acara, dan informasi penting lainnya.\\n## 6. Layanan Pelanggan (Customer Service)\\nJika Anda membutuhkan bantuan atau memiliki pertanyaan lebih lanjut, fitur customer service kami siap membantu Anda. Anda akan diarahkan ke WhatsApp untuk komunikasi yang lebih cepat dan mudah.\\nKami berharap fitur-fitur ini dapat membantu Anda dalam mendidik dan membimbing anak-anak dalam kegiatan islami dengan lebih baik. Terima kasih telah memilih Ayah Hebat sebagai pendamping keluarga Anda dalam perjalanan spiritual ini.\\nWassalamu\'alaikum Warahmatullahi Wabarakatuh,\\nTim Ayah Hebat\",\"routes\":\"/\"}',31,'https://backend.ayahhebat.mangcoding.com/uploads/photo-1727363518087-595453276.png','2024-09-26 15:11:58.244','2024-09-26 15:11:58.244'),(112,'Penyambutan dan Pengenalan Fitur Aplikasi Ayah Hebat','Kami dengan gembira menyambut Anda sebagai pengguna baru aplikasi Ayah Hebat.','{\"content\":\"Assalamu\'alaikum Warahmatullahi Wabarakatuh,\\nKami dengan gembira menyambut Anda sebagai pengguna baru aplikasi Ayah Hebat. Aplikasi ini dirancang untuk membantu keluarga Anda dalam mendokumentasikan dan mengelola kegiatan islami anak dengan lebih mudah dan efektif. Berikut adalah beberapa fitur utama yang dapat Anda manfaatkan:\\n## 1. Dokumentasi Kegiatan Islami Anak\\nAnda dapat mengunggah foto atau video kegiatan islami anak Anda untuk didokumentasikan. Fitur ini memungkinkan Anda menyimpan momen-momen berharga dan berbagi pengalaman spiritual keluarga.\\n## 2. Leaderboard Kegiatan Islami\\nNikmati fitur leaderboard yang menampilkan keluarga dengan kegiatan islami terbanyak dan terberkualitas. Fitur ini bertujuan untuk memotivasi dan menginspirasi keluarga lain dalam menjalankan aktivitas islami sehari-hari.\\n## 3. Berita dan Artikel\\nDapatkan berita dan artikel terkini seputar dunia islami, parenting, dan edukasi anak. Kami menyediakan konten yang bermanfaat untuk memperkaya pengetahuan dan wawasan Anda.\\n## 4. Fitur FAQ\\nTemukan jawaban atas pertanyaan umum mengenai penggunaan aplikasi dan berbagai topik terkait melalui fitur FAQ yang tersedia.\\n## 5. Fitur Pengumuman\\nTetap terinformasi dengan pengumuman penting dari tim Ayah Hebat mengenai update aplikasi, acara, dan informasi penting lainnya.\\n## 6. Layanan Pelanggan (Customer Service)\\nJika Anda membutuhkan bantuan atau memiliki pertanyaan lebih lanjut, fitur customer service kami siap membantu Anda. Anda akan diarahkan ke WhatsApp untuk komunikasi yang lebih cepat dan mudah.\\nKami berharap fitur-fitur ini dapat membantu Anda dalam mendidik dan membimbing anak-anak dalam kegiatan islami dengan lebih baik. Terima kasih telah memilih Ayah Hebat sebagai pendamping keluarga Anda dalam perjalanan spiritual ini.\\nWassalamu\'alaikum Warahmatullahi Wabarakatuh,\\nTim Ayah Hebat\",\"routes\":\"/\"}',31,'https://backend.ayahhebat.mangcoding.com/uploads/photo-1727363520555-590706496.png','2024-09-26 15:12:00.714','2024-09-26 15:12:00.714'),(113,'Penyambutan dan Pengenalan Fitur Aplikasi Ayah Hebat','Kami dengan gembira menyambut Anda sebagai pengguna baru aplikasi Ayah Hebat.','{\"content\":\"Assalamu\'alaikum Warahmatullahi Wabarakatuh,\\nKami dengan gembira menyambut Anda sebagai pengguna baru aplikasi Ayah Hebat. Aplikasi ini dirancang untuk membantu keluarga Anda dalam mendokumentasikan dan mengelola kegiatan islami anak dengan lebih mudah dan efektif. Berikut adalah beberapa fitur utama yang dapat Anda manfaatkan:\\n## 1. Dokumentasi Kegiatan Islami Anak\\nAnda dapat mengunggah foto atau video kegiatan islami anak Anda untuk didokumentasikan. Fitur ini memungkinkan Anda menyimpan momen-momen berharga dan berbagi pengalaman spiritual keluarga.\\n## 2. Leaderboard Kegiatan Islami\\nNikmati fitur leaderboard yang menampilkan keluarga dengan kegiatan islami terbanyak dan terberkualitas. Fitur ini bertujuan untuk memotivasi dan menginspirasi keluarga lain dalam menjalankan aktivitas islami sehari-hari.\\n## 3. Berita dan Artikel\\nDapatkan berita dan artikel terkini seputar dunia islami, parenting, dan edukasi anak. Kami menyediakan konten yang bermanfaat untuk memperkaya pengetahuan dan wawasan Anda.\\n## 4. Fitur FAQ\\nTemukan jawaban atas pertanyaan umum mengenai penggunaan aplikasi dan berbagai topik terkait melalui fitur FAQ yang tersedia.\\n## 5. Fitur Pengumuman\\nTetap terinformasi dengan pengumuman penting dari tim Ayah Hebat mengenai update aplikasi, acara, dan informasi penting lainnya.\\n## 6. Layanan Pelanggan (Customer Service)\\nJika Anda membutuhkan bantuan atau memiliki pertanyaan lebih lanjut, fitur customer service kami siap membantu Anda. Anda akan diarahkan ke WhatsApp untuk komunikasi yang lebih cepat dan mudah.\\nKami berharap fitur-fitur ini dapat membantu Anda dalam mendidik dan membimbing anak-anak dalam kegiatan islami dengan lebih baik. Terima kasih telah memilih Ayah Hebat sebagai pendamping keluarga Anda dalam perjalanan spiritual ini.\\nWassalamu\'alaikum Warahmatullahi Wabarakatuh,\\nTim Ayah Hebat\",\"routes\":\"/\"}',31,'https://backend.ayahhebat.mangcoding.com/uploads/photo-1727363521840-157064031.png','2024-09-26 15:12:01.957','2024-09-26 15:12:01.957');
+/*!40000 ALTER TABLE `Notification` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `OfficeAddress`
+--
+
+DROP TABLE IF EXISTS `OfficeAddress`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `OfficeAddress` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(191) NOT NULL,
+  `address` text NOT NULL,
+  `createdAt` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+  `updatedAt` datetime(3) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `OfficeAddress`
+--
+
+LOCK TABLES `OfficeAddress` WRITE;
+/*!40000 ALTER TABLE `OfficeAddress` DISABLE KEYS */;
+INSERT INTO `OfficeAddress` VALUES (1,'Ayahhebat','Jl. Siliwangi No.101, Cibadak -Sukabumi (Ruko seberang DKH Hospital/RS Kartika Cibadak)','2025-02-25 13:44:06.859','2025-02-25 13:44:06.859');
+/*!40000 ALTER TABLE `OfficeAddress` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Peminjaman`
+--
+
+DROP TABLE IF EXISTS `Peminjaman`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Peminjaman` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `bookId` int(11) NOT NULL,
+  `userId` int(11) NOT NULL,
+  `status` enum('PENDING','ALLOWED','TAKEN','RETURNED','CANCELLED') NOT NULL DEFAULT 'PENDING',
+  `submissionDate` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+  `deadlineDate` datetime(3) NOT NULL,
+  `plannedPickUpDate` datetime(3) NOT NULL,
+  `actualPickUpDate` datetime(3) DEFAULT NULL,
+  `returnDate` datetime(3) DEFAULT NULL,
+  `cancelDate` datetime(3) DEFAULT NULL,
+  `createdAt` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+  `updatedAt` datetime(3) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `Peminjaman_bookId_fkey` (`bookId`),
+  KEY `Peminjaman_userId_fkey` (`userId`),
+  CONSTRAINT `Peminjaman_bookId_fkey` FOREIGN KEY (`bookId`) REFERENCES `Book` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `Peminjaman_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Peminjaman`
+--
+
+LOCK TABLES `Peminjaman` WRITE;
+/*!40000 ALTER TABLE `Peminjaman` DISABLE KEYS */;
+INSERT INTO `Peminjaman` VALUES (1,3,64,'PENDING','2025-11-21 02:47:57.489','2025-11-29 17:00:00.000','2025-11-20 17:00:00.000',NULL,NULL,NULL,'2025-11-21 02:47:57.489','2025-11-21 02:47:57.489'),(2,3,65,'PENDING','2025-12-24 04:22:49.310','2025-12-30 17:00:00.000','2025-12-23 17:00:00.000',NULL,NULL,NULL,'2025-12-24 04:22:49.310','2025-12-24 04:22:49.310');
+/*!40000 ALTER TABLE `Peminjaman` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Playlist`
+--
+
+DROP TABLE IF EXISTS `Playlist`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Playlist` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(191) NOT NULL,
+  `description` varchar(191) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Playlist`
+--
+
+LOCK TABLES `Playlist` WRITE;
+/*!40000 ALTER TABLE `Playlist` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Playlist` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `PlaylistContent`
+--
+
+DROP TABLE IF EXISTS `PlaylistContent`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `PlaylistContent` (
+  `contentId` int(11) NOT NULL,
+  `playlistId` int(11) NOT NULL,
+  `order` int(11) NOT NULL,
+  PRIMARY KEY (`contentId`,`playlistId`),
+  UNIQUE KEY `PlaylistContent_playlistId_order_key` (`playlistId`,`order`),
+  CONSTRAINT `PlaylistContent_contentId_fkey` FOREIGN KEY (`contentId`) REFERENCES `Content` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `PlaylistContent_playlistId_fkey` FOREIGN KEY (`playlistId`) REFERENCES `Playlist` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `PlaylistContent`
+--
+
+LOCK TABLES `PlaylistContent` WRITE;
+/*!40000 ALTER TABLE `PlaylistContent` DISABLE KEYS */;
+/*!40000 ALTER TABLE `PlaylistContent` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Post`
+--
+
+DROP TABLE IF EXISTS `Post`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Post` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `body` text NOT NULL,
+  `createdAt` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+  `updateAt` datetime(3) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Post`
+--
+
+LOCK TABLES `Post` WRITE;
+/*!40000 ALTER TABLE `Post` DISABLE KEYS */;
+INSERT INTO `Post` VALUES (7,31,'Apa saja nilai-nilai utama yang perlu diajarkan sejak dini untuk membentuk karakter anak yang shaleh?','2024-10-29 10:05:26.180','2024-10-29 10:05:26.180'),(8,53,'Diskusi tentang tema keluarga di mulai dari mencari pasangan.. bagaimana pendapat teman2?','2025-10-08 10:27:08.873','2025-10-08 10:27:08.873'),(10,15,'Lanjutkeuuuunnnn','2025-10-08 10:32:18.909','2025-10-08 10:32:18.909'),(11,15,'Yuk test ayah hebat discuss pekan ini, seberapa besar % partisipasi para ayah hebat dalam meramaikan kegiatan futsal ?','2025-10-08 20:49:53.745','2025-10-08 20:49:53.745'),(12,15,'https://parentingnabawiyyah.com/2013/01/29/yuk-besanan/. Ditulis Saat kuttab baru mulai...   Hanya orang yang memiliki visi panjang bisa membaca maksud tulisan ini dimasa yang akan datang... Kini, tulisan ini pun mulai nyata dilapangan.','2025-10-28 02:52:52.720','2025-10-28 02:52:52.720'),(13,4,'aplikasinya udah bagus, tapi gmana caranya biar tersosialisasi dengan baik','2025-11-14 06:17:37.000','2025-11-14 06:17:37.000'),(14,15,'Ayah hebat akan kita bangun rapi dr mulai legal nya. akan punya badan hukum, lalu aplikasi setelah tersosialisasi menjalankan proses meraih tujuan nya sesuai legalanya, dimana tgl 29-30 Nopember 2025 ini , akan kita jadikan momentum konsensus Ayahhebat sebagainentitas legal dan akan maju di urus ke notaris sebagai badan hukum perkumoulan yg di sahkan negara melalaui keamntrian kumham. jika sdh punya legal, maka dgn sendirinya organisasis menjalankan amanatnya sesuai undang-undang, diantaranya apps wadaah jadi komitmen dr member ber Waqaf Tunai. Ini ilmu Waqaf yg Wajib dinilmui, karena wujud amal berkelanjutana.','2025-11-17 17:37:26.727','2025-11-17 17:37:26.727');
+/*!40000 ALTER TABLE `Post` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `PostDislike`
+--
+
+DROP TABLE IF EXISTS `PostDislike`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `PostDislike` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `postId` int(11) NOT NULL,
+  `createdAt` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+  `updatedAt` datetime(3) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `PostDislike`
+--
+
+LOCK TABLES `PostDislike` WRITE;
+/*!40000 ALTER TABLE `PostDislike` DISABLE KEYS */;
+INSERT INTO `PostDislike` VALUES (1,35,1,'2024-10-28 04:46:26.831','2024-10-28 04:46:26.831'),(2,35,6,'2024-10-28 09:49:35.464','2024-10-28 09:49:35.464'),(3,35,7,'2024-11-13 07:11:57.919','2024-11-13 07:11:57.919');
+/*!40000 ALTER TABLE `PostDislike` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `PostLike`
+--
+
+DROP TABLE IF EXISTS `PostLike`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `PostLike` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `postId` int(11) NOT NULL,
+  `createdAt` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+  `updatedAt` datetime(3) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `PostLike`
+--
+
+LOCK TABLES `PostLike` WRITE;
+/*!40000 ALTER TABLE `PostLike` DISABLE KEYS */;
+INSERT INTO `PostLike` VALUES (1,35,1,'2024-10-28 04:46:25.729','2024-10-28 04:46:25.729'),(2,35,6,'2024-10-28 09:49:34.649','2024-10-28 09:49:34.649'),(7,35,7,'2024-11-13 07:46:50.676','2024-11-13 07:46:50.676'),(8,31,7,'2024-12-19 11:14:41.615','2024-12-19 11:14:41.615'),(10,45,7,'2025-03-04 05:02:09.839','2025-03-04 05:02:09.839'),(12,15,8,'2025-10-08 10:31:51.003','2025-10-08 10:31:51.003'),(13,15,7,'2025-10-10 09:39:09.706','2025-10-10 09:39:09.706'),(14,57,7,'2025-10-21 04:37:19.224','2025-10-21 04:37:19.224'),(16,64,7,'2025-12-31 06:29:57.206','2025-12-31 06:29:57.206'),(17,64,10,'2025-12-31 06:29:58.827','2025-12-31 06:29:58.827');
+/*!40000 ALTER TABLE `PostLike` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Profile`
+--
+
+DROP TABLE IF EXISTS `Profile`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Profile` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nama` varchar(191) DEFAULT NULL,
+  `bio` varchar(191) DEFAULT NULL,
+  `photo` varchar(191) DEFAULT NULL,
+  `namaIstri` varchar(191) DEFAULT NULL,
+  `namaAnak` varchar(191) DEFAULT NULL,
+  `tahunMasukKuttab` int(11) DEFAULT NULL,
+  `userId` int(11) NOT NULL,
+  `namaKuttab` varchar(191) DEFAULT NULL,
+  `forgotCode` varchar(191) DEFAULT NULL,
+  `forgotExpiredAt` datetime(3) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `Profile_userId_key` (`userId`),
+  UNIQUE KEY `Profile_forgotCode_key` (`forgotCode`),
+  CONSTRAINT `Profile_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Profile`
+--
+
+LOCK TABLES `Profile` WRITE;
+/*!40000 ALTER TABLE `Profile` DISABLE KEYS */;
+INSERT INTO `Profile` VALUES (1,'Admin ','seorang yang ingin mencoba menjadi yang terbaik ','photo-1712196773760-194653831.png','Aisyah ','Ilham',2020,1,'Kutab Alfatih Sukabumi',NULL,NULL),(2,'Ahmad','Seorang ayah','photo-1711616485326-604416843.png','Aisyah','Ujang',2022,2,'Kutab Alfatih Sukabumi',NULL,NULL),(3,'Usman','Seorang yang baik','photo-1712208826261-480375937.png','Aisyah ','Ujang',2022,3,'Kutab Alfatih Sukabumi',NULL,NULL),(4,'Nugraha','Nothing to be something. Pencari Ridho Allah','photo-1712551739185-68391194.png','Nabilla Nazla M.A.Z','Maryam Fukayna Kaneez',2022,4,'Kutab Alfatih Sukabumi',NULL,NULL),(5,'Muamar Hasan Albana','seseorang yang sedang berusaha menjadi calon ayah ideal menurut islam','photo-1712318506164-7247562.png','pulan','silmi kaffah',2024,5,'Kutab Alfatih Sukabumi',NULL,NULL),(6,'𝚜𝚞𝚓𝚊𝚗𝚊','𝚜𝚎𝚘𝚛𝚊𝚗𝚐 𝚔𝚞𝚕𝚒 𝚢𝚊𝚗𝚐 𝚖𝚎𝚖𝚒𝚕𝚒𝚔𝚒 5 𝚊𝚗𝚊𝚔','photo-1712325611764-879164605.png','𝚌𝚞𝚌𝚞 𝚗𝚒𝚊 𝚔𝚞𝚛𝚗𝚒𝚊','𝙰𝚖𝚖𝚊𝚛 𝚑𝚊𝚏𝚒𝚣𝚑 𝚜𝚢𝚊𝚞𝚚𝚒𝚕𝚕𝚊𝚑',2022,7,'Kutab Alfatih Sukabumi',NULL,NULL),(7,'Abu Keita','Seorang yg senantiasa memperbaiki diri agar Allah Ridho','photo-1712328153010-962768427.png','Ummu Keita','Keita Kaiya Kaffah',2019,8,'Kutab Alfatih Sukabumi',NULL,NULL),(8,'abu misk','ada pelajaran di setiap tempat,setiap waktu dan setiap jiwa','photo-1713795946859-648344773.png','Ummu misk','m Ibrahim Saeful k',2018,10,'Kutab Alfatih Sukabumi',NULL,NULL),(9,'Hilman Abdurohman ','Mengabdi untuk kebesaran generasi','photo-1713796087126-290724771.png','Khoirunnisa D. S','Hanif Abdurrahman',2022,11,'Kutab Alfatih Sukabumi',NULL,NULL),(10,'Angga Pradana','Seorang Ayah yg belajar utk jadi Ayah yg bisa menjaga dirinya dan keluarganya dr api neraka, dan berharap ridho Allah agar berjumpa keluarga d Surga nya Allah','photo-1713796717442-97454891.png','Rahayu Syarief','AlulaAbqoryAsma',2022,13,'Kutab Alfatih Sukabumi',NULL,NULL),(11,'Hendra Muharom','Insan yg selalu ingin belajar dan berharap Husnul Khotimah','photo-1713797781517-820434548.png','drg. Yuniar Handayaningsih Wisnu','Muhammad \'Arsya Najmulhaq',2021,15,'Kutab Alfatih Sukabumi',NULL,NULL),(12,'Abu Lubna','Pendidik yang Berbahagia, Bahagia mejadi Pendidik','photo-1759921749491-337376815.png','Ummu Lubna','Lubna',2021,16,'Kutab Alfatih Sukabumi',NULL,NULL),(13,'mangcoding','p','photo-1716256636305-432143354.png','Aisyah','Ujang',2021,18,'Kutab Alfatih Sukabumi',NULL,NULL),(14,'Anwa','Seorang ayah yang ingin terbaik untuk anakn','photo-1717920710170-83608766.png','Aisyah','Ujang',2022,20,'Kutab Alfatih Sukabumi',NULL,NULL),(15,'irpansyah ','Gemilang di usia belia','photo-1718715232283-908688208.png','Res Rahayu ','Aisha Azalea syafia ',2021,9,'Kutab Alfatih Sukabumi',NULL,NULL),(16,'Sujana','orang tua dari 5 anak yang berusaha menjaga fitrah seorang muslim.','photo-1719126835580-139908818.png','Cucu Nia Kurnia','Ammar dan Althaf',2022,22,'Kutab Alfatih Sukabumi',NULL,NULL),(17,'Harun Arrasyid','Seorang Ayah yang ingin menjadi Hebat','photo-1719126917892-99109573.png','Inri Okta Ridwanty','M. Al Fatih Rasyid',2022,24,'Kutab Alfatih Sukabumi',NULL,NULL),(18,'Fajar Nurdiansyah Saputra','ayah hebat','photo-1719127802029-378540652.png','Utari Dwi Agustina','Maryam Hawa Elshanum',2021,25,'Kutab Alfatih Sukabumi',NULL,NULL),(19,'Ridwan','Ayah dengan 2 anak pemberani','photo-1719209175833-410243486.png','Umi','Abu Bakar Muharrar',2020,23,'Kutab Alfatih Sukabumi',NULL,NULL),(20,'tes','ini tes','photo-1720062691020-266266283.png','tes','tes',2010,27,'Kutab Alfatih Sukabumi',NULL,NULL),(22,'Rifqi Muzakki','Seorang yang bajk','photo-1725942006586-694269968.png','Istri saya','Ujang',2022,30,'Kutab Alfatih Sukabumi',NULL,NULL),(23,'Admin','Seorang yang','photo-1730196314045-571297841.png','Aisyah','Asep',2020,31,'Kutab Alfatih Sukabumi',NULL,NULL),(24,'Sehun','Seorang pengusaha','photo-1726751056426-109233987.png','aisyah','levi',2022,32,'Kutab Alfatih Sukabumi',NULL,NULL),(25,'Admin','Seorang ayah yang baik','photo-1730196494571-456729904.png','Aisyah','Ujang',2020,35,'Kutab Alfatih Sukabumi',NULL,NULL),(26,'Uhe','-','photo-1727346942784-632501556.png','gak ada ','rifki',2022,34,'Kutab Alfatih Sukabumi',NULL,NULL),(27,'krishna asmara test','seorang yang bersemangat','photo-1731934924937-476090729.png','pujangga test','ujang test',2022,36,'Kutab Alfatih Sukabumi',NULL,NULL),(28,'Ahmad','Seorang ayah dari 3 anak','photo-1740482206051-803941936.png','Aisyah','Ujang',2022,41,'Kutab Alfatih Sukabumi',NULL,NULL),(29,'ahmadsssja3','ahmadsssja3ahmadsssja3ahmadsssja3ahmadsssja3ahmadsssja3','photo-1740483656294-294669957.png','ahmadsssja3','ahmadsssja3',2022,38,'Kutab Alfatih Sukabumi',NULL,NULL),(30,'User Testing','Seorang yang baik','photo-1740658708907-304696540.png','Aisyah','Ujang',2022,42,'Kutab Alfatih Sukabumi',NULL,NULL),(31,NULL,'hidup mulia atau mati syahid',NULL,'Nabila','Husain',2022,43,NULL,NULL,NULL),(32,'jiha','jihajiha','photo-1740977737635-663161951.png','jiha','jiha',2020,44,'Kutab Alfatih Sukabumi',NULL,NULL),(33,'Terry J. Hockaday','saya adalah seorang ayah yang bekerja keras demi membiayai keluarga dan belajar dengan baik untuk memastikan mereka mendapatkan ilmu agama yang lengkap bagi kehidupan kami','photo-1741056528273-725289539.png','Yana','Dina',2022,45,'Kutab Alfatih Sukabumi',NULL,NULL),(34,'Testing Famadi','Seorang ayah TV','photo-1759889286841-708555267.png','Aisyah','Ujang',2025,51,'Kutab Alfatih Sukabumi',NULL,NULL),(35,'Jone ','Seorang suami dari keluarga biasa','photo-1759893389248-847007971.png','aisyah','Ujang',2023,52,'Kutab Alfatih Sukabumi',NULL,NULL),(36,'Fiqih','ayah dua anak satu istri','photo-1759906823606-127130775.png','Leihana','Zildan',2021,53,'Kutab Alfatih Sukabumi',NULL,NULL),(37,'Mubarok Jaelani','seorang Ayah yang selalu berpikir dan berusaha untuk menyelesaikan visi keluarga.. agar keturunannya yang hadir dikemudian dalam keadaan kuat dari setiap sisi kehidupan.. ','photo-1759984546488-507547275.png','Tia septiani Abdurrahman','Abdullah Zahid Zaidan',2020,55,'Kutab Alfatih Sukabumi',NULL,NULL),(38,'rofiqi','hallo hallo hallo','photo-1760924770522-871310841.png','emily','sin',2021,48,'Kutab Alfatih Sukabumi',NULL,NULL),(39,'Testuser','Seorang ayah biasa','photo-1761019639768-527793521.png','Aisyah','Ujang',2022,57,'Kutab Alfatih Sukabumi',NULL,NULL),(40,'Han','-','photo-1761021679220-748556703.png','Jia','Hina',2020,58,'Kutab Alfatih Sukabumi',NULL,NULL),(41,'bintang ','Saya tester','photo-1761036886914-828502533.png','bintang','bintang',2025,59,'Kutab Alfatih Sukabumi',NULL,NULL),(42,'test','test','photo-1762868143600-111037828.png','test','test',2008,61,'Kutab Alfatih Sukabumi',NULL,NULL),(43,'Giyusm','-','photo-1762929126481-605854853.png','Anna','Jihan',2020,63,'Kutab Alfatih Sukabumi',NULL,NULL),(44,'Gian','-','photo-1763693186420-657656742.png','Hana','Jian',2020,64,'Kutab Alfatih Sukabumi',NULL,NULL),(45,'Rifqi','Seorang baik','photo-1766476309234-562352511.png','Iis','Asep',2022,65,'Kutab Alfatih Sukabumi',NULL,NULL),(46,'Ahmad','Bagus','photo-1767059576853-210183149.png','Aisyah','Ujang',2025,66,'Kutab Alfatih Sukabumi',NULL,NULL),(47,'Yayan Kurnia Akbar','. ','photo-1767162685564-618341387.png','Istri','Anak',2022,37,'Kutab Alfatih Sukabumi',NULL,NULL),(48,'deni kurnia ilahi','berfikir besar berkarya besar','photo-1768010094236-648320150.png','fatida ariyani','sakeena zahrana sakhi',2019,67,'Kutab Alfatih Sukabumi',NULL,NULL),(49,'test','seorang','photo-1770201276656-893040340.png','tes','tes',2022,68,'Kutab Alfatih Sukabumi',NULL,NULL);
+/*!40000 ALTER TABLE `Profile` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Question`
+--
+
+DROP TABLE IF EXISTS `Question`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Question` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `question` text NOT NULL,
+  `answer` text DEFAULT NULL,
+  `isAnswer` tinyint(1) NOT NULL DEFAULT 0,
+  `createdAt` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+  `updatedAt` datetime(3) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Question`
+--
+
+LOCK TABLES `Question` WRITE;
+/*!40000 ALTER TABLE `Question` DISABLE KEYS */;
+INSERT INTO `Question` VALUES (1,'Bagaimana cara mengunggah foto/video ke dalam dokumentasi?','Untuk mengunggah foto atau video ke dalam dokumentasi, pertama-tama Anda perlu menekan kotak yang berada di tengah halaman utama (Home Page). Setelah itu, akan muncul jendela pop-up yang meminta Anda untuk memilih jenis media yang ingin diunggah. Jika Anda ingin mengunggah foto, pilih opsi \'Pilih Foto\'. Jika Anda ingin mengunggah video, pilih opsi \'Pilih Video\'.\n Setelah memilih jenis media yang diinginkan, pilihlah foto atau video dari galeri Anda. Setelah memilih foto atau video tersebut, isi nama kegiatannya pada kolom yang tersedia. Terakhir, kirim dokumen tersebut dengan menekan tombol pesawat kertas di pojok kanan bawah layar.\n Dengan demikian, foto atau video tersebut akan menjadi bagian dari dokumentasi kegiatan islami keluarga Anda atau anak Anda, membantu Anda menyimpan dan mengelola dokumentasi dengan lebih efektif.',1,'2024-06-09 03:04:05.698','2024-06-09 03:10:29.824'),(2,'Apakah bisa menggunakan nama kegiatan sesuai dengan keinginan sendiri?','Ya, Anda dapat menggunakan nama kegiatan yang disesuaikan dengan keinginan Anda sendiri. Selain menggunakan nama kegiatan yang sudah tersedia secara default, Anda juga dapat memasukkan nama kegiatan yang diinginkan. Untuk melakukannya, tekan bidang teks yang ada di bagian paling bawah halaman utama (Home Page) dan ketik nama kegiatan sesuai preferensi Anda.',1,'2024-06-09 03:14:13.071','2024-06-09 03:14:16.763'),(3,'Bagaimana cara mengajukan unggahan berita?','Anda dapat mengajukan berita untuk dipublikasikan di aplikasi Ayah Hebat dengan menghubungi layanan pelanggan Mangcoding yang tersedia di halaman profil dan pengaturan (Profile and Setting Page).',1,'2024-06-09 04:19:49.424','2024-06-09 04:20:02.861');
+/*!40000 ALTER TABLE `Question` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Reply`
+--
+
+DROP TABLE IF EXISTS `Reply`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Reply` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `body` text NOT NULL,
+  `commentId` int(11) NOT NULL,
+  `createdAt` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+  `updatedAt` datetime(3) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Reply`
+--
+
+LOCK TABLES `Reply` WRITE;
+/*!40000 ALTER TABLE `Reply` DISABLE KEYS */;
+INSERT INTO `Reply` VALUES (1,35,'Mencoba Reply',2,'2024-10-28 04:46:52.587','2024-10-28 04:46:52.587'),(2,35,'@Jhon Doe Reply a Reply',2,'2024-10-28 04:46:59.623','2024-10-28 04:46:59.623'),(3,35,'1',2,'2024-10-28 04:47:31.236','2024-10-28 04:47:31.236'),(4,35,'2',2,'2024-10-28 04:47:35.321','2024-10-28 04:47:35.321'),(5,35,'3',2,'2024-10-28 04:47:38.529','2024-10-28 04:47:38.529'),(6,35,'4',2,'2024-10-28 04:47:42.005','2024-10-28 04:47:42.005'),(7,35,'5',2,'2024-10-28 04:47:44.650','2024-10-28 04:47:44.650'),(8,35,'6',2,'2024-10-28 04:47:47.330','2024-10-28 04:47:47.330'),(9,35,'7',2,'2024-10-28 04:47:50.080','2024-10-28 04:47:50.080'),(10,35,'8',2,'2024-10-28 04:47:52.454','2024-10-28 04:47:52.454'),(11,35,'9',2,'2024-10-28 04:47:54.683','2024-10-28 04:47:54.683'),(12,35,'1',2,'2024-10-28 04:47:57.674','2024-10-28 04:47:57.674'),(13,35,'kenapa ya',14,'2024-10-28 05:42:35.075','2024-10-28 05:42:35.075'),(14,35,'halo',29,'2024-10-28 09:50:27.629','2024-10-28 09:50:27.629'),(15,35,'@Jhon Doe halo',29,'2024-10-28 09:50:31.187','2024-10-28 09:50:31.187'),(16,31,'Setuju sekali dengan poin-poin di atas! Mengajarkan nilai-nilai ini sejak dini memang sangat penting agar anak tumbuh dengan pondasi yang kuat dalam agama dan akhlak. Kadang sebagai orang tua atau pendidik, kita perlu lebih sabar dan konsisten, karena nilai-nilai ini tidak terbentuk dalam semalam. Dengan memberikan contoh nyata dan lingkungan yang mendukung, insya Allah anak akan lebih mudah menyerap dan menjalani nilai-nilai tersebut dalam kesehariannya.',30,'2024-10-29 10:07:14.417','2024-10-29 10:07:14.417');
+/*!40000 ALTER TABLE `Reply` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `ReplyLike`
+--
+
+DROP TABLE IF EXISTS `ReplyLike`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ReplyLike` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `replyId` int(11) NOT NULL,
+  `createdAt` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+  `updatedAt` datetime(3) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `ReplyLike`
+--
+
+LOCK TABLES `ReplyLike` WRITE;
+/*!40000 ALTER TABLE `ReplyLike` DISABLE KEYS */;
+INSERT INTO `ReplyLike` VALUES (1,35,2,'2024-10-28 04:47:05.386','2024-10-28 04:47:05.386'),(2,35,15,'2024-10-28 09:51:13.912','2024-10-28 09:51:13.912'),(3,35,14,'2024-10-28 09:51:14.752','2024-10-28 09:51:14.752'),(4,31,16,'2024-10-29 10:07:23.172','2024-10-29 10:07:23.172'),(5,45,16,'2025-03-04 02:56:46.236','2025-03-04 02:56:46.236');
+/*!40000 ALTER TABLE `ReplyLike` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Report`
+--
+
+DROP TABLE IF EXISTS `Report`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Report` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `postId` int(11) DEFAULT NULL,
+  `commentId` int(11) DEFAULT NULL,
+  `replyId` int(11) DEFAULT NULL,
+  `reason` text NOT NULL,
+  `status` varchar(191) NOT NULL DEFAULT 'Pending',
+  `createdAt` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Report`
+--
+
+LOCK TABLES `Report` WRITE;
+/*!40000 ALTER TABLE `Report` DISABLE KEYS */;
+INSERT INTO `Report` VALUES (1,35,NULL,3,NULL,'Inappropriate Content','Pending','2024-10-28 04:49:15.021'),(2,35,1,NULL,NULL,'Inappropriate Content','Pending','2024-10-28 04:50:53.155');
+/*!40000 ALTER TABLE `Report` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `User`
+--
+
+DROP TABLE IF EXISTS `User`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `User` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(191) NOT NULL,
+  `email` varchar(191) NOT NULL,
+  `password` varchar(191) NOT NULL,
+  `isVerified` tinyint(1) NOT NULL DEFAULT 0,
+  `verificationCode` varchar(191) DEFAULT NULL,
+  `totalScoreYear` int(11) DEFAULT 0,
+  `totalScoreMonth` int(11) DEFAULT 0,
+  `totalScoreDay` int(11) DEFAULT 0,
+  `fcmToken` varchar(191) DEFAULT NULL,
+  `role` enum('ADMIN','USER') DEFAULT 'USER',
+  `deleteAccountVerficationCode` varchar(191) DEFAULT NULL,
+  `deleteReason` text DEFAULT NULL,
+  `isActive` tinyint(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `User_email_key` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `User`
+--
+
+LOCK TABLES `User` WRITE;
+/*!40000 ALTER TABLE `User` DISABLE KEYS */;
+INSERT INTO `User` VALUES (1,'Rifqi ','rifqimuzakki45@gmail.com','$2b$10$MLe1tKcb4nMFWJyceWr5yem6y.G.y8wyHUlYPDUWq3Py7.cqXYtBO',1,NULL,100,0,0,'c7CZLOCbQIC_S_Ts2KIN1A:APA91bHF1yIjgX4Yo2B6Lzl6eyOxN_cOz63X18tTZeb-pW4QYYjc_5VsGRjzLHmLX1EARPzyCeEc1Tn_kXpNM5wUo7e5DJnGzDp8u8IKzCwBBtdML77gujI','USER',NULL,NULL,1),(2,'rifqimuzakki4545@gmail.com','rifqimuzakki4545@gmail.com','$2b$10$N9wQbfYNCbgNStqKvySRPuP/1/Q7ih30anrGQ1a/D.Sr3JvmQp.za',1,NULL,30,0,0,'cyrOlLp5Q9CvgL4-ADnfyS:APA91bGonIewEXERweCzyOqf_x8dgKaNoKWUxvjsXPvv8mLzBrvYZ29QLoSOn9wqiFaX-LeHn19nYj4UDHaq7i-ccbu-m2JpxYPEcTPHYGTBPEODYkKFMPCIF-Q4a5gs0wZiP95eOkzo','USER',NULL,NULL,1),(3,'rifqimuzakki4545@gmail.com_3','rifqimuzakki454@gmail.com','$2b$10$zvNlIQZuelgIefUlf7ZAHefq3x13ysu8qNM5E/j2sL6.JqzAHp2.e',1,NULL,0,0,0,NULL,'USER',NULL,NULL,1),(4,'nugraha','contact.nugraha@gmail.com','$2b$10$wLM8a5jvFtyJYduXEe5K6e3ofw14zYkt4NOTd5hw5HkqkH038zaGC',1,NULL,30,0,0,'dy53uo5JQE-C0_ZOwa-n4y:APA91bGaCNykUIwE2JQtPYp-XIR2SDbMlZKXKBt0gmMLsbz2uHYqKkMUEDhmKXFB06uYNbPdWM1f3uxBpyZPzdMizDU7NhdsdvPgZpfY7XhCycnBN_J1BtUaUY7kMShVTpeGMj_urFN_','USER',NULL,NULL,1),(5,'ayah amar','muamar171215@gmail.com','$2b$10$KAflbe3PriCHrpxZcfHxQeesW8cxFPPycUQCq6vcdr/LqB1sGc9lO',1,NULL,0,0,0,NULL,'USER',NULL,NULL,1),(6,'Abu Faqih','aariyawan56@gmail.com','$2b$10$vDycPy5XZB6BPNwDEPlEJO22gEWILRr7bx7KqHXS8bp3nGeRKM80i',1,NULL,0,0,0,NULL,'USER',NULL,NULL,1),(7,'𝚜𝚞𝚓𝚊𝚗𝚊','djanaputra@gmail.com','$2b$10$AqiwFIRots8JM5/Mewi8/OCCHkGqzjHvhWie9a80tgqYzD4zwlyRC',1,NULL,0,0,0,NULL,'USER',NULL,NULL,1),(8,'Luthfi','fiealman17@gmail.com','$2b$10$p1HfVwa02Rlrj/dLXV8nZOa6tzWt6glscYpE7QPGdBTaK4aQgPTL.',1,NULL,20,0,0,NULL,'USER',NULL,NULL,1),(9,'irpansyah ','ivheirpansyah@gmail.com','$2b$10$P1yAlXtEvxulRCfiTprzCuhpD.HNjqlcJ.6vUxeqeNqaUsy0cCfTq',1,NULL,0,0,0,'dIYbdsRlRa6_3S3VfjQgT-:APA91bHJskE2cT9lew_tsO4xmMcrGS-MXZmGPVT5AvtxGR8E2WpwRWPp3-ht7uwahUjZuE-ddvPxq26sFxbVCS728GUYo32Wc8f89zSorHu93jXApb3CQkIOecQs65lWV5R3P5sv3N61','USER',NULL,NULL,1),(10,'abu misk','riskyhadi32@gmail.com','$2b$10$f9sPE1nMQVmkCDTwNgDh5uS8fWo6rc3exsmY5TG8gqJlJzyw1/may',1,NULL,10,0,0,NULL,'USER',NULL,NULL,1),(11,'Hilman Abdurohman Abu Hanif','hilmanabdurohman@gmail.com','$2b$10$6hUu0K2SwAdVvbyjghD86ucIrmfUgR/XCTvtNTYCLhLYaQB8133cK',1,NULL,10,0,0,NULL,'USER',NULL,NULL,1),(12,'Abu Mabarr','wahyudin.langitan@gmail.com','$2b$10$DpBZ7y/S/2LfKFRp9.dIxetjAX7hWtBIIke6.vvzq4sHLi9/ObDNm',0,'263362',0,0,0,'exfRybh8TP6fwObO9An6Ad:APA91bFTjk5mBC8IPc8d2rtH-ktPGR9XBAq7Wu8sRCflSOK8Mq8LxDJUiYIxLaJr1Wt9h5vjtHyJExcL_1wAh4z8lrvzerljKWueU0LGnjVvHWtm4AaoOIpyFNZ-Bsqyjr_TDf7yDn__','USER',NULL,NULL,1),(13,'AbahnaAlulaAbqoryAsma','anggafreezzz@gmail.com','$2b$10$dgaPVyWBvlIan8AKnbHvYOXVKpt9myUGdrUV2d3xe9lBHC8wkvNia',1,NULL,0,0,0,NULL,'USER',NULL,NULL,1),(14,'nuayufajriani','yayu.yliawati@gmail.com','$2b$10$8qUKgtWpV0v5UERcj547Ye98EqA3oolYzfvwhX3UjSDVIMNVp4WwW',1,NULL,0,0,0,NULL,'USER',NULL,NULL,1),(15,'Hendra Muharom','hendramuharom@gmail.com','$2b$10$4NKpEDIobWZFQRd5mTIjtO0VGP8mcyKgLcGA4LC9NrvyEqtQ5ximS',1,NULL,10,0,0,'cU_OWx-ES-6HaGVzCdKEGH:APA91bHlOHXV8IHFXeNeDLISnQUbIcgN9m8HxI8rdxiDZkbJIcWBIBM7AogGIcy7Qx7mp4ilbxbOjnEdQA8_bbTng6WgamzLwD5gYPUbr3sASESDVjCM_gM','USER',NULL,NULL,1),(16,'kafsukabumi','kafsukabumi@gmail.com','$2b$10$nNBpSpLEXveOHkrLovSwCOMi894esghpdrfHMyz1RJT6vtjXqMHDi',1,NULL,0,0,0,'c8ujF_DpT4C_8VD2NrC6nH:APA91bHdD-SP5JcjeL7J-touivOpnvjonm3woKDc-GlbfBf_6fWuKtIJAbp8M4OjytVCBBsJkGYQ-IDUJ0XTeSc_7runas0QGvRMEJd39T6nrZigpq6kBME1PaUS3GynWLq6kR9DIQ32','USER',NULL,NULL,1),(17,'mangcoding','mangcoding@gmail.com','$2b$10$P4cCRM.sINU6n3UmGe1wN.I4Fr/5xFYz32AHl0bI7Uj6jddCjqGC2',0,'974898',0,0,0,NULL,'USER',NULL,NULL,1),(18,'mangcoding_18','denistwn67@gmail.com','$2b$10$7EtWZun3cyqt4UZmP7Xp4.ec3jPqBwf2P/I9zNgptbq/Hysx9Pga.',1,NULL,0,0,0,NULL,'USER',NULL,NULL,1),(19,'admin','admin','$2b$10$R7g7BzLklNcuyezg8Zyy4OsaXjao1CmCFy03P5TkzA.ZBf1D9hI0S',1,NULL,0,0,0,NULL,'ADMIN',NULL,NULL,1),(20,'anwar','vicihusnia9@gmail.com','$2b$10$t/f0sUR6/j1f3vNVUsHfXeG89XzPd9T3AmkBpN.oHIqoeE2YkLLT.',1,NULL,10,0,0,'d7sGe8tJTn6HWnw0v8PdND:APA91bGT63528cZ3V7hFp4IdIwjyxf08L-TYxhjw0ji8UZVBjWxlPDSl5agnwbJZw4hJ0oQjgZu5aaUkYapDlVFMin-1OXNhgBi6FpnPFY8T1sV0KBh-KSFhfcFL0Riot4JajKzoa2qs','USER',NULL,NULL,1),(21,'SuCu','altahffahriza@gmail.com','$2b$10$JdHdA5y7Kog1Y66KyVYy5.ZM7XP0JLEKkux3SZMuouADbnVwWrAGG',0,'495853',0,0,0,NULL,'USER',NULL,NULL,1),(22,'SuCu_22','kurniacucunia@gmail.com','$2b$10$H7wlgE.juFo4wcPJKXXEYeWMkdBmc3aEkl.Z.o4nVAxht6.LdvvJa',1,NULL,0,0,0,NULL,'USER',NULL,NULL,1),(23,'uda.ridwan','umi250691@gmail.com','$2b$10$RgUxgrKBjGtPn9cUF1VeG.zQyMNqXXPMaepC1kgK.iIdqsqtAQ1am',1,NULL,0,0,0,'cSwunyoBRNKRns31roaaK2:APA91bF4hvXKSszhUr-wRe-QCDFZ74Jx35gHuY-D0tJm7UwHr503wUWhPo3bgmWANpMbU5K3DdZ7wNn5ATZrfEVryvdgQYLkx4XlDwoprMFkJJmA6087OVcndM7fk4q8DI0PUsLAqBYe','USER',NULL,NULL,1),(24,'Harun','harunarrasyid90@gmail.com','$2b$10$gpGNkBwqgjiCdy7YRZgVkec/fwppNEKxz6OClPzGWL0wF8IIvNjiC',1,NULL,0,0,0,'daR8kYTdSWyZZ5b9naXCfM:APA91bHiq7saNbeIV3meZdz_zV7a624-BXYJ3i6tNLrzso6nvIegtqohA31fh-XNC0JS_zhE60EZc77-7rcxfYnV9SEuckLHOgCXlLPnKtcFkD4998-yHMpuoYkGCmOdKSjSxJKIuCP8','USER',NULL,NULL,1),(25,'imgroot','fnurdiansyah32@gmail.com','$2b$10$XlQok7QXZC6uXQwSsp2xeOJgRLJ8UzYJ4qq1RVJZPF2kXwxibebPS',1,NULL,0,0,0,'foVPtjmmQw-udbvAUirEwg:APA91bHUNJYv1-PTKmbELrlLJj8FBQZwzyYj4IXUu-hXR6Y8MZX_mZjid4nCSjK47hHeRXT2HNhZIk6MgsDkKEokBXgrgl2fSP8aHeXucBEJ7y6Dm_ted_T6gHhsmefEoiEDbgBbTylv','USER',NULL,NULL,1),(26,'Abdullah zahid','nadiniraihana03@gmail.com','$2b$10$8IUyrrAgTlTfQGhU/i4nkek6phoXN4GkV5fEnQMrvQxdc5FPz8i8q',0,'914854',0,0,0,NULL,'USER',NULL,NULL,1),(27,'Purwa Adi','purwaadi361@gmail.com','$2b$10$9vcyMH1wOSy0WbFwo8rMl.XdhuW9BLWOteoRw7958y82NexgfPV3q',1,NULL,0,0,0,'fppkNcqlQDCkwa-rIFfo4H:APA91bEiPXl8OtuJUcknmg6m8Udflz4huVK9Lw6lVOHOCAqPoeZ7G4qNVxoS7causFvTRmbZLpMeNKwXe08m816vV4VCJnc0pxZRz1HjNChfCjE_MnBq6SLs3B54qvDh0QWYr2G4qY_Z','USER',NULL,NULL,1),(28,'vvvzz','sensitifvibe@gmail.com','$2b$10$bq8rIfbveAzEYc91Yn5e2uGHAVpvfX.wbVW77.6n7TVCizl2bFpEi',1,NULL,0,0,0,'fbgYhQ-3RriRExuChyva0T:APA91bH-flrQIqqELAgazXEQtDdxgzf6lcG5Ab8cQYXHInEm3IspO0jn8GSEPA4MvF7FZatNwLVxKYCXiFZo7EEkAaXOgG22JsEvu-MelT949hBKAKiQARN_JEm0JI7qOyjzcrzeB2CN','USER',NULL,NULL,1),(30,'ilham','1@gmail.com','$2b$10$AMdTFFd7hlAuCi.gA.FYl.8JnOlUnkJh8pv4EHneRsKwt0BmJLY4u',1,NULL,0,0,0,'exfRybh8TP6fwObO9An6Ad:APA91bFTjk5mBC8IPc8d2rtH-ktPGR9XBAq7Wu8sRCflSOK8Mq8LxDJUiYIxLaJr1Wt9h5vjtHyJExcL_1wAh4z8lrvzerljKWueU0LGnjVvHWtm4AaoOIpyFNZ-Bsqyjr_TDf7yDn__','USER',NULL,NULL,1),(31,'ahmad','2@gmail.com','$2b$10$uZR.jfjaBofU76Oyp3L0QeCk1JNzoWSTOJRdBku24AezBstPJjWku',1,NULL,0,0,0,'cbJkT649S2WlBRFhbomaz7:APA91bEXFRdCKWAWjs8sBt2lKOVrxQuMaAMkxlEMBM4h_pTt8KokZqVpTBeucJ_ticbh1tXPbIKsj3gn9dJTUEXsS44qqH0ndwEi9BVAjMnXTPTV1IMs9Xs','USER',NULL,NULL,1),(32,'sehan','sehanaf4@gmail.com','$2b$10$eSSHxXWVLSuBwZU/HFtxKeuLUuOrxMLo6qtpZtKjTDnOC53AE3poO',1,NULL,0,0,0,'c88TknaaSIOvrp6IpPn2kA:APA91bGGWML37xt13wKif3imY92nvNxgfoNdNxHG9MgaQTmkOtxnY5qHZffC54hh7PFflbpsnk-FspbWepjoe5RiVzbxudAnKfPIF-xEWVj9schSVPpaP-GzjS7ZsXP8e_kH_wnTRpFq','USER',NULL,NULL,1),(33,'shafa','shafacarmelia23@gmail.com','$2b$10$ULJFvXzM.rIMrBcHdMajROQo6R0GSMt7gmDT/3p1BrZKGmnvC1nmG',1,NULL,0,0,0,'f6s6vPz_RK2tby6vKH2ZSW:APA91bGJJ8EQyNN2-3ona6CwOW6xI1C6eQpschQ3ilInxG-pXRf52-H16oT6TS03P1U-W2-uB4f-l_FKf_S7qgvfzsId9YYFr-_2aylZSm-8Xjzpcj90MnCW7kw0YyurR4W6D21vt434','USER',NULL,NULL,1),(34,'uhe','ujangherlaan@gmail.com','$2b$10$1qRbl3FQukzzm6p2Q4ePbOpKhRRTmUiN4QbYzejvV/SwUMxRziVVy',1,NULL,0,0,0,'dzTo-VwdQEyYp0rD8QrmwY:APA91bHFuYvGC001mxe_ByfG0tQ3eEAvKDcXJ_J1UlDFkjVwPOfmDmI-rqK41qdd3ZDrQfkOCxoLbWZ4zh0di1gtaDhe4pCyNB0VWSjT9y5C66EORo4vrpqZIQ0G6ybysSR5ZMgRssgZ','USER',NULL,NULL,1),(35,'r','4@gmail.com','$2b$10$ybujfMEGyg7fpixJkRJo1OovrDUCcUu22vedd8l4jKiOa6gragY9O',1,NULL,20,0,0,'cbJkT649S2WlBRFhbomaz7:APA91bGbXXOwsL4xWhE1-GutdIxvrxLmDf2UiZoFzw45foBJ-VUyzZ_l0yA73idR8LduTA9OAuKfjEhE48OcaHMPmB5ZXUXxTLmz-ct7zrPDBNFBzLCeats','USER',NULL,NULL,1),(36,'krishnaasmara0','krishnaasmara0@gmail.com','$2b$10$knKiGNv2wr0J/imSiGi3MObyx4dXRebNMSFVq2WQK0hIaLip8M6pu',1,NULL,0,0,0,'fAx1KjGoRmOVaKpapgo1rO:APA91bG87ALRnOQ2ZgH2gQyGVKeLy2j5RaTRaj1Vt07tWJnuqnIWQ0xGEDKQxICuKkekpk6HVt4zCMAcMQCi0A1Ak4c5KH-n461TRsUy3dFcKkhBbSqXmL0','USER',NULL,NULL,1),(37,'sigrep','official.grav@gmail.com','$2b$10$GC7Be5jxhcvN1Mo1xHrQeOjPRKur/seSSCKkZe5vc81hlXYII92EW',1,NULL,0,0,0,'eOSfdrJVT-e0ira1UGo7eb:APA91bHOaiVwZVIUQmFBSmKQETXUysXkiV-oSq5YykPX4sFjhGqig9iMIFwxmNcx_OHuW8oSqbgACn27uI4s0M0qZE5szcgxMqGKAydYc0VtZvS6dPgEvB8','USER',NULL,NULL,1),(38,'ahmad12','ahmadsssja3@gmail.com','$2b$10$8pz9vhBH/cntFhvr2LVojOBP8EEq/a/dZfdgBUPc95c89QGoS51X6',1,NULL,40,40,0,'c5pBiZoLRpeq7b33mLV8LJ:APA91bFFDxM-8-Jiw_bgJ_hA2y4CJ7hyXqr6rq48wVtwiYLMfRm4WRT5BKcyyYjBVDv6YpQ15uL89aaoXZXDktMxm4rg7xfVJ_7xABaUBUWGxXaIdR24SzY','USER',NULL,NULL,1),(39,'username','username@gmail.com','$2b$10$lXjVU4VDuO8p92KbcOO5GeC7zLjbWTM7r5q.keZfOXG6iH37n94G.',0,'865788',0,0,0,NULL,'USER',NULL,NULL,1),(40,'username2','username2@gmail.com','$2b$10$I2Q7HDJwrVBu/CSgEAr1he.Z4fgFFnUqo.XqQFq8uvJri/bjx/UQW',0,'811821',0,0,0,NULL,'USER',NULL,NULL,1),(41,'user','gmail@gmail.com','$2b$10$loLq3AmsOS7qJefpSWVPxOKK0neXcGO24z.MtkQo2UH46wN/hNzKC',1,NULL,0,0,0,'e41cYnNVTfae8Qxi2vhWXN:APA91bG8_jA9aoel72WGT5DsjdLRFI4b9JIBFEfDxIQTRquFNiIvRGH8NwCoefpW7tty4lFw-qlb6Y0dzsCGCscvrNUouSaXB-UpRpBvD2QiWX9bbaQ8kuY','USER',NULL,NULL,1),(42,'username3','kecamatancisolok74@gmail.com','$2b$10$eoJ6Hw2TonTr7bBzPORjVeJh/S4MMooNB4qSw16NlDEXSpOGsljhu',1,NULL,10,10,0,'cMSSEvBoRV2JheAieYkQse:APA91bG8KNY9S-dZ8tT05OIk7KoMioklrE60_yMLWo1wseC-DCe-OsTTH6NQ9GiC7VE1pkXJQWN3LLNFHqhFhJke5rKXmdffZmLCQWvmF9kwW0T3WPuRGEQ','USER',NULL,NULL,1),(43,'testing','rifqi.muzakki_ti22@nusaputra.ac.id','$2b$10$RC8dKYKGCbUrQ4FiP4Ou8OmQHUXukRGg4dKJ5USaNJ54lqrsRS6WG',1,NULL,0,0,0,'fvPj-E-6RVSpGYcy2fXJVM:APA91bGGx9PzrbOt1-AbLNSnRh8NzCZ-O2FUNucQPAKWC4AOrJlqGNIBDcEXXhhTntc2T7yqBElwpAmtfANrzHYejmQgbDwNvrKiz08JRflOYW1lqBeQHf8','USER',NULL,NULL,1),(44,'jihan','jihanms917@gmail.com','$2b$10$c7lmZ4i83JrCngwvxlUfzucchZhnEyFVuPOHfkUQC8CHoyxv.9HMG',1,NULL,0,0,0,'cbJkT649S2WlBRFhbomaz7:APA91bHXinp0k1vEd4KqHGZqiYQL4YDg0MQx5c7x4aPT3Ty9vaaFTEfJgmwEVeY3MhuCe5rEkn2uM7b4WlCnhPEFSKt3NWtGbWI4I3v90s6F9cTmQIc5IF4','USER',NULL,NULL,1),(45,'Yana01','xtallmint@gmail.com','$2b$10$4MQ9Dr5tjtGsRTX.rIM.H.41jsYKotGkF9LAL2KfgJbBTW6cb4e7q',1,NULL,0,0,0,'fh5dbN3LTTWh9Iqoegd_aI:APA91bGsVD82PvKQPsg_3_Vm4Imihw6YaXdOy8Z0sHx6Q6R61ZkMBD1ZQQdADt4IQbf-Bz1vjZms88JMto_uZMbyNvqHWszn5CVczf1VBAYErteP_nNmMbw','USER',NULL,NULL,1),(46,'rifqi muzakki','rodato8495@cnguopin.com','$2b$10$cz4yt/qsufjJJo8cTgKzMulJ3ChPDshucdDRyT0jyQbnM7L7w1gsq',0,'600405',0,0,0,NULL,'USER',NULL,NULL,1),(47,'gilang','tekkomgilang26@gmail.com','$2b$10$WGeCHEqiAgFx.Kk1rLU9uePE6dJ.FsZhXjXTcl1dLenwdqT4kFUGy',0,'406699',0,0,0,NULL,'USER',NULL,NULL,1),(48,'koko','ahmadrofiqi333@gmail.com','$2b$10$4oop8gNwvhSLciAZcr4S4.GBT6GDUCPXkrpyTpJ1bOXKaXEsW6Qv2',1,NULL,0,0,0,'cKYWDWuuSa64LhKUzcYNrH:APA91bGR6fQKqpqaVcdJvtTT-cxfpPuku6XgZbwMiXfGEzK9wwmc8XkPoubCxl2VIg4piBxMDJEnY-11Uf3zqxsrG6ZVHQPWrmllsjg_-AwXSHkAaGtj--U','USER',NULL,NULL,1),(49,'test','k9682629@gmail.com','$2b$10$Ob8QmPaFmAhoTHpXiNqXL.0zg6GCLBmSCCMEZDBDn/f/gwz7nEQ22',0,'141628',0,0,0,NULL,'USER',NULL,NULL,1),(50,'test_50','hebixof178@aupvs.com','$2b$10$JEC/7kKeYHPXwGkr3y/AUuueK1nNjCOTAZc05AvUH//V49EGKmWvW',0,'728430',0,0,0,NULL,'USER',NULL,NULL,1),(51,'famadi testing','famadi3495@fintehs.com','$2b$10$7WyxcxmiHO4vx5zAeV/LAO7UgItIU2m5RYZcfogMPAeQszwdllUNS',1,NULL,10,0,0,'dSwgCIhYQzKxzqCei-4E8K:APA91bEALF6nGL82M-N_9Ct19f_YiBNmhpHjoTrN3vEFRuWlS7W3v44dUaz7uCgjphkMV-BALhKuGQZCKWAboq4S1qMpRh2fkoXumY-BDHuLSKabZRJn_PQ','USER',NULL,NULL,1),(52,'Jone','xepop78826@ampdial.com','$2b$10$1q.XWAR7GUTLt43iaLonc.OEGe046uikgZVGXQ1ZdjSMuFbJ1VPaS',1,NULL,10,0,0,'cuxtTlQ3TIKgUhydhEP47w:APA91bHe8pKTm8uV0n6Xy8RtyqqrWXV2bTR0rFaLpAXUEYlrEXcbJxTLwAYkJ8o7gAUInKj9Ebm-6xmK0ruAJpV-ww0RGQrNFSIng6aRUltr8NwnTOv3m2M','USER',NULL,NULL,1),(53,'Fiqih','ayahhebatkaf@gmail.com','$2b$10$aeFGOTvgTcO/5EJ8BH0vCe/1Dv8EKL2L7/UmMedZeHcH651DRrKY6',1,NULL,10,0,0,'cNGXRiYWRAaYXY-urIbmso:APA91bE93LU7DWGxuXN2VuDx8R9GwlfxsjB8rKUgd3dl1BQAmO9q71nbt077OCZ4NeISGR9ythbKjgehBCCzLN1kzhZYlQuG8YHI58mzD2XYNoO-QcXLME8','USER',NULL,NULL,1),(54,'Kekaka','luthfibahagiaselalu@gmail.com','$2b$10$NFgbfzsiZ86PjUg6TFlen.m8JlReu53bpLDxPTG8IKuNBy5Bmjryu',0,'301959',0,0,0,NULL,'USER',NULL,NULL,1),(55,'mubarok jaelani','jaelanimubarok87@gmail.com','$2b$10$Q.ENmUKeC/VDE.32.GaSc.fofMjujXx8lFD/OdLgLFOOd0q.vu2lq',1,NULL,20,0,0,'ea9NLfwVTLOIBodd3Fywm_:APA91bH9ptj5JUXKva4LIdCvndGpU2BjSSszeww_mVkvCxBVzeVtwcctmWR3d9Ea6om7SDX9m3XU1X_3PGr8ocM7hfsWzSP4HXARYGBgfqwAEuwvDsiwVds','USER',NULL,NULL,1),(56,'SS Putra','ssputraazni@gmail.com','$2b$10$N88ZwahTy.tyWt7yCgp3HOkW7BwnUCFJIovaWWFnaZKuHFk9BpZjS',1,NULL,0,0,0,'d9pv3Cq-SpGGrrrqZ1YOfY:APA91bFHRdvQqrNCK8f2hPR-E6g35y2Q9quubGD6sXNLCEFR9aTM0ph2Pg3Wyr67DEGUhFtkgjY5my_oyYPcrYAx9cn7cpnwBMiXcdddNSKv4R25jU3lJLw','USER',NULL,NULL,1),(57,'testuser','fiyase8556@datoinf.com','$2b$10$mCA4rS1rdnBan0D/ghXjo.oi/KH7l0v6dt2SVvut19eI.th3MBG8u',1,NULL,0,0,0,'dlPlhjS5R4y4Sa4eydvRdc:APA91bHWmPdKroNK6nUD6mcTYRJc_w5OFy_SiOQeUAdnwdxX3o8ROZo-dcxLoS8Azx4fqaYzZowicQJPY_hnwuszqlhoM7Y15Gs9TY7a9BjUHpSMthhSTYs','USER',NULL,NULL,1),(58,'hahaha','xefad52558@datoinf.com','$2b$10$RAQESIW1./.f7qADp7N2rOC1uJpi1ASGIo0nXXJTJcN9wL36PmYfC',1,NULL,0,0,0,NULL,'USER',NULL,NULL,1),(59,'bintang','muhamadrukmana04@gmail.com','$2b$10$GRd11X5medg9sycOwd1fo..GhIJGasLyqbbffmveRntJP7tBv95hO',1,NULL,0,0,0,'dt1lcWuGTA6Que-xD12SrB:APA91bFQi3oIISlVV3b_og-s3p8oK9cEcxyZbdUkrTLahQ3KxvkEBi9PNJPC7RRTuzbCMqaDOVvYupZk829HNff-RPpt7l2ZGecBWXaUc4LZEZPJunvKLDo','USER',NULL,NULL,1),(60,'xonaxey453@fandoe.com','xonaxey453@fandoe.com','$2b$10$4JTje.M3mf3CxNKc5bHZjuIw.TnvyN5VrHd60bQ2u8cLvbJadazb2',0,'915892',0,0,0,NULL,'USER',NULL,NULL,1),(61,'didetoy536@delaeb.com','didetoy536@delaeb.com','$2b$10$TCHg7svcbgiyQYALdCdoluoPncbrv.cHTozr4k0zqnE9meEwTh4Ym',1,NULL,0,0,0,NULL,'USER',NULL,NULL,1),(62,'username4','gmail4@gmail.com','$2b$10$u8DwJK900ucEDCS7Xmwnz..yPxg4JhDFRLAq1B.mgWGxAvLgf8WLu',0,'270723',0,0,0,NULL,'USER',NULL,NULL,1),(63,'Giyosyam','magov17811@agenra.com','$2b$10$jIw53d/XN1yF8Z2eaY1oDOqcUUWc.6V2Q38vhbycJY7ezijTXfzdi',1,NULL,0,0,0,'egOoDLPRQZiNTR-7PV-gjy:APA91bHP228GdN9eQZ8ZaOYqF0OEOn5_0t3GwUwThwUjST2tGVLY0LGXVj2sdTc1cwmovTwcJhFvBlhNDEAsYxcwtpitjUapwiyT_A_o0ujsp4a24-hpazA','USER',NULL,NULL,1),(64,'Gian','lekeke4920@bablace.com','$2b$10$1/uyYsl/X.4JN1uqiAX8MeexcVsXNtRi2MzK6S/nRyLjWtiJ7SoAW',1,NULL,10,0,0,'dTlXbnLgTPytQ66lGEpdbn:APA91bHb9QCIpnXj8jnF1Hq9leUwsDD4TyrMoFw3c3kUIg7vC0V0OTsMK0B7uZciqxWQLIo1WCsijEY_myVfVXRJV29M_zSpmzf6XmwAkCn5GD32dFazk8g','USER',NULL,NULL,1),(65,'nahamip272@m3player.com','nahamip272@m3player.com','$2b$10$GNuXfSD7J57fbqrGyIjAV.YMBge0p6GxuqSDyZwNUAS770xQvA5jK',1,NULL,0,0,0,'cy0cGCzsR42G9meyzlngs3:APA91bGMg5-hgjgVKqzE4WSOqR2vXy3vsz8VTqhFsfhn1rbDakoL3PpzALyF5V9KtKvA1UHjoYCf3YytBtFEKavghvsm-STCyPFqiNVIgv0YelE_02abVUk','USER',NULL,NULL,1),(66,'wawasaw921@dubokutv.com','wawasaw921@dubokutv.com','$2b$10$pWFswK4f2SuqtOJI0xq5YOew2fjlSahtALDZhGyeyVgWCWoqaYZei',1,NULL,0,0,0,'cpdW8UR6QMKECtYz4xV8KR:APA91bG_Ww57wNx2H5hKe9EVu2vmVWd-xZaT21Ojs9EBkIjU6YULhod_a2Iax8HXqc0BzP9iJvdZh_H1FaClFeZ8LmIu9iO9iItwsxAP0FAH_xo6VDwJv08','USER',NULL,NULL,1),(67,'Deni Kurnia Ilahi','denihpa08@gmail.com','$2b$10$oEz2v.LPL7BCNVhoSQHz7.99tzb0OL7fO8fArfFIsZYrQndu5bDg2',1,NULL,0,0,0,'eh5IlFmRSSuvQ6py3VNy7t:APA91bFMtHPSf_nxEFPH0ysOlj6dQsN-XfZrjHmltaXia3eB_DO84ZZkG44eATh-ccb33I8YtLAl9q-yppJ15yJWosccRpIYxmjO0nMerW4RqoTmrNi68-w','USER',NULL,NULL,1),(68,'kafedoy421@aixind.com','kafedoy421@aixind.com','$2b$10$s07jFXpANkFCAyP3EYONceuM.qV0/l3tKi8gjwN.HidWJY4gToxfe',1,NULL,0,0,0,'eUTi1WJjRY2aLnmzJT-aNH:APA91bGjfD8e07xgCXvKVBeqzp33SCGvivBg2x_RlIwxXOy6GfVtFq1E7ew87vkMQ1CQudD65t-mhalwcaq1V-yY9p4mIjv_xX-yPx-hKqpF-SVw1_LIbJs','USER',NULL,NULL,1);
+/*!40000 ALTER TABLE `User` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `_prisma_migrations`
+--
+
+DROP TABLE IF EXISTS `_prisma_migrations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `_prisma_migrations` (
+  `id` varchar(36) NOT NULL,
+  `checksum` varchar(64) NOT NULL,
+  `finished_at` datetime(3) DEFAULT NULL,
+  `migration_name` varchar(255) NOT NULL,
+  `logs` text DEFAULT NULL,
+  `rolled_back_at` datetime(3) DEFAULT NULL,
+  `started_at` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+  `applied_steps_count` int(10) unsigned NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `_prisma_migrations`
+--
+
+LOCK TABLES `_prisma_migrations` WRITE;
+/*!40000 ALTER TABLE `_prisma_migrations` DISABLE KEYS */;
+INSERT INTO `_prisma_migrations` VALUES ('6615a566-f283-4b0f-b99a-c0bea41e47b7','bee26c9537a4b295a840f02776c7c1cd66b2d7881fc7e0a9af686bfc0abbf4e6','2025-12-23 10:12:06.341','20251222150506_add_alms_and_forgot',NULL,NULL,'2025-12-23 10:12:06.264',1),('78433c96-ced2-4845-a232-78543517df57','2477b50c74c201e4187ab953104ddd91a022f151597094ca60c5be5dd711e63e','2025-12-23 10:11:54.590','000000_baseline','',NULL,'2025-12-23 10:11:54.590',0);
+/*!40000 ALTER TABLE `_prisma_migrations` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `userDeleted`
+--
+
+DROP TABLE IF EXISTS `userDeleted`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `userDeleted` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `email` varchar(191) NOT NULL,
+  `deleteReason` text DEFAULT NULL,
+  `deletedAt` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `userDeleted`
+--
+
+LOCK TABLES `userDeleted` WRITE;
+/*!40000 ALTER TABLE `userDeleted` DISABLE KEYS */;
+INSERT INTO `userDeleted` VALUES (1,'a@gmail.com','Ketidakpercayaan','2024-08-15 14:39:03.027');
+/*!40000 ALTER TABLE `userDeleted` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2026-02-12 17:02:59
