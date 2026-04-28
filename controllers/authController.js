@@ -1,7 +1,16 @@
 const bcrypt = require("bcrypt");
 const { PrismaClient } = require("@prisma/client");
 const { generateToken } = require("../middlewares/jwtMiddleware");
-const smtpPassword = process.env.SMTP_PASSWORD;
+const crypto = require("crypto");
+// const smtpPassword = process.env.SMTP_PASSWORD;
+require("dotenv").config();
+
+const userNodemailer = process.env.USERNAME_NODEMAILER;
+const passNodemailer = process.env.PASSWORD_NODEMAILER;
+const portNodemailer = process.env.PORT_NODEMAILER;
+const hostNodemailer = process.env.HOST_NODEMAILER;
+const secureNodemailer = process.env.SECURE_NODEMAILER === "true";
+const mailFrom = process.env.MAIL_FROM;
 
 const prisma = new PrismaClient();
 const saltRounds = 10;
@@ -18,14 +27,14 @@ const registerUser = async (req, res) => {
     }
 
     if (password !== confirmPassword) {
-      return res
-        .status(400)
-        .json({ error: "Password and confirm password do not match" });
+      return res.status(400).json({ error: "Password and confirm password do not match" });
     }
 
     // Cek apakah username atau email sudah ada
     const existingUser = await prisma.user.findUnique({ where: { email } });
-    const existingUsername = await prisma.user.findUnique({ where: { username } });
+    const existingUsername = await prisma.user.findUnique({
+      where: { username },
+    });
 
     if (existingUser && existingUser.isVerified) {
       return res.status(400).json({ error: "Email is already registered and verified" });
@@ -48,7 +57,9 @@ const registerUser = async (req, res) => {
         },
       });
       sendVerificationEmail(email, verificationCode);
-      return res.json({ message: "Email verification resent. Please check your email." });
+      return res.json({
+        message: "Email verification resent. Please check your email.",
+      });
     }
 
     // Jika username sudah ada tetapi belum diverifikasi
@@ -64,7 +75,9 @@ const registerUser = async (req, res) => {
         },
       });
       sendVerificationEmail(email, verificationCode);
-      return res.json({ message: "Email verification resent. Please check your email." });
+      return res.json({
+        message: "Email verification resent. Please check your email.",
+      });
     }
 
     // Jika belum ada di database, buat user baru
@@ -112,6 +125,7 @@ const verifyUser = async (req, res) => {
       data: {
         isVerified: true,
         verificationCode: null,
+        hasApproved: "pending",
       },
     });
 
@@ -185,6 +199,18 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ error: "User is not verified" });
     }
 
+    if (user.hasApproved === "pending") {
+      return res.status(403).json({ error: "Anda belum memiliki izin untuk memasuki aplikasi" });
+    } else if (user.hasApproved === "disapproved") {
+      return res.status(403).json({
+        error: "Anda tidak memiliki izin untuk memasuki aplikasi",
+      });
+    } else if (user.hasApproved !== "approved") {
+      return res.status(403).json({
+        error: "Status akun belum disetujui admin.",
+      });
+    }
+
     const token = generateToken(user.id);
 
     res.json({
@@ -194,6 +220,8 @@ const loginUser = async (req, res) => {
         username: user.username,
         email: user.email,
         profile: user.profile,
+        hasApproved: user.hasApproved,
+        role: user.role,
       },
     });
   } catch (error) {
@@ -210,16 +238,30 @@ const generateVerificationCode = () => {
   return randomCode.toString();
 };
 
+const generateResetCode = () => {
+  return crypto.randomBytes(3).toString("hex").toUpperCase();
+};
+
 const sendVerificationEmail = async (email, verificationCode) => {
   const nodemailer = require("nodemailer");
 
+  // const transporter = nodemailer.createTransport({
+  //   host: "smtp.gmail.com",
+  //   port: 465,
+  //   secure: true,
+  //   auth: {
+  //     user: "ayahhebatmangcoding@gmail.com",
+  //     pass: smtpPassword,
+  //   },
+  // });
+
   const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
+    host: hostNodemailer,
+    port: portNodemailer,
+    secure: secureNodemailer,
     auth: {
-      user: "ayahhebatmangcoding@gmail.com",
-      pass: smtpPassword,
+      user: userNodemailer,
+      pass: passNodemailer,
     },
   });
 
@@ -236,7 +278,7 @@ const sendVerificationEmail = async (email, verificationCode) => {
   });
 
   const mailOptions = {
-    from: "ayahhebatmangcoding@gmail.com",
+    from: mailFrom,
     to: email,
     subject: "Verifikasi Akun",
     text: `Kode verifikasi Anda: ${verificationCode}`,
@@ -251,6 +293,62 @@ const sendVerificationEmail = async (email, verificationCode) => {
       }
     });
   });
+};
+
+const sendResetEmail = async (email, username, resetURL) => {
+  const nodemailer = require("nodemailer");
+
+  // const transporter = nodemailer.createTransport({
+  //   host: "smtp.gmail.com",
+  //   port: 465,
+  //   secure: true,
+  //   auth: {
+  //     user: "ayahhebatmangcoding@gmail.com",
+  //     pass: smtpPassword,
+  //   },
+  // });
+
+  const transporter = nodemailer.createTransport({
+    host: hostNodemailer,
+    port: portNodemailer,
+    secure: secureNodemailer,
+    auth: {
+      user: userNodemailer,
+      pass: passNodemailer,
+    },
+  });
+
+  // 2. Verify (mengikuti format Anda)
+  await new Promise((resolve, reject) => {
+    transporter.verify(function (error, success) {
+      if (error) {
+        console.log(error);
+        reject(error);
+      } else {
+        console.log("Server is ready to take our messages");
+        resolve(success);
+      }
+    });
+  });
+
+  // 3. Buat mailOptions (diubah untuk reset password)
+  const mailOptions = {
+    from: mailFrom,
+    to: email,
+    subject: "Permintaan Reset Password",
+    text: `Halo ${username},\n\nAnda meminta untuk reset password. Silakan klik link di bawah ini:\n\n${resetURL}\n\nLink ini akan kedaluwarsa dalam 5 menit.`,
+  };
+
+  try {
+    await transporter.verify();
+    console.log("Server is ready to take our messages");
+
+    await transporter.sendMail(mailOptions);
+    console.log("Email reset terkirim ke:", email);
+  } catch (error) {
+    console.error("Error di dalam sendResetEmail:", error);
+    throw new Error("Gagal mengirim email reset.");
+  }
 };
 
 const changePassword = async (req, res) => {
@@ -272,9 +370,7 @@ const changePassword = async (req, res) => {
     }
 
     if (newPassword !== confirmNewPassword) {
-      return res
-        .status(400)
-        .json({ error: "New password and confirm new password do not match" });
+      return res.status(400).json({ error: "New password and confirm new password do not match" });
     }
 
     const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
@@ -293,6 +389,132 @@ const changePassword = async (req, res) => {
   }
 };
 
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await prisma.user.findUnique({ where: { email } });
+
+    if (!user) {
+      return res.status(200).json({
+        message: "Email reset password telah dikirim.",
+      });
+    }
+
+    const resetCode = generateResetCode();
+    const expires = new Date(Date.now() + 5 * 60 * 1000);
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        profile: {
+          upsert: {
+            // Ini akan jalan jika Profile BELUM ADA
+            create: {
+              forgotCode: resetCode,
+              forgotExpiredAt: expires,
+            },
+            // Ini akan jalan jika Profile SUDAH ADA
+            update: {
+              forgotCode: resetCode,
+              forgotExpiredAt: expires,
+            },
+          },
+        },
+      },
+    });
+
+    // PENTING: Ganti 'http://localhost:3000' dengan URL Frontend Anda
+    const resetURL = `https://backend.ayahhebat.mangcoding.com/auth/reset-password?code=${resetCode}`;
+
+    await sendResetEmail(user.email, user.username, resetURL);
+
+    res.status(200).json({ message: "Email reset password telah dikirim." });
+  } catch (error) {
+    console.error("Error di forgotPassword:", error);
+    res.status(500).json({ message: "Terjadi kesalahan pada server." });
+  }
+};
+
+const showResetForm = async (req, res) => {
+  try {
+    const { code } = req.query;
+
+    const profileWithCode = await prisma.profile.findFirst({
+      where: {
+        forgotCode: code,
+        forgotExpiredAt: { gt: new Date() },
+      },
+    });
+
+    // Jika kode tidak valid atau expired
+    if (!profileWithCode) {
+      // Tampilkan halaman error atau form yang dinonaktifkan
+      return res.render("reset-password", {
+        // Nama file EJS Anda
+        error: "Reset link invalid or expired.",
+        code: null,
+      });
+    }
+
+    // Jika kode valid, tampilkan form
+    res.render("reset-password", {
+      error: null,
+      code: code, // Kirim kodenya ke EJS
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Terjadi kesalahan pada server.");
+  }
+};
+
+const resetPassword = async (req, res) => {
+  console.log("ISI REQ BODY YANG DITERIMA:", req.body);
+  const { code, newPassword, newConfirmationPassword } = req.body;
+
+  if (!code || !newPassword || !newConfirmationPassword) {
+    return res.status(400).json({ message: "Token dan password baru diperlukan." });
+  }
+
+  if (newPassword !== newConfirmationPassword) {
+    return res.status(400).json({ message: "Password tidak cocok." });
+  }
+
+  try {
+    const profileWithCode = await prisma.profile.findFirst({
+      where: {
+        forgotCode: code,
+        forgotExpiredAt: { gt: new Date() }, // Cek belum kedaluwarsa
+      },
+    });
+
+    if (!profileWithCode) {
+      return res.status(400).json({ message: "Token tidak valid atau sudah kedaluwarsa." });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    await prisma.profile.update({
+      where: { id: profileWithCode.id },
+      data: {
+        forgotCode: null,
+        forgotExpiredAt: null,
+        user: {
+          update: {
+            password: hashedPassword,
+          },
+        },
+      },
+    });
+
+    res.status(200).json({ message: "Password berhasil direset. Silakan login." });
+  } catch (error) {
+    console.error("Error di resetPassword:", error);
+    res.status(500).json({ message: "Terjadi kesalahan pada server." });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -301,4 +523,8 @@ module.exports = {
   changePassword,
   generateVerificationCode,
   sendVerificationEmail,
+  forgotPassword,
+  resetPassword,
+  generateResetCode,
+  showResetForm,
 };

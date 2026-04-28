@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { registerUser, loginUser, verifyUser, resendVerificationCode, changePassword } = require('../controllers/authController');
+const { registerUser, loginUser, verifyUser, resendVerificationCode, changePassword, forgotPassword, resetPassword, showResetForm } = require('../controllers/authController');
 // const { generateToken } = require('../middlewares/jwtMiddleware');
 // const passport = require('../config/passportConfig');
 
@@ -9,6 +9,10 @@ router.post('/verify', verifyUser);
 router.post('/resend-verification', resendVerificationCode); 
 router.post('/login', loginUser);
 router.put('/change-password', changePassword);
+
+router.post('/forgot-password', forgotPassword);
+router.get('/reset-password', showResetForm);
+router.post('/reset-password', resetPassword);
 
 // router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
