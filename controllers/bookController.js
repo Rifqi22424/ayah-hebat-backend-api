@@ -20,7 +20,7 @@ const getBooks = async (req, res) => {
         stock: {
           gt: 0,
         },
-        status,
+        ...(status !== "ALL" && { status } ),
         ...(category && {
           categories: {
             some: {
