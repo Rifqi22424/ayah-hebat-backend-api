@@ -80,6 +80,7 @@ const getBookById = async (req, res) => {
       name: true,
       description: true,
       imageurl: true,
+      status: true,
       stock: true,
       categories: {
         select: {
