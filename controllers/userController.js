@@ -1,7 +1,7 @@
-const bcrypt = require('bcrypt');
-const { PrismaClient } = require('@prisma/client');
+const bcrypt = require("bcrypt");
+const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-const authController = require('./authController');
+const authController = require("./authController");
 
 const saveDeviceToken = async (req, res) => {
   try {
@@ -13,20 +13,20 @@ const saveDeviceToken = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: "User not found" });
     }
 
     const updatedUser = await prisma.user.update({
       where: { id: user.id },
       data: {
-        fcmToken: token, 
+        fcmToken: token,
       },
     });
 
-    res.json({ message: 'Device token saved successfully.' });
+    res.json({ message: "Device token saved successfully." });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -39,7 +39,7 @@ const createDeleteAccountVerificationCode = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: "User not found" });
     }
 
     const newVerificationCode = authController.generateVerificationCode();
@@ -47,16 +47,16 @@ const createDeleteAccountVerificationCode = async (req, res) => {
     await prisma.user.update({
       where: { id: user.id },
       data: {
-      deleteAccountVerficationCode: newVerificationCode,
+        deleteAccountVerficationCode: newVerificationCode,
       },
     });
 
     authController.sendVerificationEmail(email, newVerificationCode);
 
-    res.json({ message: 'Verification code successfully.' });
+    res.json({ message: "Verification code successfully." });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -69,24 +69,24 @@ const verifyDeleteAccount = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: "User not found" });
     }
 
     if (user.deleteAccountVerficationCode !== verificationCode) {
-      return res.status(401).json({ error: 'Invalid verification code' });
+      return res.status(401).json({ error: "Invalid verification code" });
     }
 
     const updatedUser = await prisma.user.update({
       where: { id: user.id },
       data: {
-        deleteAccountVerficationCode: null, 
+        deleteAccountVerficationCode: null,
       },
     });
 
-    res.json({ message: 'User verified successfully.' });
+    res.json({ message: "User verified successfully." });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -99,7 +99,7 @@ const resendDeleteAccountVerificationCode = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: "User not found" });
     }
 
     // if (user.isVerified) {
@@ -117,10 +117,105 @@ const resendDeleteAccountVerificationCode = async (req, res) => {
 
     authController.sendVerificationEmail(email, newVerificationCode);
 
-    res.json({ message: 'Verification code resent successfully.' });
+    res.json({ message: "Verification code resent successfully." });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const updateUserApproval = async (req, res) => {
+  try {
+  
+    const { userId, status } = req.body; 
+
+    if (!userId) {
+      return res.status(400).json({ error: "User ID is required" });
+    }
+
+    if (status !== 'approved' && status !== 'disapproved') {
+      return res.status(400).json({ 
+        error: "Status harus berisi string 'approved' atau 'disapproved'" 
+      });
+    }
+
+    const existingUser = await prisma.user.findUnique({
+      where: { id: parseInt(userId) }
+    });
+
+    if (!existingUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (existingUser.hasApproved === status) {
+      const messageStatus = status === 'approved' ? 'di Approve' : 'di Disapprove';
+      
+      return res.status(200).json({ 
+        error: `User ini sudah ${messageStatus} sebelumnya.` 
+      });
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: parseInt(userId) },
+      data: {
+        hasApproved: status 
+      }
+    });
+
+    res.status(200).json({
+      message: `Status user berhasil diubah menjadi ${status}`,
+      data: {
+        id: updatedUser.id,
+        email: updatedUser.email,
+        hasApproved: updatedUser.hasApproved 
+      }
+    });
+
+  } catch (error) {
+    console.error(error);
+    if (error.code === 'P2025') return res.status(404).json({ error: "User not found" });
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const getAllUsers = async (req, res) => {
+  try {
+    const { status } = req.query;
+
+    let whereCondition = {};
+
+    if (status) {
+      whereCondition = {
+        hasApproved: status
+      };
+    }
+
+    const users = await prisma.user.findMany({
+      where: whereCondition,
+      orderBy: {
+        id: 'desc' 
+      },
+      select: {
+        id: true,
+        email: true,
+        username: true, 
+        role: true,
+        isVerified: true,
+        isActive: true,
+        hasApproved: true,
+        profile: true, 
+      }
+    });
+
+    res.status(200).json({
+      message: "Berhasil mengambil data users",
+      total: users.length,
+      data: users
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -133,19 +228,19 @@ const deleteUser = async (req, res) => {
     });
 
     const passwordMatch = await bcrypt.compare(password, user.password);
-    
+
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: "User not found" });
     }
 
     if (!passwordMatch) {
-      return res.status(401).json({ error: 'Invalid email or password' });
+      return res.status(401).json({ error: "Invalid email or password" });
     }
 
     const updatedUser = await prisma.user.update({
       where: { id: user.id },
       data: {
-        deleteReason: reason, 
+        deleteReason: reason,
         // isActive: false,
       },
     });
@@ -154,17 +249,17 @@ const deleteUser = async (req, res) => {
       data: {
         email: user.email,
         deleteReason: reason,
-      }
-    })
+      },
+    });
 
     const deleteUser = await prisma.user.delete({
       where: { id: user.id },
     });
 
-    res.json({ message: 'User deleted successfully.' });
+    res.json({ message: "User deleted successfully." });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -172,7 +267,7 @@ const deleteUser = async (req, res) => {
 //   const nodemailer = require('nodemailer');
 
 //   const transporter = nodemailer.createTransport({
-//     host: "smtp.gmail.com",  
+//     host: "smtp.gmail.com",
 //     port: 465,
 //     secure: true,
 //     auth: {
@@ -180,7 +275,7 @@ const deleteUser = async (req, res) => {
 //       pass: "citl rjsa irmx tpcx",
 //     },
 //   });
-  
+
 //   await new Promise((resolve, reject) => {
 //     transporter.verify(function (error, success) {
 //         if (error) {
@@ -211,4 +306,12 @@ const deleteUser = async (req, res) => {
 // });
 // };
 
-module.exports = { saveDeviceToken, createDeleteAccountVerificationCode, resendDeleteAccountVerificationCode, verifyDeleteAccount, deleteUser };
+module.exports = {
+  saveDeviceToken,
+  createDeleteAccountVerificationCode,
+  resendDeleteAccountVerificationCode,
+  verifyDeleteAccount,
+  deleteUser,
+  updateUserApproval,
+  getAllUsers,
+};

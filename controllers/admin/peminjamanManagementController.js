@@ -87,12 +87,23 @@ const updateStatusBuku = async (req, res) => {
 };
 
 const getPeminjamanBuku = async (req, res) => {
-  const { status, lte, gte, username, submissionDate, actualPickUpDate, createdAt, cancelDate, deadlineDate, plannedPickUpDate, returnDate } = req.query;
+  const {
+    status,
+    lte,
+    gte,
+    username,
+    submissionDate,
+    actualPickUpDate,
+    createdAt,
+    cancelDate,
+    deadlineDate,
+    plannedPickUpDate,
+    returnDate,
+  } = req.query;
   const limit = parseInt(req.query.limit) || 5;
   const page = parseInt(req.query.page) || 1;
 
   const offset = (page - 1) * limit;
-  
 
   try {
     const dateParams = {
@@ -102,43 +113,48 @@ const getPeminjamanBuku = async (req, res) => {
       cancelDate,
       deadlineDate,
       plannedPickUpDate,
-      returnDate
+      returnDate,
+    };
+
+    const trueValueFields = Object.entries(dateParams).filter(
+      ([, value]) => value === "true",
+    );
+
+    if (trueValueFields.length > 1) {
+      return res
+        .status(400)
+        .json({ error: "hanya satu parameter tanggal yang diperbolehkan" });
     }
 
-    const trueValueFields = Object.entries(dateParams).filter(([, value]) => value === 'true');
-
-    if(trueValueFields.length > 1){
-      return res.status(400).json({error: "hanya satu parameter tanggal yang diperbolehkan"});
-    }
-
-    const dateCondition = trueValueFields.length === 1 ? {
-      [trueValueFields[0][0]]: {
-        ...(gte ? {gte: new Date(gte+"T23:59:59.100Z")} : {}),
-        ...(lte ? {lte: new Date(lte+"T23:59:59.100Z")} : {})
-      }
-    }
-    : {};
+    const dateCondition =
+      trueValueFields.length === 1
+        ? {
+            [trueValueFields[0][0]]: {
+              ...(gte ? { gte: new Date(gte + "T23:59:59.100Z") } : {}),
+              ...(lte ? { lte: new Date(lte + "T23:59:59.100Z") } : {}),
+            },
+          }
+        : {};
 
     const peminjaman = await prisma.peminjaman.findMany({
       where: {
         ...dateCondition,
         ...(status ? { status } : {}),
-        ...(username ? {user: {username}} : {})
+        ...(username ? { user: { username } } : {}),
       },
       skip: offset,
       take: limit,
-      include:
-      {
+      include: {
         user: true,
-        book: true
-      }
+        book: true,
+      },
     });
 
     const totalCount = await prisma.peminjaman.count({
       where: {
         ...dateCondition,
         ...(status ? { status } : {}),
-        ...(username ? {user: {username}} : {})
+        ...(username ? { user: { username } } : {}),
       },
     });
 
@@ -152,12 +168,56 @@ const getPeminjamanBuku = async (req, res) => {
         totalPage,
         limit,
         totalData: totalCount,
-      }
+      },
     });
   } catch (e) {
     console.error(e.message);
-    return res.status(500).json(
-      {
+    return res.status(500).json({
+      error: "internal server error",
+    });
+  }
+};
+
+const getPeminjamanBukuById = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+
+    if (isNaN(id)) {
+      return res.status(400).json({ error: "id tidak valid" });
+    }
+
+    const peminjaman = await prisma.peminjaman.findUnique({
+      where: { id },
+      include: {
+        user: {
+          select: {
+            id: true,
+            username: true,
+            email: true,
+            role: true,
+            isVerified: true,
+            isActive: true,
+            fcmToken: true,
+            totalScoreYear: true,
+            totalScoreMonth: true,
+            totalScoreDay: true,
+          },
+        },
+        book: true,
+      },
+    });
+
+    if (!peminjaman) {
+      return res.status(404).json({ error: "Peminjaman tidak ditemukan" });
+    }
+
+    return res.status(200).json({
+      message: "success get data",
+      data: peminjaman,
+    });
+  } catch (e) {
+    console.error(e.message);
+    return res.status(500).json({
       error: "internal server error",
     });
   }
@@ -165,5 +225,6 @@ const getPeminjamanBuku = async (req, res) => {
 
 module.exports = {
   updateStatusBuku,
-  getPeminjamanBuku
-}
+  getPeminjamanBuku,
+  getPeminjamanBukuById,
+};

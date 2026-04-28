@@ -6,6 +6,8 @@ info:
 servers:
   - url: http://localhost:3000
     description: Local server
+  - url: https://backend.ayahhebat.mangcoding.com
+    description: Production server
 
 paths:
   /auth/login:
@@ -26,11 +28,11 @@ paths:
                   type: string
 
       responses:
-        '200':
+        "200":
           $ref: "#/components/responses/LoginResponse"
-        '400':
+        "400":
           $ref: "#/components/responses/ErrorResponse"
-        '500':
+        "500":
           $ref: "#/components/responses/ErrorResponse"
 
   /books:
@@ -66,7 +68,7 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Successfully retrieved the list of books
           content:
             application/json:
@@ -88,7 +90,7 @@ paths:
                           type: string
                         imageurl:
                           type: string
-        '500':
+        "500":
           description: Server error
     post:
       summary: Create a new book
@@ -115,11 +117,11 @@ paths:
                   items:
                     type: integer
       responses:
-        '201':
+        "201":
           description: Book created successfully
-        '400':
+        "400":
           description: Invalid input
-        '500':
+        "500":
           description: Server error
   /books/{id}:
     get:
@@ -134,7 +136,7 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Successfully fetched the book
           content:
             application/json:
@@ -173,9 +175,9 @@ paths:
                                       type: string
                                     photo:
                                       type: string
-        '400':
+        "400":
           description: Invalid ID
-        '404':
+        "404":
           description: Book not found
     put:
       summary: Update a book by ID
@@ -208,11 +210,11 @@ paths:
                   items:
                     type: integer
       responses:
-        '200':
+        "200":
           description: Book updated successfully
-        '404':
+        "404":
           description: Book not found
-        '500':
+        "500":
           description: Server error
     delete:
       summary: Delete a book by ID
@@ -226,11 +228,11 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Book deleted successfully
-        '404':
+        "404":
           description: Book not found
-        '500':
+        "500":
           description: Server error
 
   /books/{id}/comments:
@@ -253,7 +255,7 @@ paths:
                   type: string
 
       responses:
-        '201':
+        "201":
           description: success create comment
           content:
             application/json:
@@ -266,9 +268,9 @@ paths:
                     properties:
                       description:
                         type: string
-        '400':
+        "400":
           $ref: "#/components/responses/ErrorResponse"
-        '500':
+        "500":
           $ref: "#/components/responses/ErrorResponse"
   /books/{id}/comments/{commentId}:
     put:
@@ -279,12 +281,12 @@ paths:
         - name: id
           in: path
           required: true
-          schema: 
+          schema:
             type: integer
         - name: commentId
           in: path
           required: true
-          schema: 
+          schema:
             type: integer
       requestBody:
         content:
@@ -295,7 +297,7 @@ paths:
                 description:
                   type: string
       responses:
-        '200':
+        "200":
           description: success edit comment
           content:
             application/json:
@@ -306,11 +308,11 @@ paths:
                     type: string
                   description:
                     type: string
-        '400':
+        "400":
           $ref: "#/components/responses/ErrorResponse"
-        '403':
+        "403":
           $ref: "#/components/responses/ForbiddenResponse"
-        '500':
+        "500":
           $ref: "#/components/responses/ErrorResponse"
     delete:
       description: delete comment
@@ -320,15 +322,15 @@ paths:
         - name: id
           in: path
           required: true
-          schema: 
+          schema:
             type: integer
         - name: commentId
           in: path
           required: true
-          schema: 
+          schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: success delete comment response
           content:
             application/json:
@@ -336,11 +338,11 @@ paths:
                 properties:
                   message:
                     type: string
-        '400':
+        "400":
           $ref: "#/components/responses/ErrorResponse"
-        '403':
+        "403":
           $ref: "#/components/responses/ForbiddenResponse"
-        '500':
+        "500":
           $ref: "#/components/responses/ErrorResponse"
 
   /pinjam-buku:
@@ -359,7 +361,7 @@ paths:
                 endDate:
                   type: string
       responses:
-        '200':
+        "200":
           description: berhasil pinjam buku
           content:
             application/json:
@@ -375,15 +377,15 @@ paths:
                     type: string
                   to:
                     type: string
-        '400':
+        "400":
           $ref: "#/components/responses/ErrorResponse"
-        '403':
+        "403":
           $ref: "#/components/responses/ForbiddenResponse"
-        '404':
+        "404":
           $ref: "#/components/responses/ErrorResponse"
-        '505':
+        "505":
           $ref: "#/components/responses/ErrorResponse"
-    
+
     get:
       summary: (admin)
       tags:
@@ -393,44 +395,44 @@ paths:
         - name: limit
           in: query
           required: true
-          schema: 
+          schema:
             type: integer
         - name: offset
           in: query
           required: true
-          schema: 
+          schema:
             type: integer
         - name: search
           in: query
-          schema: 
+          schema:
             type: integer
         - name: endDate
           in: query
-          schema: 
+          schema:
             type: string
       responses:
-        '200':
-          description: success 
-          content: 
+        "200":
+          description: success
+          content:
             application/json:
-              schema: 
+              schema:
                 type: object
                 properties:
-                  message: 
+                  message:
                     type: string
-                  data: 
+                  data:
                     type: array
-                    items: 
+                    items:
                       type: object
-                      properties: 
-                        bookname: 
+                      properties:
+                        bookname:
                           type: string
-                        username: 
+                        username:
                           type: string
-                        endDate: 
+                        endDate:
                           type: string
-                        startDate: 
-                          type: string                                   
+                        startDate:
+                          type: string
   /pinjam-buku/{idPeminjaman}:
     put:
       summary: (admin)
@@ -457,16 +459,15 @@ paths:
                     - SUDAH_DIKEMBALIKAN
                     - TIDAK_JADI
       responses:
-        '200':
+        "200":
           $ref: "#/components/responses/SuccessResponse"
-        '400':
+        "400":
           $ref: "#/components/responses/ErrorResponse"
-        '403':
+        "403":
           $ref: "#/components/responses/ForbiddenResponse"
-        '500':
+        "500":
           $ref: "#/components/responses/ErrorResponse"
   /pinjam-buku/me:
-
     get:
       tags:
         - Pinjam Buku Controller
@@ -478,12 +479,12 @@ paths:
             default: 5
         - name: offset
           in: query
-          schema: 
+          schema:
             type: integer
             default: 0
 
       responses:
-        '200':
+        "200":
           description: success
           content:
             application/json:
@@ -505,7 +506,7 @@ paths:
                           type: string
                         tanggal kembali:
                           type: string
-  
+
   /categories:
     get:
       summary: Get a list of categories
@@ -532,7 +533,7 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Successfully retrieved the list of categories
           content:
             application/json:
@@ -545,7 +546,7 @@ paths:
                       type: integer
                     name:
                       type: string
-        '500':
+        "500":
           description: Server error
 
     post:
@@ -565,7 +566,7 @@ paths:
                   description: Name of the category
                   example: Fiction
       responses:
-        '200':
+        "200":
           description: Successfully created a new category
           content:
             application/json:
@@ -576,7 +577,7 @@ paths:
                     type: integer
                   name:
                     type: string
-        '500':
+        "500":
           description: Server error
   /categories/{id}:
     put:
@@ -603,7 +604,7 @@ paths:
                   description: Updated name of the category
                   example: Science Fiction
       responses:
-        '200':
+        "200":
           description: Successfully updated the category
           content:
             application/json:
@@ -614,9 +615,9 @@ paths:
                     type: integer
                   name:
                     type: string
-        '404':
+        "404":
           description: Category not found
-        '500':
+        "500":
           description: Server error
 
     delete:
@@ -632,13 +633,489 @@ paths:
           schema:
             type: integer
       responses:
-        '200':
+        "200":
           description: Successfully deleted the category
-        '404':
+        "404":
           description: Category not found
-        '500':
+        "500":
           description: Server error
 
+  /alms:
+    post:
+      summary: Create a new alms transaction
+      tags:
+        - Alms Controller
+      description: Create a new alms (charity) transaction with optional evidence image
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - amount
+                - allocationTypeCode
+              properties:
+                amount:
+                  type: number
+                  description: Amount of alms donation
+                  example: 100000
+                allocationTypeCode:
+                  type: string
+                  description: Code for allocation type
+                  example: "INFAQ_UMUM"
+                message:
+                  type: string
+                  description: Optional message for the donation
+                  example: "Semoga bermanfaat"
+                photo:
+                  type: string
+                  format: binary
+                  description: Evidence image for the transaction
+      responses:
+        "200":
+          description: Successfully created alms transaction
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Berhasil membuat infaq"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      userId:
+                        type: string
+                      amount:
+                        type: number
+                      allocationTypeCode:
+                        type: string
+                      evidenceImageUrl:
+                        type: string
+                      status:
+                        type: string
+                        example: "pending"
+                      message:
+                        type: string
+                      createdAt:
+                        type: string
+                        format: date-time
+                      updatedAt:
+                        type: string
+                        format: date-time
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
+
+    get:
+      summary: Get all alms transactions (Admin only)
+      tags:
+        - Alms Controller
+      description: Retrieve all alms transactions with optional filtering by allocation type
+      parameters:
+        - name: allocationTypeCode
+          in: query
+          required: false
+          description: Filter by allocation type code
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+      responses:
+        "200":
+          description: Successfully retrieved all alms
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Berhasil mengambil semua infaq"
+                  data:
+                    type: object
+                    properties:
+                      totalAmount:
+                        type: number
+                      alms:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            userId:
+                              type: string
+                            amount:
+                              type: number
+                            status:
+                              type: string
+                            allocationTypeCode:
+                              type: string
+                            createdAt:
+                              type: string
+                              format: date-time
+                  pagination:
+                    type: object
+                    properties:
+                      currentPage:
+                        type: integer
+                      totalPage:
+                        type: integer
+                      totalItems:
+                        type: integer
+                      itemsPerPage:
+                        type: integer
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
+
+  /alms/history:
+    get:
+      summary: Get user's alms history
+      tags:
+        - Alms Controller
+      description: Retrieve the logged-in user's alms transaction history
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+      responses:
+        "200":
+          description: Successfully retrieved alms history
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Berhasil mengambil history infaq"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        amount:
+                          type: number
+                        status:
+                          type: string
+                        createdAt:
+                          type: string
+                          format: date-time
+                        updatedAt:
+                          type: string
+                          format: date-time
+                  pagination:
+                    type: object
+                    properties:
+                      currentPage:
+                        type: integer
+                      totalPage:
+                        type: integer
+                      totalItems:
+                        type: integer
+                      itemsPerPage:
+                        type: integer
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
+
+  /alms/amount:
+    get:
+      summary: Get total amount of user's successful alms
+      tags:
+        - Alms Controller
+      description: Get the total amount of all successful alms transactions for the logged-in user
+      responses:
+        "200":
+          description: Successfully retrieved total amount
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Berhasil mengambil total amount infaq"
+                  data:
+                    type: number
+                    example: 500000
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
+
+  /alms/{id}:
+    get:
+      summary: Get alms transaction by ID
+      tags:
+        - Alms Controller
+      description: Retrieve a specific alms transaction by its ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the alms transaction
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successfully retrieved alms transaction
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Berhasil mengambil alms"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      amount:
+                        type: number
+                      status:
+                        type: string
+                      createdAt:
+                        type: string
+                        format: date-time
+                      updatedAt:
+                        type: string
+                        format: date-time
+                      almsType:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          name:
+                            type: string
+        "403":
+          $ref: "#/components/responses/ForbiddenResponse"
+        "404":
+          $ref: "#/components/responses/ErrorResponse"
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
+
+    patch:
+      summary: Change alms status (Admin only)
+      tags:
+        - Alms Controller
+      description: Update the status of an alms transaction
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the alms transaction
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - status
+              properties:
+                status:
+                  type: string
+                  enum:
+                    - success
+                    - pending
+                    - failed
+                  description: New status for the alms transaction
+      responses:
+        "200":
+          description: Successfully changed alms status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Berhasil mengganti status infaq"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      status:
+                        type: string
+                      updatedAt:
+                        type: string
+                        format: date-time
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
+        "404":
+          $ref: "#/components/responses/ErrorResponse"
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
+
+  /allocation:
+    get:
+      summary: Get all active allocation types
+      tags:
+        - Allocation Type Controller
+      description: Retrieve all active allocation types for alms donations
+      responses:
+        "200":
+          description: Successfully retrieved allocation types
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Allocation types retrieved successfully"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        code:
+                          type: string
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
+
+    post:
+      summary: Create a new allocation type
+      tags:
+        - Allocation Type Controller
+      description: Create a new allocation type with auto-generated code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  description: Name of the allocation type
+                  example: "Infaq Umum"
+      responses:
+        "201":
+          description: Successfully created allocation type
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Allocation type created successfully"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      code:
+                        type: string
+                      isActive:
+                        type: boolean
+                      createdAt:
+                        type: string
+                        format: date-time
+                      updatedAt:
+                        type: string
+                        format: date-time
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
+
+  /allocation/status/{id}:
+    put:
+      summary: Update allocation type status
+      tags:
+        - Allocation Type Controller
+      description: Activate or deactivate an allocation type
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the allocation type
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - isActive
+              properties:
+                isActive:
+                  type: boolean
+                  description: Set to true to activate, false to deactivate
+                  example: true
+      responses:
+        "200":
+          description: Successfully updated allocation type status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Allocation type non-activated successfully"
+                  data:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      code:
+                        type: string
+                      isActive:
+                        type: boolean
+                      updatedAt:
+                        type: string
+                        format: date-time
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
+        "404":
+          $ref: "#/components/responses/ErrorResponse"
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
 
 components:
   schemas:
@@ -717,7 +1194,6 @@ components:
             properties:
               message:
                 type: string
-
 
   securitySchemes:
     jwt bearer:

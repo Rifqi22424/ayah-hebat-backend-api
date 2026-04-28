@@ -8,9 +8,9 @@ const {
 
 const router = express.Router();
 
-router.put("/status/:id", updateAllocationTypeStatus);
+router.put("/status/:id", /* #swagger.tags = ['Allocation Type Controller'] */ updateAllocationTypeStatus);
 // router.put("/:id", editAllocationType);
-router.post("/", createAllocationType);
-router.get("/", getAllocationTypes);
+router.post("/", /* #swagger.tags = ['Allocation Type Controller'] */ createAllocationType);
+router.get("/", /* #swagger.tags = ['Allocation Type Controller'] */ getAllocationTypes);
 
 module.exports = router;

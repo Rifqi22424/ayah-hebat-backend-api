@@ -3,8 +3,8 @@ const {pinjamBuku, getMyPeminjamanBuku, getPinjamBukuById} = require('./../contr
 
 const router = express.Router();
 
-router.get("/me", getMyPeminjamanBuku);
-router.get("/:id", getPinjamBukuById);
-router.post("/", pinjamBuku);
+router.get("/me", /* #swagger.tags = ['Peminjaman Buku Controller'] */ getMyPeminjamanBuku);
+router.get("/:id", /* #swagger.tags = ['Peminjaman Buku Controller'] */ getPinjamBukuById);
+router.post("/", /* #swagger.tags = ['Peminjaman Buku Controller'] */ pinjamBuku);
 
 module.exports = router;

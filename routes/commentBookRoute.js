@@ -3,7 +3,7 @@ const {createCommentBook, showComment, editComment, deleteComment} = require("./
 
 const router = express.Router();
 
-router.post("/:bookId", createCommentBook);
-router.put("/:bookId/comments/:commentId", editComment);
-router.delete("/:bookId/comments/:commentId", deleteComment);
+router.post("/:bookId", /* #swagger.tags = ['Comment Book Controller'] */ createCommentBook);
+router.put("/:bookId/comments/:commentId", /* #swagger.tags = ['Comment Book Controller'] */ editComment);
+router.delete("/:bookId/comments/:commentId", /* #swagger.tags = ['Comment Book Controller'] */ deleteComment);
 module.exports = router;

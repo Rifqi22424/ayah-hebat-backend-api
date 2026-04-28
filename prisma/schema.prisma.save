@@ -1,0 +1,337 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                           Int            @id @default(autoincrement())
+  username                     String
+  email                        String         @unique
+  password                     String
+  isVerified                   Boolean        @default(false)
+  verificationCode             String?
+  totalScoreYear               Int?           @default(0)
+  totalScoreMonth              Int?           @default(0)
+  totalScoreDay                Int?           @default(0)
+  fcmToken                     String?
+  role                         Role?          @default(USER)
+  deleteAccountVerficationCode String?
+  deleteReason                 String?        @db.Text
+  isActive                     Boolean        @default(true)
+  books                        Book[]
+  commentBook                  CommentBook[]
+  Infaq                        Infaq[]
+  kegiatan                     Kegiatan[]
+  notifications                Notification[]
+  peminjaman                   Peminjaman[]
+  profile                      Profile?
+  content                      Content[]
+}
+
+model Profile {
+  id               Int     @id @default(autoincrement())
+  nama             String?
+  bio              String?
+  photo            String?
+  namaIstri        String?
+  namaAnak         String?
+  tahunMasukKuttab Int?
+  userId           Int     @unique
+  namaKuttab       String?
+  user             User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Kegiatan {
+  id        Int      @id @default(autoincrement())
+  title     String
+  file1     String?
+  file2     String?
+  file3     String?
+  userId    Int
+  score     Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "Kegiatan_userId_fkey")
+}
+
+model Question {
+  id        Int      @id @default(autoincrement())
+  question  String   @db.Text
+  answer    String?  @db.Text
+  isAnswer  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  title     String
+  body      String
+  data      String   @db.LongText
+  userId    Int
+  imageUrl  String?
+  createdAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "Notification_userId_fkey")
+}
+
+model News {
+  id        Int      @id @default(autoincrement())
+  title     String
+  subTitle  String
+  author    String
+  imageUrl  String?
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  body      String   @db.Text
+  createdAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
+}
+
+model PostLike {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  postId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PostDislike {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  postId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  body      String   @db.Text
+  postId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CommentLike {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  commentId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Reply {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  body      String   @db.Text
+  commentId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ReplyLike {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  replyId   Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model userDeleted {
+  id           Int      @id @default(autoincrement())
+  email        String
+  deleteReason String?  @db.Text
+  deletedAt    DateTime @default(now())
+}
+
+model Book {
+  id           Int              @id @default(autoincrement())
+  name         String
+  description  String           @db.Text
+  stock        Int
+  imageurl     String
+  userId       Int
+  status       BookStatus       @default(PENDING)
+  planSentAt   DateTime         @default(now())
+  acceptedAt   DateTime?
+  rejectedAt   DateTime?
+  canceledAt   DateTime?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categories   BookCategories[]
+  comment_book CommentBook[]
+  peminjaman   Peminjaman[]
+
+  @@index([userId], map: "Book_userId_fkey")
+}
+
+model OfficeAddress {
+  id        Int      @id @default(autoincrement())
+  name      String
+  address   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CommentBook {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  bookId      Int
+  description String   @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  book        Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([bookId], map: "CommentBook_bookId_fkey")
+  @@index([userId], map: "CommentBook_userId_fkey")
+}
+
+model Peminjaman {
+  id                Int          @id @default(autoincrement())
+  bookId            Int
+  userId            Int
+  status            BorrowStatus @default(PENDING)
+  submissionDate    DateTime     @default(now())
+  deadlineDate      DateTime
+  plannedPickUpDate DateTime
+  actualPickUpDate  DateTime?
+  returnDate        DateTime?
+  cancelDate        DateTime?
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  book              Book         @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  user              User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([bookId], map: "Peminjaman_bookId_fkey")
+  @@index([userId], map: "Peminjaman_userId_fkey")
+}
+
+model Category {
+  id    Int              @id @default(autoincrement())
+  name  String
+  books BookCategories[]
+}
+
+model BookCategories {
+  bookId     Int
+  categoryId Int
+  book       Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([categoryId, bookId])
+  @@index([bookId], map: "BookCategories_bookId_fkey")
+}
+
+model Report {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  postId    Int?
+  commentId Int?
+  replyId   Int?
+  reason    String   @db.Text
+  status    String   @default("Pending")
+  createdAt DateTime @default(now())
+}
+
+model Infaq {
+  id                 String   @id
+  userId             Int
+  amount             Float
+  status             String   @default("pending")
+  orderId            String   @unique
+  redirectUrl        String   @default("https://www.google.com")
+  allocationTypeCode String
+  paymentType        String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "Infaq_userId_fkey")
+}
+
+model AllocationType {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  code      String   @unique
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ErrorLog {
+  id           Int      @id @default(autoincrement())
+  errorMessage String   @db.Text
+  stackTrace   String?  @db.Text
+  createdAt    DateTime @default(now())
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum BookStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELLED
+}
+
+enum BorrowStatus {
+  PENDING
+  ALLOWED
+  TAKEN
+  RETURNED
+  CANCELLED
+}
+
+model Content {
+  id           Int      @id @default(autoincrement())
+  title        String
+  description  String?
+  thumbnailUrl String
+  videoUrl     String
+  duration     Int?
+  views        Int      @default(0)
+  publishedAt  DateTime @default(now())
+  uploaderId   Int
+  uploader     User     @relation(fields: [uploaderId], references: [id])
+
+  PlaylistContent PlaylistContent[]
+}
+
+model Playlist {
+  id          Int     @id @default(autoincrement())
+  title       String
+  description String?
+
+  PlaylistContent PlaylistContent[]
+}
+
+model PlaylistContent {
+  contentId  Int
+  playlistId Int
+  order      Int
+  content    Content  @relation(fields: [contentId], references: [id])
+  playlist   Playlist @relation(fields: [playlistId], references: [id])
+
+  @@id([contentId, playlistId])
+  @@unique([playlistId, order])
+}

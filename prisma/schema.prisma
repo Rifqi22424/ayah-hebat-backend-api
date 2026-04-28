@@ -38,6 +38,7 @@ model User {
   commentBook                  CommentBook[]
   books                        Book[]
   Infaq                        Infaq[]
+  alms                         Alms[]
   isVerified                   Boolean        @default(false)
   verificationCode             String?
   deleteAccountVerficationCode String?
@@ -48,6 +49,10 @@ model User {
   totalScoreMonth              Int?           @default(0)
   totalScoreDay                Int?           @default(0)
   role                         Role?          @default(USER)
+
+  hasApproved                  String?
+  // uploadedContents         Content[]
+  Content Content[]
 }
 
 model Profile {
@@ -61,6 +66,9 @@ model Profile {
   tahunMasukKuttab Int?
   user             User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId           Int     @unique
+
+  forgotCode      String?   @unique
+  forgotExpiredAt DateTime?
 }
 
 model Kegiatan {
@@ -302,7 +310,7 @@ model Report {
 }
 
 model Infaq {
-  id                 String   @id @default(uuid())
+  id                 Int      @id @default(autoincrement())
   userId             Int
   amount             Float
   status             String   @default("pending")
@@ -310,6 +318,19 @@ model Infaq {
   redirectUrl        String   @default("https://www.google.com")
   allocationTypeCode String
   paymentType        String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Alms {
+  id                 Int      @id @default(autoincrement())
+  userId             Int
+  amount             Float
+  status             String   @default("pending")
+  allocationTypeCode String
+  evidenceImageUrl   String?
+  message            String?
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
   user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -329,4 +350,38 @@ model ErrorLog {
   errorMessage String   @db.Text
   stackTrace   String?  @db.Text
   createdAt    DateTime @default(now())
+}
+
+model Content {
+  id           Int      @id @default(autoincrement())
+  title        String
+  description  String?
+  thumbnailUrl String
+  videoUrl     String
+  duration     Int?
+  views        Int      @default(0)
+  publishedAt  DateTime @default(now())
+  uploaderId   Int
+  uploader     User     @relation(fields: [uploaderId], references: [id])
+
+  PlaylistContent PlaylistContent[]
+}
+
+model Playlist {
+  id          Int     @id @default(autoincrement())
+  title       String
+  description String?
+
+  PlaylistContent PlaylistContent[]
+}
+
+model PlaylistContent {
+  contentId  Int
+  playlistId Int
+  order      Int
+  content    Content  @relation(fields: [contentId], references: [id])
+  playlist   Playlist @relation(fields: [playlistId], references: [id])
+
+  @@id([contentId, playlistId])
+  @@unique([playlistId, order])
 }
