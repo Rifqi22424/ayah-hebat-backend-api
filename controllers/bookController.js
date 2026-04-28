@@ -39,6 +39,7 @@ const getBooks = async (req, res) => {
         id: true,
         name: true,
         stock: true,
+        status: true,
         imageurl: true,
         categories: {
           select: {
