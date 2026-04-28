@@ -1,5 +1,12 @@
 const nodemailer = require("nodemailer");
-const smtpPassword = process.env.SMTP_PASSWORD;
+require("dotenv").config();
+// const smtpPassword = process.env.SMTP_PASSWORD;
+const userNodemailer = process.env.USERNAME_NODEMAILER;
+const passNodemailer = process.env.PASSWORD_NODEMAILER;
+const portNodemailer = process.env.PORT_NODEMAILER;
+const hostNodemailer = process.env.HOST_NODEMAILER;
+const secureNodemailer = process.env.SECURE_NODEMAILER === "true";
+const mailFrom = process.env.MAIL_FROM;
 
 let data = {
   id: "01835885-7ca3-4036-a9f3-01e399a26728",
@@ -42,13 +49,22 @@ let failed_data = {
 let email = "rifqimuzakki45@gmail.com";
 
 const sendHtmlToEmail = async (email, data) => {
+  // const transporter = nodemailer.createTransport({
+  //   host: "smtp.gmail.com",
+  //   port: 465,
+  //   secure: true,
+  //   auth: {
+  //     user: "ayahhebatmangcoding@gmail.com",
+  //     pass: smtpPassword,
+  //   },
+  // });
   const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
+    host: hostNodemailer,
+    port: portNodemailer,
+    secure: secureNodemailer,
     auth: {
-      user: "ayahhebatmangcoding@gmail.com",
-      pass: smtpPassword,
+      user: userNodemailer,
+      pass: passNodemailer,
     },
   });
 
@@ -73,7 +89,7 @@ const sendHtmlToEmail = async (email, data) => {
   const formattedAmount = Number(data.amount).toLocaleString();
 
   const mailOptions = {
-    from: "ayahhebatmangcoding@gmail.com",
+    from: mailFrom,
     to: email,
     subject: data.title,
     html: `
@@ -211,6 +227,94 @@ const sendHtmlToEmail = async (email, data) => {
   });
 };
 
+const sendResetEmail = async (email, username, resetURL) => {
+  // 1. Buat transporter (sama seperti di fungsi Anda yang lain)
+  const transporter = nodemailer.createTransport({
+    host: hostNodemailer,
+    port: portNodemailer,
+    secure: secureNodemailer,
+    auth: {
+      user: userNodemailer,
+      pass: passNodemailer,
+    },
+  });
+
+  // 2. Verifikasi (Mengikuti gaya kode Anda sebelumnya)
+  await new Promise((resolve, reject) => {
+    transporter.verify(function (error, success) {
+      if (error) {
+        console.log(error);
+        reject(error);
+      } else {
+        console.log("Server is ready to take our messages");
+        resolve(success);
+      }
+    });
+  });
+
+  // 3. Buat template HTML
+  const mailOptions = {
+    from: mailFrom,
+    to: email,
+    subject: "Permintaan Reset Password",
+    html: `
+      <table role="presentation" width="100%" style="background-color: #eef4f8; padding: 20px;" align="center">
+        <tr>
+          <td align="center">
+            <table role="presentation" width="300px" style="background-color: white; padding: 12px; border-radius: 12px;">
+              <tr>
+                <td align="center" style="font-size: 24px; font-weight: bold; color: black;">
+                  Mangcoding (Nama Aplikasi Anda)
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 12px;">
+                  <h2 style="color: black; margin: 0;">Reset Password</h2>
+                  <p style="color: grey; margin: 8px 0;">Anda menerima ini karena ada permintaan reset password.</p>
+                </td>
+              </tr>
+            </table>
+            
+            <table role="presentation" width="300px" style="background-color: white; padding: 12px; margin-top: 12px; border-radius: 12px;">
+              <tr>
+                <td>
+                  <p style="color: black;">Kepada <b>${username}</b></p>
+                  <p style="color: black;">Silakan klik tombol di bawah ini untuk mengatur ulang password Anda. Link ini hanya valid selama 15 menit.</p>
+                  
+                  <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                    <tr>
+                      <td align="center" style="padding: 10px 0;">
+                        <a href="${resetURL}" target="_blank" style="background-color: #007bff; color: white; padding: 12px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                          Reset Password Saya
+                        </a>
+                      </td>
+                    </tr>
+                  </table>
+                  
+                  <p style="color: black; font-size: 12px;">Jika Anda tidak meminta reset password, abaikan email ini.</p>
+                  <hr />
+                  <p style="color: grey; font-size: 10px;">Jika tombol tidak berfungsi, salin URL ini: ${resetURL}</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    `,
+  };
+
+  // 4. Kirim email (Mengikuti gaya kode Anda sebelumnya)
+  await new Promise((resolve, reject) => {
+    transporter.sendMail(mailOptions, (err, info) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(info);
+      }
+    });
+  });
+};
+
 // sendHtmlToEmail(email, failed_data);
 
-module.exports = { sendHtmlToEmail };
+module.exports = { sendHtmlToEmail, sendResetEmail };
