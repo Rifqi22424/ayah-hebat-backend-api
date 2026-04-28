@@ -4,11 +4,11 @@ const { registerUser, loginUser, verifyUser, resendVerificationCode, changePassw
 // const { generateToken } = require('../middlewares/jwtMiddleware');
 // const passport = require('../config/passportConfig');
 
-router.post('/register', registerUser);
-router.post('/verify', verifyUser);
-router.post('/resend-verification', resendVerificationCode); 
-router.post('/login', loginUser);
-router.put('/change-password', changePassword);
+router.post('/register', /* #swagger.tags = ['Auth Controller'] */ registerUser);
+router.post('/verify', /* #swagger.tags = ['Auth Controller'] */ verifyUser);
+router.post('/resend-verification', /* #swagger.tags = ['Auth Controller'] */ resendVerificationCode); 
+router.post('/login', /* #swagger.tags = ['Auth Controller'] */ loginUser);
+router.put('/change-password', /* #swagger.tags = ['Auth Controller'] */ changePassword);
 
 router.post('/forgot-password', forgotPassword);
 router.get('/reset-password', showResetForm);

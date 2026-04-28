@@ -37,7 +37,9 @@ const registerUser = async (req, res) => {
     });
 
     if (existingUser && existingUser.isVerified) {
-      return res.status(400).json({ error: "Email is already registered and verified" });
+      return res
+        .status(400)
+        .json({ error: "Email is already registered and verified" });
     }
 
     if (existingUsername && existingUsername.isVerified) {
@@ -96,7 +98,8 @@ const registerUser = async (req, res) => {
     sendVerificationEmail(email, verificationCode);
 
     res.json({
-      message: "User registered successfully. Check your email for verification.",
+      message:
+        "User registered successfully. Check your email for verification.",
     });
   } catch (error) {
     console.error(error);
