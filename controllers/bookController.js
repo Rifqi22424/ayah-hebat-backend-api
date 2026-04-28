@@ -461,23 +461,11 @@ const updateBookDonationStatus = async (req, res) => {
 
 const updateBook = async (req, res) => {
   const { id } = req.params;
-  const { name, description, stock, categoryIds, status, email } = req.body;
+  const { name, description, stock, categoryIds, status } = req.body;
   const imageurl = req.file ? req.file.filename : null;
+  const userId = req.userId;
 
   try {
-    const user = await prisma.user.findUnique({
-      where: {
-        email: email,
-      },
-    });
-
-    if (!user) {
-      return res.status(404).json({
-        message: "user not found",
-      });
-    }
-
-    const userId = user.id;
 
     const parseStock = parseInt(stock);
 
