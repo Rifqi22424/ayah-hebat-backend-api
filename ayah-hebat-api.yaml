@@ -6,6 +6,8 @@ info:
 servers:
   - url: http://localhost:3000
     description: Local server
+  - url: https://backend.ayahhebat.mangcoding.com
+    description: Production server
 
 paths:
   /auth/login:
