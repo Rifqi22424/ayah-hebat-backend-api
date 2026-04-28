@@ -463,30 +463,21 @@ const updateBook = async (req, res) => {
   const { id } = req.params;
   const { name, description, stock, categoryIds, status } = req.body;
   const imageurl = req.file ? req.file.filename : null;
-  const userId = req.userId;
 
   try {
-
-    const parseStock = parseInt(stock);
-
-    const updatedData = {
-      name,
-      description,
-      stock: parseStock,
-      user: {
-        connect: {
-          id: userId,
-        },
-      },
-      status,
-      imageurl,
-    };
-
     if (await checkBook(parseInt(id))) {
       return res.status(404).json({
         message: "book not found",
       });
     }
+
+    const updatedData = {};
+
+    if (name !== undefined && name !== "") updatedData.name = name;
+    if (description !== undefined && description !== "") updatedData.description = description;
+    if (stock !== undefined && !isNaN(parseInt(stock))) updatedData.stock = parseInt(stock);
+    if (status !== undefined && status !== "") updatedData.status = status;
+    if (imageurl !== null) updatedData.imageurl = imageurl;
 
     await prisma.$transaction(async (prisma) => {
       if (Array.isArray(categoryIds) && categoryIds.length > 0) {
