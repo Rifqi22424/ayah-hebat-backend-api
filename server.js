@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
+const cors = require("cors");
 const authRoutes = require("./routes/authRoutes.js");
 const userRoutes = require("./routes/userRoutes.js");
 const profileRoutes = require("./routes/profileRoutes.js");
@@ -11,8 +12,11 @@ const newsRoutes = require("./routes/newsRoutes.js");
 const postRoutes = require("./routes/postRoutes.js");
 const commentRoutes = require("./routes/commentRoutes.js");
 const peminjamanBukuRoute = require("./routes/peminjamanBukuRoute.js");
+const playlistRoute = require("./routes/playlistRoute.js");
 const replyRoutes = require("./routes/replyRoutes.js");
 const reportRoutes = require("./routes/reportRoutes.js");
+const watchRoutes = require("./routes/contentRoutes.js");
+const almsRoutes = require("./routes/almsRoutes.js");
 
 // admin routes
 const peminjamanManamagementRoutes = require("./routes/admin/peminjamanManagementRoutes.js");
@@ -20,9 +24,7 @@ const peminjamanManamagementRoutes = require("./routes/admin/peminjamanManagemen
 const { PrismaClient } = require("@prisma/client");
 const { authenticateToken } = require("./middlewares/jwtMiddleware.js");
 var cron = require("node-cron");
-const {
-  updateAllUsersTotalScore,
-} = require("./controllers/kegiatanController.js");
+const { updateAllUsersTotalScore } = require("./controllers/kegiatanController.js");
 const bookRoutes = require("./routes/bookRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const commentBookRoutes = require("./routes/commentBookRoute");
@@ -42,7 +44,16 @@ require("./setup/initializeFirebaseAdmin.js");
 const app = express();
 const prisma = new PrismaClient();
 
+app.use(cors());
+
+// app.use(cors({
+//   origin: "http://localhost:5174",
+//   methods: ["GET", "POST", "PUT", "DELETE"],
+//   credentials: true
+// }));
+
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -58,6 +69,9 @@ app.use("/uploads/books", express.static("uploads/books"));
 app.use("/auth", authRoutes);
 
 app.post("/midtrans", handleWebhook);
+app.get("/favicon.ico", (req, res) => {
+  res.status(204).end(); // Kirim 'No Content' (tidak ada ikon)
+});
 // app.use('/.well-known', express.static(path.join(__dirname, '.well-known')));
 app.use(authenticateToken);
 
@@ -72,12 +86,15 @@ app.use("/comment", commentRoutes);
 app.use("/reply", replyRoutes);
 app.use("/report", reportRoutes);
 app.use("/pinjam-buku", peminjamanBukuRoute);
+app.use("/playlist", playlistRoute);
 app.use("/books", bookRoutes);
 app.use("/categories", categoryRoutes);
 app.use("/comment-book", commentBookRoutes);
 app.use("/address", officeAddressRoutes);
 app.use("/infaq", infaqRoutes);
 app.use("/allocation", allocationTypeRoutes);
+app.use("/watch", watchRoutes);
+app.use("/alms", almsRoutes);
 
 app.use(authorizeAdmin);
 app.use("/admin/peminjaman-buku", peminjamanManamagementRoutes);

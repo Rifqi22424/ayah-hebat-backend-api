@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { registerUser, loginUser, verifyUser, resendVerificationCode, changePassword } = require('../controllers/authController');
+const { registerUser, loginUser, verifyUser, resendVerificationCode, changePassword, forgotPassword, resetPassword, showResetForm } = require('../controllers/authController');
 // const { generateToken } = require('../middlewares/jwtMiddleware');
 // const passport = require('../config/passportConfig');
 
@@ -9,6 +9,10 @@ router.post('/verify', /* #swagger.tags = ['Auth Controller'] */ verifyUser);
 router.post('/resend-verification', /* #swagger.tags = ['Auth Controller'] */ resendVerificationCode); 
 router.post('/login', /* #swagger.tags = ['Auth Controller'] */ loginUser);
 router.put('/change-password', /* #swagger.tags = ['Auth Controller'] */ changePassword);
+
+router.post('/forgot-password', forgotPassword);
+router.get('/reset-password', showResetForm);
+router.post('/reset-password', resetPassword);
 
 // router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 

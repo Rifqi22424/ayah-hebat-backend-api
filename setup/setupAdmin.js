@@ -11,9 +11,7 @@ async function setupAdmin() {
   const adminPassword = process.env.ADMIN_PASSWORD;
 
   if (!adminEmail || !adminPassword) {
-    console.error(
-      "Admin email or password is not set in environment variables"
-    );
+    console.error("Admin email or password is not set in environment variables");
     return;
   }
 
@@ -37,6 +35,7 @@ async function setupAdmin() {
       password: hashedPassword,
       role: "ADMIN",
       isVerified: true,
+      hasApproved: "approved",
     },
   });
   console.log("Admin user created:", adminUser);

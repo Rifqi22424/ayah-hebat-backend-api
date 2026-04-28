@@ -5,7 +5,7 @@ async function fixDuplicateUsernames() {
   try {
     const usersWithDuplicateUsernames = await prisma.$queryRaw`
       SELECT username, COUNT(*) as count
-      FROM user
+      FROM User
       GROUP BY username
       HAVING COUNT(*) > 1;
     `;
@@ -13,13 +13,13 @@ async function fixDuplicateUsernames() {
     for (const { username } of usersWithDuplicateUsernames) {
       const users = await prisma.user.findMany({
         where: { username },
-        orderBy: { id: 'asc' },
+        orderBy: { id: "asc" },
       });
 
       for (let i = 1; i < users.length; i++) {
         const user = users[i];
         const newUsername = `${user.username}_${user.id}`;
-        
+
         await prisma.user.update({
           where: { id: user.id },
           data: { username: newUsername },

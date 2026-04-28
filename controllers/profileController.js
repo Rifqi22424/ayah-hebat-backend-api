@@ -8,32 +8,65 @@ const addProfile = async (req, res) => {
       req.body;
     const userId = req.userId;
 
+    if (
+      !nama ||
+      !namaIstri ||
+      !namaAnak ||
+      !namaKuttab ||
+      !tahunMasukKuttab ||
+      !bio
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Masukan semua data yang dibutuhkan" });
+    }
+
     const tahunMasukKuttabInt = parseInt(tahunMasukKuttab);
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
+      include: { profile: true },
     });
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    const photoFilename = req.file ? req.file.filename : null;
+    const photoFilename = req.file
+      ? req.file.filename
+      : user.profile?.photo || null;
 
-    const profile = await prisma.profile.create({
-      data: {
-        nama,
-        namaIstri,
-        namaAnak,
-        namaKuttab,
-        tahunMasukKuttab: tahunMasukKuttabInt,
-        bio,
-        photo: photoFilename,
-        user: { connect: { id: userId } },
-      },
-    });
-
-    res.json({ message: "Profile added successfully." });
+    if (user.profile) {
+      // If profile exists, update it
+      await prisma.profile.update({
+        where: { userId },
+        data: {
+          nama,
+          namaIstri,
+          namaAnak,
+          namaKuttab,
+          tahunMasukKuttab: tahunMasukKuttabInt,
+          bio,
+          photo: photoFilename,
+        },
+      });
+      return res.json({ message: "Profile updated successfully." });
+    } else {
+      // If profile does not exist, create a new one
+      await prisma.profile.create({
+        data: {
+          nama,
+          namaIstri,
+          namaAnak,
+          namaKuttab,
+          tahunMasukKuttab: tahunMasukKuttabInt,
+          bio,
+          photo: photoFilename,
+          user: { connect: { id: userId } },
+        },
+      });
+      return res.json({ message: "Profile added successfully." });
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
@@ -157,4 +190,10 @@ const getUserNProfile = async (req, res) => {
   }
 };
 
-module.exports = { addProfile, editProfile, getProfile, getUserNProfile, getUserPhoto };
+module.exports = {
+  addProfile,
+  editProfile,
+  getProfile,
+  getUserNProfile,
+  getUserPhoto,
+};
