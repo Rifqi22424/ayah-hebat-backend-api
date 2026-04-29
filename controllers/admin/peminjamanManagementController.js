@@ -1,6 +1,46 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
+const peminjamanDetailInclude = {
+  user: {
+    select: {
+      id: true,
+      username: true,
+      email: true,
+      role: true,
+      isVerified: true,
+      isActive: true,
+      fcmToken: true,
+      totalScoreYear: true,
+      totalScoreMonth: true,
+      totalScoreDay: true,
+    },
+  },
+  book: true,
+};
+
+const parseDateField = (value, fieldName, required = false) => {
+  if (value === undefined) {
+    return undefined;
+  }
+
+  if (value === null || value === "") {
+    if (required) {
+      throw new Error(`${fieldName} wajib diisi`);
+    }
+
+    return null;
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    throw new Error(`${fieldName} harus berupa tanggal yang valid`);
+  }
+
+  return date;
+};
+
 const updateStatusBuku = async (req, res) => {
   try {
     const idPeminjaman = parseInt(req.params.id);
@@ -83,6 +123,68 @@ const updateStatusBuku = async (req, res) => {
   } catch (e) {
     console.error(e.message);
     return res.status(500).json({ error: "Terjadi kesalahan pada server" });
+  }
+};
+
+const updatePeminjamanDates = async (req, res) => {
+  try {
+    const idPeminjaman = parseInt(req.params.id);
+
+    if (Number.isNaN(idPeminjaman)) {
+      return res.status(400).json({ error: "id tidak valid" });
+    }
+
+    const peminjaman = await prisma.peminjaman.findUnique({
+      where: { id: idPeminjaman },
+    });
+
+    if (!peminjaman) {
+      return res.status(404).json({ error: "Peminjaman tidak ditemukan" });
+    }
+
+    const allowedFields = [
+      "submissionDate",
+      "deadlineDate",
+      "plannedPickUpDate",
+      "actualPickUpDate",
+      "returnDate",
+      "cancelDate",
+    ];
+
+    const inputKeys = Object.keys(req.body || {});
+
+    if (inputKeys.length === 0) {
+      return res.status(400).json({ error: "Minimal satu field tanggal harus diisi" });
+    }
+
+    const invalidKeys = inputKeys.filter((key) => !allowedFields.includes(key));
+
+    if (invalidKeys.length > 0) {
+      return res.status(400).json({
+        error: `Field tidak valid: ${invalidKeys.join(", ")}`,
+      });
+    }
+
+    const data = {};
+
+    for (const field of inputKeys) {
+      const required = ["submissionDate", "deadlineDate", "plannedPickUpDate"].includes(field);
+      data[field] = parseDateField(req.body[field], field, required);
+    }
+
+    const updatedPeminjaman = await prisma.peminjaman.update({
+      where: { id: idPeminjaman },
+      data,
+      include: peminjamanDetailInclude,
+    });
+
+    return res.status(200).json({
+      message: "Tanggal peminjaman berhasil diperbarui",
+      data: updatedPeminjaman,
+    });
+  } catch (e) {
+    console.error(e.message);
+    return res.status(400).json({ error: e.message || "Terjadi kesalahan" });
   }
 };
 
@@ -188,23 +290,7 @@ const getPeminjamanBukuById = async (req, res) => {
 
     const peminjaman = await prisma.peminjaman.findUnique({
       where: { id },
-      include: {
-        user: {
-          select: {
-            id: true,
-            username: true,
-            email: true,
-            role: true,
-            isVerified: true,
-            isActive: true,
-            fcmToken: true,
-            totalScoreYear: true,
-            totalScoreMonth: true,
-            totalScoreDay: true,
-          },
-        },
-        book: true,
-      },
+      include: peminjamanDetailInclude,
     });
 
     if (!peminjaman) {
@@ -225,6 +311,7 @@ const getPeminjamanBukuById = async (req, res) => {
 
 module.exports = {
   updateStatusBuku,
+  updatePeminjamanDates,
   getPeminjamanBuku,
   getPeminjamanBukuById,
 };
