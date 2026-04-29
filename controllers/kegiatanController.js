@@ -293,4 +293,71 @@ const getKegiatanByScore = async (req, res) => {
 };
 
 
-module.exports = { getKegiatanById, createKegiatan, evaluateKegiatan, getKegiatanByScore, getTopUsers, getAllKegiatan, updateAllUsersTotalScore, updateAllUsersTotalScoreManual, getKegiatanByUserId };
+const updateKegiatan = async (req, res) => {
+  try {
+    const kegiatanId = parseInt(req.params.id);
+    const userId = req.userId;
+    const { title } = req.body;
+    const { file1, file2, file3 } = req.files || {};
+
+    const existingKegiatan = await prisma.kegiatan.findUnique({
+      where: { id: kegiatanId },
+    });
+
+    if (!existingKegiatan) {
+      return res.status(404).json({ error: 'Kegiatan not found' });
+    }
+
+    if (existingKegiatan.userId !== userId) {
+      return res.status(403).json({ error: 'Forbidden: You can only edit your own kegiatan' });
+    }
+
+    const updateData = {};
+    if (title) updateData.title = title;
+    if (file1) updateData.file1 = file1[0].filename;
+    if (file2) updateData.file2 = file2[0].filename;
+    if (file3) updateData.file3 = file3[0].filename;
+
+    const updatedKegiatan = await prisma.kegiatan.update({
+      where: { id: kegiatanId },
+      data: updateData,
+    });
+
+    res.json(updatedKegiatan);
+  } catch (error) {
+    console.error('Error in updateKegiatan:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+const deleteKegiatan = async (req, res) => {
+  try {
+    const kegiatanId = parseInt(req.params.id);
+    const userId = req.userId;
+
+    const existingKegiatan = await prisma.kegiatan.findUnique({
+      where: { id: kegiatanId },
+    });
+
+    if (!existingKegiatan) {
+      return res.status(404).json({ error: 'Kegiatan not found' });
+    }
+
+    if (existingKegiatan.userId !== userId) {
+      return res.status(403).json({ error: 'Forbidden: You can only delete your own kegiatan' });
+    }
+
+    await prisma.kegiatan.delete({
+      where: { id: kegiatanId },
+    });
+
+    await updateTotalScore(userId);
+
+    res.json({ message: 'Kegiatan deleted successfully' });
+  } catch (error) {
+    console.error('Error in deleteKegiatan:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+module.exports = { getKegiatanById, createKegiatan, evaluateKegiatan, getKegiatanByScore, getTopUsers, getAllKegiatan, updateAllUsersTotalScore, updateAllUsersTotalScoreManual, getKegiatanByUserId, updateKegiatan, deleteKegiatan };
