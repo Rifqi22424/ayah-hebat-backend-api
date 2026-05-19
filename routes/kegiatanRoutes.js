@@ -11,6 +11,7 @@ const {
   getKegiatanByUserId,
   updateKegiatan,
   deleteKegiatan,
+  getAllUsersScores,
 } = require("../controllers/kegiatanController");
 const { uploadMiddleware } = require("../middlewares/uploadMiddleware");
 const { authorizeAdmin } = require("../middlewares/authorizationMiddleware");
@@ -74,6 +75,10 @@ router.get(
 router.get(
   "/top-score/:time",
   /* #swagger.tags = ['Kegiatan Controller'] */ getTopUsers,
+);
+router.get(
+  "/all-scores/:time",
+  /* #swagger.tags = ['Kegiatan Controller'] */ getAllUsersScores,
 );
 router.post(
   "/update-all-kegiatan",

@@ -360,4 +360,38 @@ const deleteKegiatan = async (req, res) => {
   }
 };
 
-module.exports = { getKegiatanById, createKegiatan, evaluateKegiatan, getKegiatanByScore, getTopUsers, getAllKegiatan, updateAllUsersTotalScore, updateAllUsersTotalScoreManual, getKegiatanByUserId, updateKegiatan, deleteKegiatan };
+const getAllUsersScores = async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 10;  
+    const offset = parseInt(req.query.offset) || 0;
+    
+    const { time } = req.params;
+    let orderByField;
+
+    if (time === 'year') {
+      orderByField = 'totalScoreYear';
+    } else if (time === 'month') {
+      orderByField = 'totalScoreMonth';
+    } else if (time === 'day') {
+      orderByField = 'totalScoreDay';
+    } else {
+      return res.status(400).json({ error: 'Invalid time parameter. Please use year, month, or day.' });
+    }
+
+    const users = await prisma.user.findMany({
+      orderBy: { [orderByField]: 'desc' }, 
+      skip: offset,
+      take: limit,
+      include: {
+        profile: true,
+      }
+    });
+
+    res.json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+module.exports = { getKegiatanById, createKegiatan, evaluateKegiatan, getKegiatanByScore, getTopUsers, getAllKegiatan, updateAllUsersTotalScore, updateAllUsersTotalScoreManual, getKegiatanByUserId, updateKegiatan, deleteKegiatan, getAllUsersScores };
