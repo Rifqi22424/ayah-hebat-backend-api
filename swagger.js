@@ -1,5 +1,8 @@
 // 1. Ubah konfigurasi untuk menggunakan OpenAPI 3.0
-const swaggerAutogen = require("swagger-autogen")({ openapi: "3.0.0" });
+const swaggerAutogen = require("swagger-autogen")({ 
+  openapi: "3.0.0",
+  autoHeaders: false 
+});
 
 const doc = {
   info: {
