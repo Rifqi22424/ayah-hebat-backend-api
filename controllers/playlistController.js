@@ -98,7 +98,7 @@ const deletePlaylist = async (req, res) => {
   try {
     const { id } = req.params;
 
-    await prisma.playlist.delete({
+    await prisma.playlist['delete']({
       where: { id: parseInt(id) },
     });
 
@@ -166,7 +166,7 @@ const removeContentFromPlaylist = async (req, res) => {
   try {
     const { playlistId, contentId } = req.params;
 
-    await prisma.playlistContent.delete({
+    await prisma.playlistContent['delete']({
       where: {
         contentId_playlistId: {
           contentId: parseInt(contentId),
