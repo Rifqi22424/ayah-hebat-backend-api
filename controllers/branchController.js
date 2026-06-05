@@ -1,16 +1,22 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-const getSchools = async (req, res) => {
+const getBranches = async (req, res) => {
     try {
-        const schools = await prisma.school.findMany({
+        const branches = await prisma.branch.findMany({
             orderBy: { name: 'asc' },
             select: {
                 id: true,
-                name: true
+                name: true,
+                zone: {
+                    select: {
+                        id: true,
+                        name: true
+                    }
+                }
             }
         });
-        res.status(200).json({ data: schools });
+        res.status(200).json({ data: branches });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -18,5 +24,5 @@ const getSchools = async (req, res) => {
 };
 
 module.exports = {
-    getSchools
+    getBranches
 };

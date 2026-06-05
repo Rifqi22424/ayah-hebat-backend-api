@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 const addProfile = async (req, res) => {
   try {
-    const { nama, namaIstri, namaAnak, namaKuttab, tahunMasukKuttab, bio, schoolId } =
+    const { nama, namaIstri, namaAnak, namaKuttab, tahunMasukKuttab, bio, branchId } =
       req.body;
     const userId = req.userId;
 
@@ -14,7 +14,7 @@ const addProfile = async (req, res) => {
       !namaAnak ||
       !tahunMasukKuttab ||
       !bio ||
-      (!namaKuttab && !schoolId)
+      (!namaKuttab && !branchId)
     ) {
       return res
         .status(400)
@@ -22,7 +22,7 @@ const addProfile = async (req, res) => {
     }
 
     const tahunMasukKuttabInt = parseInt(tahunMasukKuttab);
-    const parsedSchoolId = schoolId ? parseInt(schoolId) : null;
+    const parsedBranchId = branchId ? parseInt(branchId) : null;
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -49,7 +49,7 @@ const addProfile = async (req, res) => {
           tahunMasukKuttab: tahunMasukKuttabInt,
           bio,
           photo: photoFilename,
-          ...(parsedSchoolId !== null && { schoolId: parsedSchoolId })
+          ...(parsedBranchId !== null && { branchId: parsedBranchId })
         },
       });
       return res.json({ message: "Profile updated successfully." });
@@ -65,7 +65,7 @@ const addProfile = async (req, res) => {
           bio,
           photo: photoFilename,
           user: { connect: { id: userId } },
-          ...(parsedSchoolId !== null && { school: { connect: { id: parsedSchoolId } } })
+          ...(parsedBranchId !== null && { branch: { connect: { id: parsedBranchId } } })
         },
       });
       return res.json({ message: "Profile added successfully." });
@@ -78,12 +78,12 @@ const addProfile = async (req, res) => {
 
 const editProfile = async (req, res) => {
   try {
-    const { nama, namaIstri, namaAnak, namaKuttab, tahunMasukKuttab, bio, schoolId } =
+    const { nama, namaIstri, namaAnak, namaKuttab, tahunMasukKuttab, bio, branchId } =
       req.body;
     const userId = req.userId;
 
     const tahunMasukKuttabInt = parseInt(tahunMasukKuttab);
-    const parsedSchoolId = schoolId ? parseInt(schoolId) : null;
+    const parsedBranchId = branchId ? parseInt(branchId) : null;
 
     const existingProfile = await prisma.profile.findUnique({
       where: { userId },
@@ -110,7 +110,7 @@ const editProfile = async (req, res) => {
         tahunMasukKuttab: tahunMasukKuttabInt,
         photo: photoFilename,
         bio,
-        ...(parsedSchoolId !== null && { schoolId: parsedSchoolId })
+        ...(parsedBranchId !== null && { branchId: parsedBranchId })
       },
     });
 
@@ -136,7 +136,11 @@ const getProfile = async (req, res) => {
         namaAnak: true,
         namaKuttab: true,
         tahunMasukKuttab: true,
-        school: true,
+        branch: {
+          include: {
+            zone: true
+          }
+        },
       },
     });
 
@@ -183,7 +187,11 @@ const getUserNProfile = async (req, res) => {
       include: {
         profile: {
           include: {
-            school: true
+            branch: {
+              include: {
+                zone: true
+              }
+            }
           }
         },
       },

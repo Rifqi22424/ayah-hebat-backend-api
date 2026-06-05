@@ -67,8 +67,8 @@ model Profile {
   tahunMasukKuttab Int?
   user             User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId           Int     @unique
-  school           School? @relation(fields: [schoolId], references: [id])
-  schoolId         Int?
+  branch           Branch? @relation(fields: [branchId], references: [id])
+  branchId         Int?
 
   forgotCode      String?   @unique
   forgotExpiredAt DateTime?
@@ -389,10 +389,22 @@ model PlaylistContent {
   @@unique([playlistId, order])
 }
 
-model School {
+model Zone {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  branches  Branch[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Branch {
   id        Int       @id @default(autoincrement())
-  name      String    @unique
+  name      String
+  zone      Zone      @relation(fields: [zoneId], references: [id])
+  zoneId    Int
   profiles  Profile[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+
+  @@unique([name, zoneId])
 }

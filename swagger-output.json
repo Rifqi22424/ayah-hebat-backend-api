@@ -642,7 +642,7 @@
                   "namaKuttab": {
                     "type": "string"
                   },
-                  "schoolId": {
+                  "branchId": {
                     "type": "integer"
                   },
                   "tahunMasukKuttab": {
@@ -705,7 +705,7 @@
                   "namaKuttab": {
                     "type": "string"
                   },
-                  "schoolId": {
+                  "branchId": {
                     "type": "integer"
                   },
                   "tahunMasukKuttab": {
@@ -4745,15 +4745,15 @@
         }
       }
     },
-    "/schools/": {
+    "/branches/": {
       "get": {
         "tags": [
-          "School"
+          "Branch"
         ],
-        "description": "Mendapatkan semua daftar sekolah untuk digunakan di dropdown profil.",
+        "description": "Mendapatkan semua daftar cabang untuk digunakan di dropdown profil.",
         "responses": {
           "200": {
-            "description": "Daftar sekolah berhasil diambil.",
+            "description": "Daftar cabang berhasil diambil.",
             "content": {
               "application/json": {
                 "schema": {
@@ -4769,6 +4769,73 @@
                           },
                           "name": {
                             "type": "string"
+                          },
+                          "zone": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer"
+                              },
+                              "name": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/zones/": {
+      "get": {
+        "tags": [
+          "Zone"
+        ],
+        "description": "Mendapatkan semua daftar zona beserta cabang.",
+        "responses": {
+          "200": {
+            "description": "Daftar zona berhasil diambil.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "branches": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "integer"
+                                },
+                                "name": {
+                                  "type": "string"
+                                }
+                              }
+                            }
                           }
                         }
                       }
@@ -5129,12 +5196,246 @@
         }
       }
     },
-    "/admin/schools/": {
+    "/admin/branches/": {
       "post": {
         "tags": [
-          "Admin - School"
+          "Admin - Branch"
         ],
-        "description": "Menambahkan sekolah baru ke dalam database.",
+        "description": "Menambahkan cabang baru ke dalam database.",
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Nama Cabang"
+                  },
+                  "zoneId": {
+                    "type": "integer",
+                    "description": "ID Zona"
+                  }
+                },
+                "required": [
+                  "name",
+                  "zoneId"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Admin - Branch"
+        ],
+        "description": "Mendapatkan semua daftar cabang yang ada.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/branches/{id}": {
+      "put": {
+        "tags": [
+          "Admin - Branch"
+        ],
+        "description": "Memperbarui cabang berdasarkan ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID Cabang"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Nama Cabang Baru"
+                  },
+                  "zoneId": {
+                    "type": "integer",
+                    "description": "ID Zona"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Admin - Branch"
+        ],
+        "description": "Menghapus cabang berdasarkan ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID Cabang"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/branches/{{where{id:parseInt(id)}});res.status(200).json({message:Branchdeletedsuccessfully});}catch(error){console.error(error);res.status(500).json({error:InternalServerError});}};module.exports={createBranch}": {
+      "delete": {
+        "tags": [
+          "Admin - Branch"
+        ],
+        "description": "Menambahkan cabang baru ke dalam database.",
+        "parameters": [
+          {
+            "name": "{where{id:parseInt(id)}});res.status(200).json({message:Branchdeletedsuccessfully});",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "console.error(error);res.status(500).json({error:InternalServerError});",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "createBranch",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Nama Cabang"
+                  },
+                  "zoneId": {
+                    "type": "integer",
+                    "description": "ID Zona"
+                  }
+                },
+                "required": [
+                  "name",
+                  "zoneId"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/admin/zones/": {
+      "post": {
+        "tags": [
+          "Admin - Zone"
+        ],
+        "description": "Menambahkan zona baru ke dalam database.",
         "responses": {
           "201": {
             "description": "Created"
@@ -5161,7 +5462,7 @@
                 "properties": {
                   "name": {
                     "type": "string",
-                    "description": "Nama Sekolah"
+                    "description": "Nama Zona"
                   }
                 },
                 "required": [
@@ -5174,9 +5475,9 @@
       },
       "get": {
         "tags": [
-          "Admin - School"
+          "Admin - Zone"
         ],
-        "description": "Mendapatkan semua daftar sekolah yang ada.",
+        "description": "Mendapatkan semua daftar zona yang ada.",
         "responses": {
           "200": {
             "description": "OK"
@@ -5193,12 +5494,12 @@
         }
       }
     },
-    "/admin/schools/{id}": {
+    "/admin/zones/{id}": {
       "put": {
         "tags": [
-          "Admin - School"
+          "Admin - Zone"
         ],
-        "description": "Memperbarui nama sekolah berdasarkan ID.",
+        "description": "Memperbarui nama zona berdasarkan ID.",
         "parameters": [
           {
             "name": "id",
@@ -5207,7 +5508,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "ID Sekolah"
+            "description": "ID Zona"
           }
         ],
         "responses": {
@@ -5239,7 +5540,7 @@
                 "properties": {
                   "name": {
                     "type": "string",
-                    "description": "Nama Sekolah Baru"
+                    "description": "Nama Zona Baru"
                   }
                 },
                 "required": [
@@ -5252,9 +5553,9 @@
       },
       "delete": {
         "tags": [
-          "Admin - School"
+          "Admin - Zone"
         ],
-        "description": "Menghapus sekolah berdasarkan ID.",
+        "description": "Menghapus zona berdasarkan ID.",
         "parameters": [
           {
             "name": "id",
@@ -5263,12 +5564,15 @@
             "schema": {
               "type": "string"
             },
-            "description": "ID Sekolah"
+            "description": "ID Zona"
           }
         ],
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
           },
           "401": {
             "description": "Unauthorized"
@@ -5281,6 +5585,70 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/admin/zones/{{where{id:parseInt(id)}});res.status(200).json({message:Zonedeletedsuccessfully});}catch(error){console.error(error);res.status(500).json({error:InternalServerError});}};module.exports={createZone}": {
+      "delete": {
+        "tags": [
+          "Admin - Zone"
+        ],
+        "description": "Menambahkan zona baru ke dalam database.",
+        "parameters": [
+          {
+            "name": "{where{id:parseInt(id)}});res.status(200).json({message:Zonedeletedsuccessfully});",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "console.error(error);res.status(500).json({error:InternalServerError});",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "createZone",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Nama Zona"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
           }
         }
       }

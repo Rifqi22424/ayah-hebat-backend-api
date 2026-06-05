@@ -17,11 +17,13 @@ const replyRoutes = require("./routes/replyRoutes.js");
 const reportRoutes = require("./routes/reportRoutes.js");
 const watchRoutes = require("./routes/contentRoutes.js");
 const almsRoutes = require("./routes/almsRoutes.js");
-const schoolRoutes = require("./routes/schoolRoutes.js");
+const branchRoutes = require("./routes/branchRoutes.js");
+const zoneRoutes = require("./routes/zoneRoutes.js");
 
 // admin routes
 const peminjamanManamagementRoutes = require("./routes/admin/peminjamanManagementRoutes.js");
-const adminSchoolRoutes = require("./routes/admin/schoolRoutes.js");
+const adminBranchRoutes = require("./routes/admin/branchRoutes.js");
+const adminZoneRoutes = require("./routes/admin/zoneRoutes.js");
 
 const { PrismaClient } = require("@prisma/client");
 const { authenticateToken } = require("./middlewares/jwtMiddleware.js");
@@ -98,11 +100,13 @@ app.use("/infaq", infaqRoutes);
 app.use("/allocation", allocationTypeRoutes);
 app.use("/watch", watchRoutes);
 app.use("/alms", almsRoutes);
-app.use("/schools", schoolRoutes);
+app.use("/branches", branchRoutes);
+app.use("/zones", zoneRoutes);
 
 app.use(authorizeAdmin);
 app.use("/admin/peminjaman-buku", peminjamanManamagementRoutes);
-app.use("/admin/schools", adminSchoolRoutes);
+app.use("/admin/branches", adminBranchRoutes);
+app.use("/admin/zones", adminZoneRoutes);
 
 async function logError(error) {
   try {

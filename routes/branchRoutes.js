@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { getSchools } = require('../controllers/schoolController');
+const { getBranches } = require('../controllers/branchController');
 
 router.get('/', /* 
-  #swagger.tags = ['School'] 
-  #swagger.description = 'Mendapatkan semua daftar sekolah untuk digunakan di dropdown profil.'
+  #swagger.tags = ['Branch'] 
+  #swagger.description = 'Mendapatkan semua daftar cabang untuk digunakan di dropdown profil.'
   #swagger.responses[200] = {
-      description: 'Daftar sekolah berhasil diambil.',
+      description: 'Daftar cabang berhasil diambil.',
       content: {
           "application/json": {
               schema: {
@@ -18,7 +18,14 @@ router.get('/', /*
                               type: "object",
                               properties: {
                                   id: { type: "integer" },
-                                  name: { type: "string" }
+                                  name: { type: "string" },
+                                  zone: {
+                                      type: "object",
+                                      properties: {
+                                          id: { type: "integer" },
+                                          name: { type: "string" }
+                                      }
+                                  }
                               }
                           }
                       }
@@ -27,6 +34,6 @@ router.get('/', /*
           }
       }
   }
-*/ getSchools);
+*/ getBranches);
 
 module.exports = router;
