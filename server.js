@@ -17,9 +17,11 @@ const replyRoutes = require("./routes/replyRoutes.js");
 const reportRoutes = require("./routes/reportRoutes.js");
 const watchRoutes = require("./routes/contentRoutes.js");
 const almsRoutes = require("./routes/almsRoutes.js");
+const schoolRoutes = require("./routes/schoolRoutes.js");
 
 // admin routes
 const peminjamanManamagementRoutes = require("./routes/admin/peminjamanManagementRoutes.js");
+const adminSchoolRoutes = require("./routes/admin/schoolRoutes.js");
 
 const { PrismaClient } = require("@prisma/client");
 const { authenticateToken } = require("./middlewares/jwtMiddleware.js");
@@ -95,9 +97,11 @@ app.use("/infaq", infaqRoutes);
 app.use("/allocation", allocationTypeRoutes);
 app.use("/watch", watchRoutes);
 app.use("/alms", almsRoutes);
+app.use("/schools", schoolRoutes);
 
 app.use(authorizeAdmin);
 app.use("/admin/peminjaman-buku", peminjamanManamagementRoutes);
+app.use("/admin/schools", adminSchoolRoutes);
 
 async function logError(error) {
   try {

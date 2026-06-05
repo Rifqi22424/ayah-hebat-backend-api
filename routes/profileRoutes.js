@@ -24,6 +24,7 @@ router.post(
                       namaIstri: { type: "string" },
                       namaAnak: { type: "string" },
                       namaKuttab: { type: "string" },
+                      schoolId: { type: "integer" },
                       tahunMasukKuttab: { type: "integer" },
                       bio: { type: "string" }
                   }
@@ -54,6 +55,7 @@ router.put(
                       namaIstri: { type: "string" },
                       namaAnak: { type: "string" },
                       namaKuttab: { type: "string" },
+                      schoolId: { type: "integer" },
                       tahunMasukKuttab: { type: "integer" },
                       bio: { type: "string" }
                   }
