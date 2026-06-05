@@ -38,6 +38,7 @@ const { handleWebhook } = require("./controllers/infaqController.js");
 
 const { fixDuplicateUsernames } = require("./setup/fixDuplicateUsernames.js");
 const setupAdmin = require("./setup/setupAdmin.js");
+const setupAdminZone = require("./setup/setupAdmin.js");
 const swaggerUI = require("swagger-ui-express");
 const { authorizeAdmin } = require("./middlewares/authorizationMiddleware.js");
 const swaggerDoc = require("./swagger-output.json");
@@ -141,6 +142,7 @@ cron.schedule(
 async function initializeApp() {
   try {
     await setupAdmin();
+    await setupAdminZone();
     await fixDuplicateUsernames();
   } catch (e) {
     console.error("Error during initialization:", e);

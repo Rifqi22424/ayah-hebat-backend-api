@@ -6,6 +6,11 @@ require("dotenv").config();
 
 const prisma = new PrismaClient();
 
+async function hashPassword(password) {
+  const hashedPassword = await bcrypt.hash(password, 10);
+  return hashedPassword;
+} 
+
 async function setupAdmin() {
   const adminEmail = process.env.ADMIN_EMAIL;
   const adminPassword = process.env.ADMIN_PASSWORD;
@@ -41,6 +46,69 @@ async function setupAdmin() {
   console.log("Admin user created:", adminUser);
 
   // create user
+}
+
+async function setupAdminZone() {
+  const ADMIN_ZONES = [
+    {
+      username: "jabodetabek",
+      email: "jabodetabek@admin.com",
+      password: "admin123"
+    },
+    {
+      username: "jabar",
+      email: "jabar@admin.com",
+      password: "admin123"
+    },
+    {
+      username: "jateng",
+      email: "jateng@admin.com",
+      password: "admin123"
+    },
+    {
+      username: "jatim",
+      email: "jatim@admin.com",
+      password: "admin123"
+    },
+    {
+      username: "sumatera",
+      email: "sumatera@admin.com",
+      password: "admin123"
+    },
+    {
+      username: "kalsul",
+      email: "kalsul@admin.com",
+      password: "admin123"
+    },
+  ];
+
+  for (const zone in ADMIN_ZONES) {
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        email: zone.email
+      }
+    });
+
+    if (existingUser) {
+      console.log(`Admin Zone ${zone.email} already exists`);
+      continue;
+    }
+
+    const hashedPassword = hashPassword(zone.password);
+
+    const adminUser = await prisma.user.create({
+      data: {
+        username: zone.username,
+        email: zone.email,
+        password: hashedPassword,
+        role: "ADMIN_ZONE",
+        isVerified: true,
+        hasApproved: "approved",
+      }
+    });
+    console.log("Admin zone created: ", adminUser);
+    
+  }
 }
 
 async function setupUser() {

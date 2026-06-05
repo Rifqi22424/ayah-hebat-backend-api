@@ -572,6 +572,29 @@
         }
       }
     },
+    "/user/{save-token{where{id:user.id}}": {
+      "delete": {
+        "tags": [
+          "User Controller"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": null,
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
     "/profile/add-profile": {
       "post": {
         "tags": [
@@ -1765,6 +1788,29 @@
         }
       }
     },
+    "/news/{{where{id:newsId}}": {
+      "delete": {
+        "tags": [
+          "News Controller"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": null,
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
     "/post/": {
       "post": {
         "tags": [
@@ -2020,6 +2066,29 @@
         }
       }
     },
+    "/post/{{where{id:postId}}": {
+      "delete": {
+        "tags": [
+          "Post Controller"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": null,
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
     "/comment/{postId}": {
       "get": {
         "tags": [
@@ -2227,6 +2296,29 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/comment/{postId{where:{id:commentId}}": {
+      "delete": {
+        "tags": [
+          "Comment Controller"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": null,
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
           }
         }
       }
@@ -2460,6 +2552,29 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/reply/{commentId{where:{id:replyId}}": {
+      "delete": {
+        "tags": [
+          "Reply Controller"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": null,
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
           }
         }
       }
@@ -3039,6 +3154,46 @@
         }
       }
     },
+    "/playlist/{{where{id:parseInt(id)}}": {
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": null,
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/playlist/{{where{contentId_playlistId:{contentId:parseInt(contentId)}": {
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": null,
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
     "/books/donation/{id}": {
       "get": {
         "tags": [
@@ -3596,6 +3751,29 @@
         }
       }
     },
+    "/categories/{{where{id:parseInt(id)}}": {
+      "delete": {
+        "tags": [
+          "Categories Controller"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": null,
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
     "/comment-book/{bookId}": {
       "post": {
         "tags": [
@@ -3727,6 +3905,29 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/comment-book/{bookId{where:{id:commentId}": {
+      "delete": {
+        "tags": [
+          "Comment Book Controller"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": null,
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized"
           }
         }
       }
