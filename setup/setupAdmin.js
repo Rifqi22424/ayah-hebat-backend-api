@@ -81,8 +81,11 @@ async function setupAdminZone() {
       password: "admin123"
     },
   ];
+  console.log("ADMIN_ZONES ", ADMIN_ZONES);
 
-  for (const zone in ADMIN_ZONES) {
+  for (const zone of ADMIN_ZONES) {
+    console.log("zone ", zone);
+    console.log("zone.email ", zone.email);
     const existingUser = await prisma.user.findUnique({
       where: {
         email: zone.email
@@ -94,7 +97,7 @@ async function setupAdminZone() {
       continue;
     }
 
-    const hashedPassword = hashPassword(zone.password);
+    const hashedPassword = await hashPassword(zone.password);
 
     const adminUser = await prisma.user.create({
       data: {
@@ -148,4 +151,4 @@ async function userLogin(id) {
   console.log("User token: ", token);
 }
 
-module.exports = setupAdmin;
+module.exports = {setupAdmin, setupAdminZone};
