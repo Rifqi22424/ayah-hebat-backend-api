@@ -151,7 +151,7 @@ const createNews = async (req, res) => {
         return res.status(404).json({ error: 'News not found' });
       }
   
-      await prisma.news.delete({ /* #swagger.ignore = true */
+      await prisma.news['delete']({
         where: { id: newsId },
       });
   

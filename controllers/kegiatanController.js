@@ -347,7 +347,7 @@ const deleteKegiatan = async (req, res) => {
       return res.status(403).json({ error: 'Forbidden: You can only delete your own kegiatan' });
     }
 
-    await prisma.kegiatan.delete({ /* #swagger.ignore = true */
+    await prisma.kegiatan['delete']({
       where: { id: kegiatanId },
     });
 

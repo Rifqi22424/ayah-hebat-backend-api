@@ -122,7 +122,7 @@ const deleteBranch = async (req, res) => {
             return res.status(404).json({ message: 'Branch not found' });
         }
 
-        await prisma.branch.delete({ /* #swagger.ignore = true */
+        await prisma.branch['delete']({
             where: { id: parseInt(id) }
         });
 

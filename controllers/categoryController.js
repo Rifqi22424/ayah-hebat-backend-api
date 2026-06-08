@@ -65,7 +65,7 @@ const deleteCategory = async (req, res) => {
       return res.status(404).json({ error: 'Category not found' });
     }
 
-    await prisma.category.delete({ /* #swagger.ignore = true */
+    await prisma.category['delete']({
       where: { id: parseInt(id) },
     });
 

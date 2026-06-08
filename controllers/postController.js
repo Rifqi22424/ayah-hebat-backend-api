@@ -137,7 +137,7 @@ const deletePost = async (req, res) => {
       return res.status(203).json({ error: "Unauthorized access" });
     }
 
-    const deletePost = await prisma.post.delete({ /* #swagger.ignore = true */
+    const deletePost = await prisma.post['delete']({
       where: { id: postId },
     });
 
