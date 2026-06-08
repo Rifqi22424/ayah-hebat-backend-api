@@ -531,7 +531,7 @@ const deleteBook = async (req, res) => {
     });
 
     // Setelah semua relasi terkait dihapus, hapus buku
-    await prisma.book.delete({
+    await prisma.book.delete({ /* #swagger.ignore = true */
       where: { id: parseInt(id) },
     });
 

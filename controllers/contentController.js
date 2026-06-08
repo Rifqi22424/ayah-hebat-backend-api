@@ -131,7 +131,7 @@ exports.deleteWatch = async (req, res) => {
     const idInt = parseId(videoId);
 
     // Hapus konten, menggunakan `delete` yang akan melempar P2025 jika tidak ditemukan
-    const deletedContent = await prisma.content.delete({
+    const deletedContent = await prisma.content.delete({ /* #swagger.ignore = true */
       where: { id: idInt },
     });
 

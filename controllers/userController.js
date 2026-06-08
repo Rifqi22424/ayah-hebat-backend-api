@@ -252,7 +252,7 @@ const deleteUser = async (req, res) => {
       },
     });
 
-    const deleteUser = await prisma.user.delete({
+    const deleteUser = await prisma.user.delete({ /* #swagger.ignore = true */
       where: { id: user.id },
     });
 

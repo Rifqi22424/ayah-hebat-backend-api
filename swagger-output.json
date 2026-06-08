@@ -572,29 +572,6 @@
         }
       }
     },
-    "/user/{save-token{where{id:user.id}}": {
-      "delete": {
-        "tags": [
-          "User Controller"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": null,
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "401": {
-            "description": "Unauthorized"
-          }
-        }
-      }
-    },
     "/profile/add-profile": {
       "post": {
         "tags": [
@@ -1162,70 +1139,6 @@
             }
           }
         }
-      },
-      "delete": {
-        "tags": [
-          "Kegiatan Controller"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID kegiatan"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Kegiatan berhasil dihapus",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Kegiatan deleted successfully"
-                    }
-                  },
-                  "xml": {
-                    "name": "main"
-                  }
-                }
-              },
-              "application/xml": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Kegiatan deleted successfully"
-                    }
-                  },
-                  "xml": {
-                    "name": "main"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden - User hanya bisa menghapus kegiatan sendiri"
-          },
-          "404": {
-            "description": "Kegiatan tidak ditemukan"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
       }
     },
     "/question/": {
@@ -1753,62 +1666,6 @@
             }
           }
         }
-      },
-      "delete": {
-        "tags": [
-          "News Controller"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/news/{{where{id:newsId}}": {
-      "delete": {
-        "tags": [
-          "News Controller"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": null,
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "401": {
-            "description": "Unauthorized"
-          }
-        }
       }
     },
     "/post/": {
@@ -1927,39 +1784,6 @@
             }
           }
         }
-      },
-      "delete": {
-        "tags": [
-          "Post Controller"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "postId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "203": {
-            "description": "Non-Authoritative Information"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
       }
     },
     "/post/search": {
@@ -2062,29 +1886,6 @@
           },
           "500": {
             "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/post/{{where{id:postId}}": {
-      "delete": {
-        "tags": [
-          "Post Controller"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": null,
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "401": {
-            "description": "Unauthorized"
           }
         }
       }
@@ -2233,39 +2034,6 @@
             }
           }
         }
-      },
-      "delete": {
-        "tags": [
-          "Comment Controller"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "commentId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "203": {
-            "description": "Non-Authoritative Information"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
       }
     },
     "/comment/{commentId}/like": {
@@ -2296,29 +2064,6 @@
           },
           "500": {
             "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/comment/{postId{where:{id:commentId}}": {
-      "delete": {
-        "tags": [
-          "Comment Controller"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": null,
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "401": {
-            "description": "Unauthorized"
           }
         }
       }
@@ -2467,39 +2212,6 @@
             }
           }
         }
-      },
-      "delete": {
-        "tags": [
-          "Reply Controller"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "replyId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "203": {
-            "description": "Non-Authoritative Information"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
       }
     },
     "/reply/": {
@@ -2552,29 +2264,6 @@
           },
           "500": {
             "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/reply/{commentId{where:{id:replyId}}": {
-      "delete": {
-        "tags": [
-          "Reply Controller"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": null,
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "401": {
-            "description": "Unauthorized"
           }
         }
       }
@@ -2996,33 +2685,6 @@
           }
         }
       },
-      "delete": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      },
       "patch": {
         "description": "",
         "parameters": [
@@ -3113,83 +2775,6 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/playlist/{playlistId}/contents/{contentId}": {
-      "delete": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "playlistId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "contentId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/playlist/{{where{id:parseInt(id)}}": {
-      "delete": {
-        "description": "",
-        "parameters": [
-          {
-            "name": null,
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "401": {
-            "description": "Unauthorized"
-          }
-        }
-      }
-    },
-    "/playlist/{{where{contentId_playlistId:{contentId:parseInt(contentId)}": {
-      "delete": {
-        "description": "",
-        "parameters": [
-          {
-            "name": null,
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "401": {
-            "description": "Unauthorized"
           }
         }
       }
@@ -3578,36 +3163,6 @@
             }
           }
         }
-      },
-      "delete": {
-        "tags": [
-          "Books Controller"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
       }
     },
     "/categories/": {
@@ -3716,62 +3271,6 @@
             }
           }
         }
-      },
-      "delete": {
-        "tags": [
-          "Categories Controller"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/categories/{{where{id:parseInt(id)}}": {
-      "delete": {
-        "tags": [
-          "Categories Controller"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": null,
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "401": {
-            "description": "Unauthorized"
-          }
-        }
       }
     },
     "/comment-book/{bookId}": {
@@ -3867,67 +3366,6 @@
                 }
               }
             }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Comment Book Controller"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": "bookId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "commentId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/comment-book/{bookId{where:{id:commentId}": {
-      "delete": {
-        "tags": [
-          "Comment Book Controller"
-        ],
-        "description": "",
-        "parameters": [
-          {
-            "name": null,
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "401": {
-            "description": "Unauthorized"
           }
         }
       }
@@ -4473,39 +3911,6 @@
                 }
               }
             }
-          }
-        }
-      },
-      "delete": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
           }
         }
       }
@@ -5325,109 +4730,6 @@
             }
           }
         }
-      },
-      "delete": {
-        "tags": [
-          "Admin - Branch"
-        ],
-        "description": "Menghapus cabang berdasarkan ID.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID Cabang"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/admin/branches/{{where{id:parseInt(id)}});res.status(200).json({message:Branchdeletedsuccessfully});}catch(error){console.error(error);res.status(500).json({error:InternalServerError});}};module.exports={createBranch}": {
-      "delete": {
-        "tags": [
-          "Admin - Branch"
-        ],
-        "description": "Menambahkan cabang baru ke dalam database.",
-        "parameters": [
-          {
-            "name": "{where{id:parseInt(id)}});res.status(200).json({message:Branchdeletedsuccessfully});",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "console.error(error);res.status(500).json({error:InternalServerError});",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "createBranch",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "Nama Cabang"
-                  },
-                  "zoneId": {
-                    "type": "integer",
-                    "description": "ID Zona"
-                  }
-                },
-                "required": [
-                  "name",
-                  "zoneId"
-                ]
-              }
-            }
-          }
-        }
       }
     },
     "/admin/zones/": {
@@ -5541,107 +4843,6 @@
                   "name": {
                     "type": "string",
                     "description": "Nama Zona Baru"
-                  }
-                },
-                "required": [
-                  "name"
-                ]
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "Admin - Zone"
-        ],
-        "description": "Menghapus zona berdasarkan ID.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "ID Zona"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/admin/zones/{{where{id:parseInt(id)}});res.status(200).json({message:Zonedeletedsuccessfully});}catch(error){console.error(error);res.status(500).json({error:InternalServerError});}};module.exports={createZone}": {
-      "delete": {
-        "tags": [
-          "Admin - Zone"
-        ],
-        "description": "Menambahkan zona baru ke dalam database.",
-        "parameters": [
-          {
-            "name": "{where{id:parseInt(id)}});res.status(200).json({message:Zonedeletedsuccessfully});",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "console.error(error);res.status(500).json({error:InternalServerError});",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "createZone",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "Nama Zona"
                   }
                 },
                 "required": [

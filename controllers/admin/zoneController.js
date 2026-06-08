@@ -104,7 +104,7 @@ const deleteZone = async (req, res) => {
             return res.status(400).json({ message: 'Zone cannot be deleted because it has branches' });
         }
 
-        await prisma.zone.delete({
+        await prisma.zone.delete({ /* #swagger.ignore = true */
             where: { id: parseInt(id) }
         });
 

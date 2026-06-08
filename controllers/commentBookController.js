@@ -100,7 +100,7 @@ const deleteComment = async (req, res) => {
       });
     }
 
-    await prisma.commentBook.delete({
+    await prisma.commentBook.delete({ /* #swagger.ignore = true */
       where: {
         id: commentId,
       },
