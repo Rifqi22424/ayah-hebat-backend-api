@@ -14,6 +14,7 @@ CREATE TABLE `User` (
     `deleteAccountVerficationCode` VARCHAR(191) NULL,
     `deleteReason` TEXT NULL,
     `isActive` BOOLEAN NOT NULL DEFAULT true,
+    `hasApproved` VARCHAR(191) NULL,
 
     UNIQUE INDEX `User_email_key`(`email`),
     PRIMARY KEY (`id`)

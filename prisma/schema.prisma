@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,62 +7,50 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  ADMIN
-  USER
-}
-
 model User {
   id                           Int            @id @default(autoincrement())
-  username                     String         @unique
+  username                     String
   email                        String         @unique
   password                     String
-  profile                      Profile?
-  kegiatan                     Kegiatan[]
-  notifications                Notification[]
-  posts                        Post[]
-  postLikes                    PostLike[]
-  postUnlikes                  PostDislike[]
-  comments                     Comment[]
-  CommentLike                  CommentLike[]
-  reply                        Reply[]
-  replyLike                    ReplyLike[]
-  Report                       Report[]
-  peminjaman                   Peminjaman[]
-  commentBook                  CommentBook[]
-  books                        Book[]
-  Infaq                        Infaq[]
-  alms                         Alms[]
   isVerified                   Boolean        @default(false)
   verificationCode             String?
-  deleteAccountVerficationCode String?
-  deleteReason                 String?        @db.Text
-  isActive                     Boolean        @default(true)
-  fcmToken                     String?
   totalScoreYear               Int?           @default(0)
   totalScoreMonth              Int?           @default(0)
   totalScoreDay                Int?           @default(0)
-  role                         Role?          @default(USER)
-
+  fcmToken                     String?
+  role                         User_role?     @default(USER)
+  deleteAccountVerficationCode String?
+  deleteReason                 String?        @db.Text
+  isActive                     Boolean        @default(true)
   hasApproved                  String?
-  // uploadedContents         Content[]
-  Content Content[]
+  alms                         Alms[]
+  books                        Book[]
+  commentBook                  CommentBook[]
+  Content                      Content[]
+  Infaq                        Infaq[]
+  kegiatan                     Kegiatan[]
+  notifications                Notification[]
+  peminjaman                   Peminjaman[]
+  profile                      Profile?
 }
 
 model Profile {
-  id               Int     @id @default(autoincrement())
+  id               Int       @id @default(autoincrement())
   nama             String?
-  bio              String? @db.Text
+  bio              String?
   photo            String?
   namaIstri        String?
-  namaKuttab       String?
   namaAnak         String?
   tahunMasukKuttab Int?
-  user             User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId           Int     @unique
+  userId           Int       @unique
+  namaKuttab       String?
+  forgotCode       String?   @unique
+  branchId         Int?
+  forgotExpiredAt  DateTime?
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  branch           Branch? @relation(fields: [branchId], references: [id])
 
-  forgotCode      String?   @unique
-  forgotExpiredAt DateTime?
+  @@index([branchId], map: "Profile_branchId_fkey")
 }
 
 model Kegiatan {
@@ -82,6 +64,8 @@ model Kegiatan {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "Kegiatan_userId_fkey")
 }
 
 model Question {
@@ -97,12 +81,14 @@ model Notification {
   id        Int      @id @default(autoincrement())
   title     String
   body      String
-  data      Json
+  data      String   @db.LongText
   userId    Int
   imageUrl  String?
   createdAt DateTime @default(now())
   updateAt  DateTime @updatedAt
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "Notification_userId_fkey")
 }
 
 model News {
@@ -117,17 +103,11 @@ model News {
 }
 
 model Post {
-  id           Int           @id @default(autoincrement())
-  userId       Int
-  body         String        @db.Text
-  postLikes    PostLike[]
-  postDislikes PostDislike[]
-  comments     Comment[]
-  createdAt    DateTime      @default(now())
-  updateAt     DateTime      @updatedAt
-  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  Report Report[]
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  body      String   @db.Text
+  createdAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
 }
 
 model PostLike {
@@ -136,8 +116,6 @@ model PostLike {
   postId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
 model PostDislike {
@@ -146,22 +124,15 @@ model PostDislike {
   postId    Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
 model Comment {
-  id           Int           @id @default(autoincrement())
-  userId       Int
-  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  body         String        @db.Text
-  postId       Int
-  post         Post          @relation(fields: [postId], references: [id], onDelete: Cascade)
-  commentLikes CommentLike[]
-  replies      Reply[]
-  Report       Report[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  body      String   @db.Text
+  postId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model CommentLike {
@@ -170,29 +141,21 @@ model CommentLike {
   commentId Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
 }
 
 model Reply {
-  id         Int         @id @default(autoincrement())
-  userId     Int
-  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  body       String      @db.Text
-  commentId  Int
-  comment    Comment     @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  replyLikes ReplyLike[]
-  Report     Report[]
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  body      String   @db.Text
+  commentId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model ReplyLike {
   id        Int      @id @default(autoincrement())
   userId    Int
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   replyId   Int
-  reply     Reply    @relation(fields: [replyId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -204,13 +167,6 @@ model userDeleted {
   deletedAt    DateTime @default(now())
 }
 
-enum BookStatus {
-  PENDING // Pengajuan
-  ACCEPTED // Diterima
-  REJECTED // Ditolak oleh admin
-  CANCELLED // Dibatalkan oleh user yang mengajukan buku tersebut
-}
-
 model Book {
   id           Int              @id @default(autoincrement())
   name         String
@@ -218,19 +174,19 @@ model Book {
   stock        Int
   imageurl     String
   userId       Int
-  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   status       BookStatus       @default(PENDING)
+  planSentAt   DateTime         @default(now())
+  acceptedAt   DateTime?
+  rejectedAt   DateTime?
+  canceledAt   DateTime?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   categories   BookCategories[]
-  peminjaman   Peminjaman[]
   comment_book CommentBook[]
+  peminjaman   Peminjaman[]
 
-  planSentAt DateTime  @default(now()) // dikirim oleh user ke admin pada waktu
-  acceptedAt DateTime? // diterima oleh admin pada waktu
-  rejectedAt DateTime? // ditolak oleh admin pada waktu
-  canceledAt DateTime? // dibatalkan oleh user pada waktu
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@index([userId], map: "Book_userId_fkey")
 }
 
 model OfficeAddress {
@@ -243,40 +199,36 @@ model OfficeAddress {
 
 model CommentBook {
   id          Int      @id @default(autoincrement())
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId      Int
-  book        Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
   bookId      Int
   description String   @db.Text
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-}
+  book        Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-enum BorrowStatus {
-  PENDING // Pengajuan
-  ALLOWED // Diizinkan Diambil
-  TAKEN // Sudah Diambil
-  RETURNED // Sudah Dikembalikan
-  CANCELLED // Dibatalkan
+  @@index([bookId], map: "CommentBook_bookId_fkey")
+  @@index([userId], map: "CommentBook_userId_fkey")
 }
 
 model Peminjaman {
-  id     Int          @id @default(autoincrement())
-  book   Book         @relation(fields: [bookId], references: [id], onDelete: Cascade)
-  bookId Int
-  user   User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId Int
-  status BorrowStatus @default(PENDING)
+  id                Int          @id @default(autoincrement())
+  bookId            Int
+  userId            Int
+  status            BorrowStatus @default(PENDING)
+  submissionDate    DateTime     @default(now())
+  deadlineDate      DateTime
+  plannedPickUpDate DateTime
+  actualPickUpDate  DateTime?
+  returnDate        DateTime?
+  cancelDate        DateTime?
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+  book              Book         @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  user              User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  submissionDate    DateTime  @default(now()) // Tanggal pengajuan
-  deadlineDate      DateTime // Deadline pengembalian buku
-  plannedPickUpDate DateTime // Tanggal yang direncanakan untuk mengambil buku
-  actualPickUpDate  DateTime? // Tanggal saat buku benar-benar diambil
-  returnDate        DateTime? // Tanggal saat buku dikembalikan
-  cancelDate        DateTime? // Tanggal pembatalan peminjaman (jika dibatalkan)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@index([bookId], map: "Peminjaman_bookId_fkey")
+  @@index([userId], map: "Peminjaman_userId_fkey")
 }
 
 model Category {
@@ -286,31 +238,28 @@ model Category {
 }
 
 model BookCategories {
-  book       Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
   bookId     Int
-  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId Int
+  book       Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@id([categoryId, bookId])
+  @@index([bookId], map: "BookCategories_bookId_fkey")
 }
 
 model Report {
   id        Int      @id @default(autoincrement())
   userId    Int
-  postId    Int? // Optional, if reporting a pos
-  commentId Int? // Optional, if reporting a comment
-  replyId   Int? // Optional, if reporting a reply
+  postId    Int?
+  commentId Int?
+  replyId   Int?
   reason    String   @db.Text
   status    String   @default("Pending")
   createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
-  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
-  reply     Reply?   @relation(fields: [replyId], references: [id], onDelete: Cascade)
 }
 
 model Infaq {
-  id                 Int      @id @default(autoincrement())
+  id                 String   @id
   userId             Int
   amount             Float
   status             String   @default("pending")
@@ -321,6 +270,8 @@ model Infaq {
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
   user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "Infaq_userId_fkey")
 }
 
 model Alms {
@@ -334,6 +285,8 @@ model Alms {
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
   user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "Alms_userId_fkey")
 }
 
 model AllocationType {
@@ -353,25 +306,25 @@ model ErrorLog {
 }
 
 model Content {
-  id           Int      @id @default(autoincrement())
-  title        String
-  description  String?
-  thumbnailUrl String
-  videoUrl     String
-  duration     Int?
-  views        Int      @default(0)
-  publishedAt  DateTime @default(now())
-  uploaderId   Int
-  uploader     User     @relation(fields: [uploaderId], references: [id])
-
+  id              Int               @id @default(autoincrement())
+  title           String
+  description     String?
+  thumbnailUrl    String
+  videoUrl        String
+  duration        Int?
+  views           Int               @default(0)
+  publishedAt     DateTime          @default(now())
+  uploaderId      Int
+  uploader        User              @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
   PlaylistContent PlaylistContent[]
+
+  @@index([uploaderId], map: "Content_uploaderId_fkey")
 }
 
 model Playlist {
-  id          Int     @id @default(autoincrement())
-  title       String
-  description String?
-
+  id              Int               @id @default(autoincrement())
+  title           String
+  description     String?
   PlaylistContent PlaylistContent[]
 }
 
@@ -379,9 +332,51 @@ model PlaylistContent {
   contentId  Int
   playlistId Int
   order      Int
-  content    Content  @relation(fields: [contentId], references: [id])
-  playlist   Playlist @relation(fields: [playlistId], references: [id])
+  content    Content  @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  playlist   Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
 
   @@id([contentId, playlistId])
   @@unique([playlistId, order])
+}
+
+model Zone {
+  id Int @id @default(autoincrement())
+  name String @unique
+  branches Branch[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Branch {
+  id Int @id @default(autoincrement())
+  name String
+  zoneId Int
+  zone Zone @relation(fields: [zoneId], references: [id])
+  profiles Profile[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@unique([name, zoneId])
+  @@index([zoneId], map: "Branch_zoneId_fkey")
+}
+
+enum BookStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELLED
+}
+
+enum BorrowStatus {
+  PENDING
+  ALLOWED
+  TAKEN
+  RETURNED
+  CANCELLED
+}
+
+enum User_role {
+  ADMIN
+  ADMIN_ZONE
+  USER
 }
