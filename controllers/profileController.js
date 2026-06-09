@@ -190,12 +190,15 @@ const getUserNProfile = async (req, res) => {
     const user = await prisma.user.findUnique({
       where: { id: userId },
       include: {
+        profile: true,
+        include: {
           branch: {
             include: {
               zone: true
             }
           }
       },
+      }
     });
 
     if (!user) {
