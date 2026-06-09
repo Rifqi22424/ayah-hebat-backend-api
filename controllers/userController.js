@@ -209,6 +209,7 @@ const getAllUsers = async (req, res) => {
       console.log("admins ", admin);
 
       whereCondition = {
+        ...whereCondition,
         zoneId: adminZoneId
       }
     }
