@@ -7,11 +7,11 @@
   - A unique constraint covering the columns `[username]` on the table `User` will be added. If there are existing duplicate values, this will fail.
 
 */
--- AlterTable
-ALTER TABLE `Profile` ADD COLUMN `branchId` INTEGER NULL;
 
 -- AlterTable
-ALTER TABLE `User` MODIFY `role` ENUM('ADMIN', 'ADMIN_ZONE', 'USER') NULL DEFAULT 'USER';
+ALTER TABLE `User` ADD COLUMN `branchId` INTEGER NULL,
+    ADD COLUMN `zoneId` INTEGER NULL,
+    MODIFY `role` ENUM('ADMIN', 'ADMIN_ZONE', 'USER') NULL DEFAULT 'USER';
 
 -- CreateTable
 CREATE TABLE `Zone` (
@@ -40,7 +40,10 @@ CREATE TABLE `Branch` (
 CREATE UNIQUE INDEX `User_username_key` ON `User`(`username`);
 
 -- AddForeignKey
-ALTER TABLE `Profile` ADD CONSTRAINT `Profile_branchId_fkey` FOREIGN KEY (`branchId`) REFERENCES `Branch`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `User` ADD CONSTRAINT `User_branchId_fkey` FOREIGN KEY (`branchId`) REFERENCES `Branch`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `User` ADD CONSTRAINT `User_zoneId_fkey` FOREIGN KEY (`zoneId`) REFERENCES `Zone`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Branch` ADD CONSTRAINT `Branch_zoneId_fkey` FOREIGN KEY (`zoneId`) REFERENCES `Zone`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

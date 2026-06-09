@@ -126,16 +126,16 @@ const resendDeleteAccountVerificationCode = async (req, res) => {
 
 const updateUserApproval = async (req, res) => {
   try {
-  
-    const { userId, status } = req.body; 
+
+    const { userId, status } = req.body;
 
     if (!userId) {
       return res.status(400).json({ error: "User ID is required" });
     }
 
     if (status !== 'approved' && status !== 'disapproved') {
-      return res.status(400).json({ 
-        error: "Status harus berisi string 'approved' atau 'disapproved'" 
+      return res.status(400).json({
+        error: "Status harus berisi string 'approved' atau 'disapproved'"
       });
     }
 
@@ -149,16 +149,16 @@ const updateUserApproval = async (req, res) => {
 
     if (existingUser.hasApproved === status) {
       const messageStatus = status === 'approved' ? 'di Approve' : 'di Disapprove';
-      
-      return res.status(200).json({ 
-        error: `User ini sudah ${messageStatus} sebelumnya.` 
+
+      return res.status(200).json({
+        error: `User ini sudah ${messageStatus} sebelumnya.`
       });
     }
 
     const updatedUser = await prisma.user.update({
       where: { id: parseInt(userId) },
       data: {
-        hasApproved: status 
+        hasApproved: status
       }
     });
 
@@ -167,7 +167,7 @@ const updateUserApproval = async (req, res) => {
       data: {
         id: updatedUser.id,
         email: updatedUser.email,
-        hasApproved: updatedUser.hasApproved 
+        hasApproved: updatedUser.hasApproved
       }
     });
 
@@ -191,8 +191,8 @@ const getAllUsers = async (req, res) => {
     }
 
     const currentUser = await prisma.user.findUnique({
-            where: {id: req.userId},
-        });
+      where: { id: req.userId },
+    });
 
     if (currentUser.role === "ADMIN_ZONE") {
       const admin = await prisma.user.findUnique({
@@ -200,22 +200,16 @@ const getAllUsers = async (req, res) => {
           id: currentUser.id
         },
         select: {
-          profile: {
-            select: {
-              zoneId: true
-            }
-          }
+          zoneId: true
         }
       });
 
-      const adminZoneId = admin?.profile?.zoneId;
+      const adminZoneId = admin?.zoneId;
 
       console.log("admins ", admin);
 
-      whereCondition.profile = {
-        zone: {
-          id: adminZoneId
-        }
+      whereCondition = {
+        zoneId: adminZoneId
       }
     }
 
@@ -224,17 +218,17 @@ const getAllUsers = async (req, res) => {
     const users = await prisma.user.findMany({
       where: whereCondition,
       orderBy: {
-        id: 'desc' 
+        id: 'desc'
       },
       select: {
         id: true,
         email: true,
-        username: true, 
+        username: true,
         role: true,
         isVerified: true,
         isActive: true,
         hasApproved: true,
-        profile: true, 
+        profile: true,
       }
     });
 

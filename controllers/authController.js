@@ -17,7 +17,7 @@ const saltRounds = 10;
 
 const registerUser = async (req, res) => {
   try {
-    const { username, email, password, confirmPassword } = req.body;
+    const { username, email, password, confirmPassword, branchId, zoneId } = req.body;
 
     console.log(req.body);
 
@@ -45,6 +45,10 @@ const registerUser = async (req, res) => {
     if (existingUsername && existingUsername.isVerified) {
       return res.status(400).json({ error: "Username is already taken" });
     }
+        // const parsedBranchId = branchId ? parseInt(branchId) : null;
+
+    const parsedBranchId = branchId ? parseInt(branchId) : null;
+    const parsedZoneId = zoneId ? parseInt(zoneId) : null;
 
     // Jika email sudah ada tetapi belum diverifikasi
     if (existingUser && !existingUser.isVerified) {
@@ -56,6 +60,8 @@ const registerUser = async (req, res) => {
           email,
           password: await bcrypt.hash(password, saltRounds),
           verificationCode,
+          ...(parsedBranchId !== null && { branchId: parsedBranchId }),
+          ...(parsedZoneId !== null && { zoneId: parsedZoneId }),
         },
       });
       sendVerificationEmail(email, verificationCode);
@@ -74,6 +80,8 @@ const registerUser = async (req, res) => {
           email,
           password: await bcrypt.hash(password, saltRounds),
           verificationCode,
+          ...(parsedBranchId !== null && { branchId: parsedBranchId }),
+          ...(parsedZoneId !== null && { zoneId: parsedZoneId }),
         },
       });
       sendVerificationEmail(email, verificationCode);
@@ -92,6 +100,8 @@ const registerUser = async (req, res) => {
         email,
         password: hashedPassword,
         verificationCode,
+        ...(parsedBranchId !== null && { branchId: parsedBranchId }),
+        ...(parsedZoneId !== null && { zoneId: parsedZoneId }),
       },
     });
 

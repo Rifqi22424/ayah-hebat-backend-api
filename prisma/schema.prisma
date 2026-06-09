@@ -50,10 +50,12 @@ model User {
   totalScoreMonth              Int?           @default(0)
   totalScoreDay                Int?           @default(0)
   role                         Role?          @default(USER)
-
   hasApproved                  String?
-  // uploadedContents         Content[]
-  Content Content[]
+  branch                       Branch?        @relation(fields: [branchId], references: [id])
+  branchId                     Int?
+  zone                         Zone?          @relation(fields: [zoneId], references: [id])
+  zoneId                       Int?
+  Content                      Content[]
 }
 
 model Profile {
@@ -67,10 +69,6 @@ model Profile {
   tahunMasukKuttab Int?
   user             User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId           Int     @unique
-  branch           Branch? @relation(fields: [branchId], references: [id])
-  branchId         Int?
-  zone            Zone? @relation(fields: [zoneId], references: [id])
-  zoneId          Int?
 
   forgotCode      String?   @unique
   forgotExpiredAt DateTime?
@@ -392,12 +390,12 @@ model PlaylistContent {
 }
 
 model Zone {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
   branches  Branch[]
-  profiles  Profile[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  users     User[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Branch {
@@ -405,7 +403,7 @@ model Branch {
   name      String
   zone      Zone      @relation(fields: [zoneId], references: [id])
   zoneId    Int
-  profiles  Profile[]
+  users     User[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 

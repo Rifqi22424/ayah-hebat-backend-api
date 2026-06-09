@@ -30,7 +30,7 @@ async function fixEmptyZoneAndBranch() {
 			return;
 		}
 
-		const profilesToFix = await prisma.profile.findMany({
+		const usersToFix = await prisma.user.findMany({
 			where: {
 				zoneId: null,
 				branchId: null,
@@ -40,15 +40,15 @@ async function fixEmptyZoneAndBranch() {
 			},
 		});
 
-		if (profilesToFix.length === 0) {
-			console.log("All profiles already have zone and branch.");
+		if (usersToFix.length === 0) {
+			console.log("All users already have zone and branch.");
 			return;
 		}
 
-		const result = await prisma.profile.updateMany({
+		const result = await prisma.user.updateMany({
 			where: {
 				id: {
-					in: profilesToFix.map((profile) => profile.id),
+					in: usersToFix.map((user) => user.id),
 				},
 			},
 			data: {
@@ -58,7 +58,7 @@ async function fixEmptyZoneAndBranch() {
 		});
 
 		console.log(
-			`Fixed ${result.count} profile(s) with default zone ${DEFAULT_ZONE_NAME} and branch ${DEFAULT_BRANCH_NAME}.`,
+			`Fixed ${result.count} user(s) with default zone ${DEFAULT_ZONE_NAME} and branch ${DEFAULT_BRANCH_NAME}.`,
 		);
 	} catch (error) {
 		console.error("Error fixing empty zone and branch:", error);

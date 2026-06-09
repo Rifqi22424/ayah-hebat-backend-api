@@ -189,6 +189,12 @@ async function setupAdminZone() {
       continue;
     }
 
+    const zoneObject = await prisma.zone.findFirst({
+      where: {
+        name: zone.zoneName
+      }
+    });
+
     const hashedPassword = await hashPassword(zone.password);
 
     const adminUser = await prisma.user.create({
@@ -199,6 +205,8 @@ async function setupAdminZone() {
         role: "ADMIN_ZONE",
         isVerified: true,
         hasApproved: "approved",
+        zoneId: zoneObject.id,
+        // zone: zoneObject,
       }
     });
     console.log("Admin zone created: ", adminUser);
@@ -206,40 +214,40 @@ async function setupAdminZone() {
   }
 }
 
-async function setupAdminZoneProfile() {
-  for (const adminZone of ADMIN_ZONES) {
-    const user = await prisma.user.findUnique({
-      where: { email: adminZone.email },
-    });
+// async function setupAdminZoneProfile() {
+//   for (const adminZone of ADMIN_ZONES) {
+//     const user = await prisma.user.findUnique({
+//       where: { email: adminZone.email },
+//     });
 
-    if (!user) {
-      console.log(`Admin zone user not found: ${adminZone.email}`);
-      continue;
-    }
+//     if (!user) {
+//       console.log(`Admin zone user not found: ${adminZone.email}`);
+//       continue;
+//     }
 
-    const zone = await prisma.zone.findUnique({
-      where: { name: adminZone.zoneName },
-    });
+//     const zone = await prisma.zone.findUnique({
+//       where: { name: adminZone.zoneName },
+//     });
 
-    if (!zone) {
-      console.log(`Zone not found for admin ${adminZone.email}: ${adminZone.zoneName}`);
-      continue;
-    }
+//     if (!zone) {
+//       console.log(`Zone not found for admin ${adminZone.email}: ${adminZone.zoneName}`);
+//       continue;
+//     }
 
-    await prisma.profile.upsert({
-      where: { userId: user.id },
-      update: {
-        zoneId: zone.id,
-      },
-      create: {
-        userId: user.id,
-        zoneId: zone.id,
-      },
-    });
+//     await prisma.profile.upsert({
+//       where: { userId: user.id },
+//       update: {
+//         zoneId: zone.id,
+//       },
+//       create: {
+//         userId: user.id,
+//         zoneId: zone.id,
+//       },
+//     });
 
-    console.log(`Admin zone profile synced: ${adminZone.email} -> ${adminZone.zoneName}`);
-  }
-}
+//     console.log(`Admin zone profile synced: ${adminZone.email} -> ${adminZone.zoneName}`);
+//   }
+// }
 
 async function setupUser() {
   const username = process.env.USER_NAME;
@@ -283,5 +291,5 @@ module.exports = {
   setupZone,
   setupBranch,
   setupAdminZone,
-  setupAdminZoneProfile,
+  // setupAdminZoneProfile,
 };

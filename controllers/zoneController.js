@@ -5,15 +5,15 @@ const getZones = async (req, res) => {
     try {
         const zones = await prisma.zone.findMany({
             orderBy: { name: 'asc' },
-            include: {
-                branches: {
-                    orderBy: { name: 'asc' },
-                    select: {
-                        id: true,
-                        name: true
-                    }
-                }
-            }
+            // include: {
+            //     branches: {
+            //         orderBy: { name: 'asc' },
+            //         select: {
+            //             id: true,
+            //             name: true
+            //         }
+            //     }
+            // }
         });
         res.status(200).json({ data: zones });
     } catch (error) {

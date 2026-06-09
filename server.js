@@ -47,7 +47,7 @@ const {
   setupZone,
   setupBranch,
   setupAdminZone,
-  setupAdminZoneProfile,
+  // setupAdminZoneProfile,
 } = require("./setup/setupAdmin.js");
 const swaggerUI = require("swagger-ui-express");
 const { authorizeAdmin } = require("./middlewares/authorizationMiddleware.js");
@@ -85,6 +85,9 @@ app.post("/midtrans", handleWebhook);
 app.get("/favicon.ico", (req, res) => {
   res.status(204).end(); // Kirim 'No Content' (tidak ada ikon)
 });
+
+app.use("/branches", branchRoutes);
+app.use("/zones", zoneRoutes);
 // app.use('/.well-known', express.static(path.join(__dirname, '.well-known')));
 app.use(authenticateToken);
 
@@ -108,8 +111,6 @@ app.use("/infaq", infaqRoutes);
 app.use("/allocation", allocationTypeRoutes);
 app.use("/watch", watchRoutes);
 app.use("/alms", almsRoutes);
-app.use("/branches", branchRoutes);
-app.use("/zones", zoneRoutes);
 
 app.use(authorizeAdmin);
 app.use("/admin/peminjaman-buku", peminjamanManamagementRoutes);
@@ -157,7 +158,7 @@ async function initializeApp() {
     await setupZone();
     await setupBranch();
     await setupAdminZone();
-    await setupAdminZoneProfile();
+    // await setupAdminZoneProfile();
     await fixDuplicateUsernames();
     await fixEmptyZoneAndBranch();
   } catch (e) {
