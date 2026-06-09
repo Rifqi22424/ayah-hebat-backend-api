@@ -15,6 +15,7 @@ datasource db {
 
 enum Role {
   ADMIN
+  ADMIN_ZONE
   USER
 }
 
@@ -66,6 +67,10 @@ model Profile {
   tahunMasukKuttab Int?
   user             User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId           Int     @unique
+  branch           Branch? @relation(fields: [branchId], references: [id])
+  branchId         Int?
+  zone            Zone? @relation(fields: [zoneId], references: [id])
+  zoneId          Int?
 
   forgotCode      String?   @unique
   forgotExpiredAt DateTime?
@@ -384,4 +389,25 @@ model PlaylistContent {
 
   @@id([contentId, playlistId])
   @@unique([playlistId, order])
+}
+
+model Zone {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  branches  Branch[]
+  profiles  Profile[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Branch {
+  id        Int       @id @default(autoincrement())
+  name      String
+  zone      Zone      @relation(fields: [zoneId], references: [id])
+  zoneId    Int
+  profiles  Profile[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@unique([name, zoneId])
 }

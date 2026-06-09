@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 const addProfile = async (req, res) => {
   try {
-    const { nama, namaIstri, namaAnak, namaKuttab, tahunMasukKuttab, bio } =
+    const { nama, namaIstri, namaAnak, namaKuttab, tahunMasukKuttab, bio, branchId, zoneId } =
       req.body;
     const userId = req.userId;
 
@@ -12,9 +12,9 @@ const addProfile = async (req, res) => {
       !nama ||
       !namaIstri ||
       !namaAnak ||
-      !namaKuttab ||
       !tahunMasukKuttab ||
-      !bio
+      !bio ||
+      (!namaKuttab && (!branchId && !zoneId))
     ) {
       return res
         .status(400)
@@ -22,6 +22,8 @@ const addProfile = async (req, res) => {
     }
 
     const tahunMasukKuttabInt = parseInt(tahunMasukKuttab);
+    const parsedBranchId = branchId ? parseInt(branchId) : null;
+    const parsedZoneId = zoneId ? parseInt(zoneId) : null;
 
     const user = await prisma.user.findUnique({
       where: { id: userId },
@@ -48,6 +50,8 @@ const addProfile = async (req, res) => {
           tahunMasukKuttab: tahunMasukKuttabInt,
           bio,
           photo: photoFilename,
+          ...(parsedBranchId !== null && { branchId: parsedBranchId }),
+          ...(parsedZoneId !== null && { zoneId: parsedZoneId })
         },
       });
       return res.json({ message: "Profile updated successfully." });
@@ -63,6 +67,8 @@ const addProfile = async (req, res) => {
           bio,
           photo: photoFilename,
           user: { connect: { id: userId } },
+          ...(parsedBranchId !== null && { branch: { connect: { id: parsedBranchId } } }),
+          ...(parsedZoneId !== null && { zone: { connect: { id: parsedZoneId } } })
         },
       });
       return res.json({ message: "Profile added successfully." });
@@ -75,11 +81,12 @@ const addProfile = async (req, res) => {
 
 const editProfile = async (req, res) => {
   try {
-    const { nama, namaIstri, namaAnak, namaKuttab, tahunMasukKuttab, bio } =
+    const { nama, namaIstri, namaAnak, namaKuttab, tahunMasukKuttab, bio, branchId } =
       req.body;
     const userId = req.userId;
 
     const tahunMasukKuttabInt = parseInt(tahunMasukKuttab);
+    const parsedBranchId = branchId ? parseInt(branchId) : null;
 
     const existingProfile = await prisma.profile.findUnique({
       where: { userId },
@@ -106,6 +113,7 @@ const editProfile = async (req, res) => {
         tahunMasukKuttab: tahunMasukKuttabInt,
         photo: photoFilename,
         bio,
+        ...(parsedBranchId !== null && { branchId: parsedBranchId })
       },
     });
 
@@ -131,6 +139,11 @@ const getProfile = async (req, res) => {
         namaAnak: true,
         namaKuttab: true,
         tahunMasukKuttab: true,
+        branch: {
+          include: {
+            zone: true
+          }
+        },
       },
     });
 
@@ -175,7 +188,15 @@ const getUserNProfile = async (req, res) => {
     const user = await prisma.user.findUnique({
       where: { id: userId },
       include: {
-        profile: true,
+        profile: {
+          include: {
+            branch: {
+              include: {
+                zone: true
+              }
+            }
+          }
+        },
       },
     });
 

@@ -9,7 +9,7 @@ const authorizeAdmin = async (req, res, next) => {
             where: {id: userId},
         });
 
-        if (user.role == 'ADMIN') {
+        if (user.role == 'ADMIN' || user.role == 'ADMIN_ZONE') {
             next();
         } else {
             res.status(403).json({ error: 'Access denied'});

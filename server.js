@@ -17,9 +17,13 @@ const replyRoutes = require("./routes/replyRoutes.js");
 const reportRoutes = require("./routes/reportRoutes.js");
 const watchRoutes = require("./routes/contentRoutes.js");
 const almsRoutes = require("./routes/almsRoutes.js");
+const branchRoutes = require("./routes/branchRoutes.js");
+const zoneRoutes = require("./routes/zoneRoutes.js");
 
 // admin routes
 const peminjamanManamagementRoutes = require("./routes/admin/peminjamanManagementRoutes.js");
+const adminBranchRoutes = require("./routes/admin/branchRoutes.js");
+const adminZoneRoutes = require("./routes/admin/zoneRoutes.js");
 
 const { PrismaClient } = require("@prisma/client");
 const { authenticateToken } = require("./middlewares/jwtMiddleware.js");
@@ -35,7 +39,16 @@ const path = require("path");
 const { handleWebhook } = require("./controllers/infaqController.js");
 
 const { fixDuplicateUsernames } = require("./setup/fixDuplicateUsernames.js");
-const setupAdmin = require("./setup/setupAdmin.js");
+const {
+  fixEmptyZoneAndBranch,
+} = require("./setup/fixEmptyZoneAndBranch.js");
+const {
+  setupAdmin,
+  setupZone,
+  setupBranch,
+  setupAdminZone,
+  setupAdminZoneProfile,
+} = require("./setup/setupAdmin.js");
 const swaggerUI = require("swagger-ui-express");
 const { authorizeAdmin } = require("./middlewares/authorizationMiddleware.js");
 const swaggerDoc = require("./swagger-output.json");
@@ -95,9 +108,13 @@ app.use("/infaq", infaqRoutes);
 app.use("/allocation", allocationTypeRoutes);
 app.use("/watch", watchRoutes);
 app.use("/alms", almsRoutes);
+app.use("/branches", branchRoutes);
+app.use("/zones", zoneRoutes);
 
 app.use(authorizeAdmin);
 app.use("/admin/peminjaman-buku", peminjamanManamagementRoutes);
+app.use("/admin/branches", adminBranchRoutes);
+app.use("/admin/zones", adminZoneRoutes);
 
 async function logError(error) {
   try {
@@ -137,7 +154,12 @@ cron.schedule(
 async function initializeApp() {
   try {
     await setupAdmin();
+    await setupZone();
+    await setupBranch();
+    await setupAdminZone();
+    await setupAdminZoneProfile();
     await fixDuplicateUsernames();
+    await fixEmptyZoneAndBranch();
   } catch (e) {
     console.error("Error during initialization:", e);
   } finally {
