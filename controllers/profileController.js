@@ -191,13 +191,11 @@ const getUserNProfile = async (req, res) => {
       where: { id: userId },
       include: {
         profile: true,
-        include: {
-          branch: {
-            include: {
-              zone: true
-            }
+        branch: {
+          include: {
+            zone: true
           }
-      },
+        },
       }
     });
 
