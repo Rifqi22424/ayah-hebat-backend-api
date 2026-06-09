@@ -190,6 +190,37 @@ const getAllUsers = async (req, res) => {
       };
     }
 
+    const currentUser = await prisma.user.findUnique({
+            where: {id: req.userId},
+        });
+
+    if (currentUser.role === "ADMIN_ZONE") {
+      const admin = await prisma.user.findUnique({
+        where: {
+          id: currentUser.id
+        },
+        select: {
+          profile: {
+            select: {
+              zoneId: true
+            }
+          }
+        }
+      });
+
+      const adminZoneId = admin?.profile?.zoneId;
+
+      console.log("admins ", admin);
+
+      whereCondition.profile = {
+        zone: {
+          id: adminZoneId
+        }
+      }
+    }
+
+    console.dir(whereCondition, { depth: null });
+
     const users = await prisma.user.findMany({
       where: whereCondition,
       orderBy: {
@@ -206,6 +237,8 @@ const getAllUsers = async (req, res) => {
         profile: true, 
       }
     });
+
+    console.log("user ", users[0]);
 
     res.status(200).json({
       message: "Berhasil mengambil data users",
